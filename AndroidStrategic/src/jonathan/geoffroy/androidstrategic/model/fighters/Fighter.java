@@ -3,7 +3,7 @@ package jonathan.geoffroy.androidstrategic.model.fighters;
 import jonathan.geoffroy.androidstrategic.model.items.bags.FighterBag;
 
 public abstract class Fighter {
-
+	private String name;
 	protected short hp;
 	protected short hpMax;
 	protected short constitution;
@@ -20,6 +20,22 @@ public abstract class Fighter {
 	private boolean general;
 	protected FighterBag bag;
 
+	public Fighter() {
+		setName(defaultName());
+		initializeStats();
+	}
+	
+	public Fighter(String name) {
+		this.setName(name);
+		initializeStats();
+	}
+	
+	/**
+	 * Permit to initialize stat for Fighter  
+	 */
+	protected abstract void initializeStats();
+	protected abstract String defaultName();
+	
 	/**
 	 * 
 	 * @param adv
@@ -176,5 +192,13 @@ public abstract class Fighter {
 
 	public boolean isDead() {
 		return hp <= 0;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

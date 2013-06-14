@@ -10,15 +10,17 @@ public abstract class Human extends Fighter {
 	protected short lightBookClass;
 	protected short darkBookClass;
 	protected short fireBookClass;
-	protected short spireClass;
+	protected short spearClass;
+	protected short scepterClass;
+	protected short knifeClass;
 	protected short axExp;
 	protected short swordExp;
 	protected short bowExp;
-	protected short darkBooExp;
+	protected short darkBookExp;
 	protected short fireBookExp;
-	protected short spireExp;
-	protected short scepterClass;
-	protected short scpeterExp;
+	protected short spearExp;
+	protected short scepterExp;
+	protected short knifeExp;
 	
  
 	public Weapon getEquiped() {
@@ -63,11 +65,11 @@ public abstract class Human extends Fighter {
 	public void setFireBookClass(short fireBookClass) {
 		this.fireBookClass = fireBookClass;
 	}
-	public short getSpireClass() {
-		return spireClass;
+	public short getspearClass() {
+		return spearClass;
 	}
-	public void setSpireClass(short spireClass) {
-		this.spireClass = spireClass;
+	public void setspearClass(short spearClass) {
+		this.spearClass = spearClass;
 	}
 	public short getAxExp() {
 		return axExp;
@@ -87,11 +89,11 @@ public abstract class Human extends Fighter {
 	public void setBowExp(short bowExp) {
 		this.bowExp = bowExp;
 	}
-	public short getDarkBooExp() {
-		return darkBooExp;
+	public short getDarkBookExp() {
+		return darkBookExp;
 	}
-	public void setDarkBooExp(short darkBooExp) {
-		this.darkBooExp = darkBooExp;
+	public void setDarkBookExp(short darkBookExp) {
+		this.darkBookExp = darkBookExp;
 	}
 	public short getFireBookExp() {
 		return fireBookExp;
@@ -99,11 +101,11 @@ public abstract class Human extends Fighter {
 	public void setFireBookExp(short fireBookExp) {
 		this.fireBookExp = fireBookExp;
 	}
-	public short getSpireExp() {
-		return spireExp;
+	public short getSpearExp() {
+		return spearExp;
 	}
-	public void setSpireExp(short spireExp) {
-		this.spireExp = spireExp;
+	public void setSpearExp(short spearExp) {
+		this.spearExp = spearExp;
 	}
 	public short getScepterClass() {
 		return scepterClass;
@@ -111,10 +113,28 @@ public abstract class Human extends Fighter {
 	public void setScepterClass(short scepterClass) {
 		this.scepterClass = scepterClass;
 	}
-	public short getScpeterExp() {
-		return scpeterExp;
+	public short getScepterExp() {
+		return scepterExp;
 	}
-	public void setScpeterExp(short scpeterExp) {
-		this.scpeterExp = scpeterExp;
+	public void setScepterExp(short scepterExp) {
+		this.scepterExp = scepterExp;
+	}
+	public short getSpearClass() {
+		return spearClass;
+	}
+	public void setSpearClass(short spearClass) {
+		this.spearClass = spearClass;
+	}
+	public short getKnifeClass() {
+		return knifeClass;
+	}
+	public void setKnifeClass(short knifeClass) {
+		this.knifeClass = knifeClass;
+	}
+	public short getKnifeExp() {
+		return knifeExp;
+	}
+	public void setKnifeExp(short knifeExp) {
+		this.knifeExp = knifeExp;
 	}
 }
