@@ -80,9 +80,9 @@ public class WeaponTest {
 
 		for(int i = 0; i < fighters.length; i++) {
 			assertTrue(fighters[i].getName() + "should can equip " + weapons[i].getName(), weapons[i].canEquip(fighters[i]));
-			weapons[i].setWeaponClass(2);
+			weapons[i].setWeaponClass((short)2);
 			assertTrue(fighters[i].getName() + "should can equip " + weapons[i].getName(), weapons[i].canEquip(fighters[i]));
-			weapons[i].setWeaponClass(3);
+			weapons[i].setWeaponClass((short)3);
 			assertFalse(fighters[i].getName() + "should can equip " + weapons[i].getName(), weapons[i].canEquip(fighters[i]));
 		}
 	}

@@ -5,9 +5,10 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Human;
 import jonathan.geoffroy.androidstrategic.model.items.Item;
 
 public abstract class Weapon extends Item {
-	protected int might;
-	protected int weaponClass;
-
+	protected short might;
+	protected short weaponClass;
+	protected short criticalRate;
+	
 	public Weapon() {
 		weaponClass = 1;
 	}
@@ -43,20 +44,28 @@ public abstract class Weapon extends Item {
 		return null;
 	}
 
-	public int getMight() {
+	public short getMight() {
 		return might;
 	}
 
-	public void setMight(int might) {
+	public void setMight(short might) {
 		this.might = might;
 	}
 
-	public int getWeaponClass() {
+	public short getWeaponClass() {
 		return weaponClass;
 	}
 
-	public void setWeaponClass(int weaponClass) {
+	public void setWeaponClass(short weaponClass) {
 		this.weaponClass = weaponClass;
+	}
+
+	public short getCriticalRate() {
+		return criticalRate;
+	}
+
+	public void setCriticalRate(short criticalRate) {
+		this.criticalRate = criticalRate;
 	}
 
 }
