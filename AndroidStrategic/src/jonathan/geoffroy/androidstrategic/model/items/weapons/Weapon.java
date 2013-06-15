@@ -7,6 +7,15 @@ import jonathan.geoffroy.androidstrategic.model.items.Item;
 public abstract class Weapon extends Item {
 	protected short might;
 	protected short weaponClass;
+	protected short hitRate;
+	public short getHitRate() {
+		return hitRate;
+	}
+
+	public void setHitRate(short hitRate) {
+		this.hitRate = hitRate;
+	}
+
 	protected short criticalRate;
 	
 	public Weapon() {
@@ -39,7 +48,7 @@ public abstract class Weapon extends Item {
 	public int calculateMight() {
 		return 0;
 	}
-
+	
 	public String getCharClass(int weaponclass) {
 		return null;
 	}

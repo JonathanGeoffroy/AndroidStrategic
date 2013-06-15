@@ -71,6 +71,26 @@ public abstract class Fighter {
 		return resistance;
 	}
 
+	public int hitRate() {
+		int hitRate = skill * 2 + luck;
+		if(hitRate > 100)
+			hitRate = 100;
+		return hitRate;
+	}
+	
+	public int hitNumber(Fighter ennemy) {
+		if(speed >= ennemy.speed + 3)
+			return 2;
+		return 1;
+	}
+	/**
+	 * Calculate the chance to do a critical hit
+	 * @return a % of chance to do a critical hit
+	 */
+	public short criticalRates() {
+		return (short)(skill / 2);
+	}
+	
 	public boolean isGeneral() {
 		return general;
 	}

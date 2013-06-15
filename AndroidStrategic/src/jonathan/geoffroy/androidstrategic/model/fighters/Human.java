@@ -21,8 +21,27 @@ public abstract class Human extends Fighter {
 	protected short spearExp;
 	protected short scepterExp;
 	protected short knifeExp;
-	
- 
+
+	@Override
+	public int hitRate() {
+		int rate = super.hitRate();
+		if(equiped != null) {
+			rate += equiped.getHitRate();
+			if(rate > 100)
+				rate = 100;
+		}
+		return rate;
+	}
+
+	@Override
+	public short criticalRates() {
+		short critical = super.criticalRates();
+		if(equiped != null) {
+			critical += equiped.getCriticalRate();
+		}
+		return critical;
+	}
+
 	public Weapon getEquiped() {
 		return equiped;
 	}

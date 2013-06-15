@@ -13,6 +13,7 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Priest;
 import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
 import jonathan.geoffroy.androidstrategic.model.fighters.Ranger;
 import jonathan.geoffroy.androidstrategic.model.fighters.Thief;
+import jonathan.geoffroy.androidstrategic.model.items.weapons.Bow;
 
 import org.junit.After;
 import org.junit.Before;
@@ -45,6 +46,7 @@ public class FightTest {
 	public void conditions(Fighter f) {
 		assertTrue("hp should be least or equals than hpMax", f.getHp() <= f.getHpMax());
 		assertTrue("if hp <= 0,\n fighter should be dead", f.getHp() > 0 || f.isDead());
+		assertTrue("hp shouldn't be negative", f.getHp() >= 0);
 	}
 
 
@@ -69,6 +71,29 @@ public class FightTest {
 			assertEquals(f.getName() + ": at initialization, movement should be equals movementMax", f.getMovement(), f.getMovementMax());
 			assertFalse(f.getName() + ": at initialization, fighter should not be dead", f.isDead());
 		}
+	}
+	
+	@Test
+	public void hitNumber() {
+		Archer archer = new Archer();
+		Archer ennemy = new Archer();
+		assertEquals("should hit only 1 time", archer.hitNumber(ennemy), 1);
+		archer.setSpeed((short) (archer.getSpeed() + 3));
+		assertEquals("should hit twice", archer.hitNumber(ennemy), 2);
+		archer.setSpeed((short) (archer.getSpeed() + 3));
+		assertEquals("should hit twice", archer.hitNumber(ennemy), 2);
+	}
+	
+	@Test
+	public void hitRate() {
+		Archer archer = new Archer();
+		Archer ennemy = new Archer();
+		Bow bow = new Bow();
+		bow.setHitRate((short)50);
+		archer.setEquiped(bow);
+		
+		assertTrue("hit rate should be between 0 & 100", 0 < archer.hitRate() && archer.hitRate() < 100);
+		assertTrue("fighter hit rate should include equiped wepon", archer.hitRate() == ennemy.hitRate() + 50);
 	}
 	@Test
 	public void fight() {
