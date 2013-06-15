@@ -1,9 +1,6 @@
 package jonathan.geoffroy.androidstrategic.model.mapping;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
+
 import java.util.HashMap;
 
 import jonathan.geoffroy.androidstrategic.model.items.Item;

@@ -9,6 +9,14 @@ public abstract class Item {
 	private int price;
 	private String name;
 
+	public Item() {
+		name = defaultName();
+	}
+	
+	public String defaultName() {
+		return getClass().getName();
+		
+	}
 	public boolean isDestructible() {
 		return useMax < 0;
 	}
