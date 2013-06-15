@@ -1,6 +1,7 @@
 package jonathan.geoffroy.androidstrategic.tests;
 
 import static org.junit.Assert.*;
+import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
 import jonathan.geoffroy.androidstrategic.model.fighters.Axman;
 import jonathan.geoffroy.androidstrategic.model.fighters.Cat;
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
@@ -9,8 +10,8 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Heron;
 import jonathan.geoffroy.androidstrategic.model.fighters.Lion;
 import jonathan.geoffroy.androidstrategic.model.fighters.Mage;
 import jonathan.geoffroy.androidstrategic.model.fighters.Priest;
-import jonathan.geoffroy.androidstrategic.model.fighters.Spireman;
-import jonathan.geoffroy.androidstrategic.model.fighters.Swordman;
+import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
+import jonathan.geoffroy.androidstrategic.model.fighters.Ranger;
 import jonathan.geoffroy.androidstrategic.model.fighters.Thief;
 
 import org.junit.After;
@@ -50,6 +51,7 @@ public class FightTest {
 	@Test
 	public void fighterInitialization() {
 		Fighter[] fighters = {
+				new Archer(),
 				new Axman(),
 				new Cat(),
 				new Hawk(),
@@ -57,20 +59,21 @@ public class FightTest {
 				new Lion(),
 				new Mage(),
 				new Priest(),
-				new Spireman(),
-				new Swordman(),
+				new Soldier(),
+				new Ranger(),
 				new Thief()
 		};
 		for(Fighter f: fighters) {
-			assertEquals("at initialization, hp should be equals hpMax", f.getHp(), f.getHpMax());
-			assertEquals("at initialization, movement should be equals movementMax", f.getMovement(), f.getMovementMax());
-			assertFalse("at initialization, fighter should not be dead", f.isDead());
+			assertTrue(f.getName() + ": at initialization, hp should be > 0", f.getHp() > 0);
+			assertEquals(f.getName() + ": at initialization, hp should be equals hpMax", f.getHp(), f.getHpMax());
+			assertEquals(f.getName() + ": at initialization, movement should be equals movementMax", f.getMovement(), f.getMovementMax());
+			assertFalse(f.getName() + ": at initialization, fighter should not be dead", f.isDead());
 		}
 	}
 	@Test
 	public void fight() {
-		fighter1 = new Swordman();
-		fighter2 = new Swordman();
+		fighter1 = new Ranger();
+		fighter2 = new Ranger();
 		fighter1.fight(fighter2);
 		assertEquals("both fighters should be hit at the same strength", fighter1.getHp(), fighter2.getHp());
 	}
