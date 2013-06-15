@@ -5,14 +5,16 @@ public class Soldier extends Human {
 	@Override
 	protected void initializeStats() {
 		hp = hpMax = 22;
-		strength = 8;
-		magic = 2;
-		speed = 11;
+		strength = 4;
+		magic = 0;
+		skill = 4;
+		speed = 4;
 		luck = 6;
-		defense = 9;
-		resistance = 3;
+		defense = 4;
+		resistance = 0;
 		constitution = 8;
-		weight = 10;
+		weight = 13;
+		movement = movementMax = 6;
 		
 		spearClass = 1;
 	}

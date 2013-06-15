@@ -4,15 +4,17 @@ public class Priest extends Human {
 
 	@Override
 	protected void initializeStats() {
-		hp = hpMax = 22;
+		hp = hpMax = 18;
 		strength = 0;
-		magic = 10;
-		speed = 5;
+		magic = 3;
+		skill = 3;
+		speed = 3;
 		luck = 8;
-		defense = 0;
-		resistance = 14;
-		constitution = 8;
-		weight = 8;
+		defense = 1;
+		resistance = 8;
+		constitution = 9;
+		weight = 9;
+		movement = movementMax = 5;
 		
 		scepterClass = 1;
 	}

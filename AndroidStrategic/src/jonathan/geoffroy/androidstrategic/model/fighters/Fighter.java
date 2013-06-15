@@ -16,6 +16,7 @@ public abstract class Fighter {
 	protected short movement;
 	protected short movementMax;
 	protected short luck;
+	protected short skill;
 	protected short weight;
 	private boolean general;
 	protected FighterBag bag;
@@ -200,5 +201,13 @@ public abstract class Fighter {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public short getSkill() {
+		return skill;
+	}
+
+	public void setSkill(short skill) {
+		this.skill = skill;
 	}
 }

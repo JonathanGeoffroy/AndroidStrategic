@@ -4,13 +4,17 @@ public class Mage extends Human {
 
 	@Override
 	protected void initializeStats() {
-		hp = hpMax = 52;
-		strength = 20;
-		speed = 20;
+		hp = hpMax = 16;
+		strength = 0;
+		magic = 3;
+		skill = 2;
+		speed = 3;
 		luck = 20;
-		defense = 20;
-		resistance = 20;
-		movement = movementMax = 20;
+		defense = 3;
+		resistance = 3;
+		constitution = 9;
+		weight = 9;
+		movement = movementMax = 5;
 		
 		lightBookClass = darkBookClass = fireBookClass = 1;
 	}
