@@ -14,6 +14,8 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
 import jonathan.geoffroy.androidstrategic.model.fighters.Ranger;
 import jonathan.geoffroy.androidstrategic.model.fighters.Thief;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Bow;
+import jonathan.geoffroy.androidstrategic.model.mapping.Desert;
+import jonathan.geoffroy.androidstrategic.model.mapping.Road;
 
 import org.junit.After;
 import org.junit.Before;
@@ -85,16 +87,27 @@ public class FightTest {
 	}
 	
 	@Test
-	public void hitRate() {
+	public void accuracy() {
 		Archer archer = new Archer();
 		Archer ennemy = new Archer();
+		archer.setTerrain(new Road());
+		ennemy.setTerrain(new Desert());
 		Bow bow = new Bow();
 		bow.setHitRate((short)50);
+		
+		int accuracyWithNoWeapon = archer.accuracy(ennemy);
 		archer.setEquiped(bow);
 		
-		assertTrue("hit rate should be between 0 & 100", 0 < archer.hitRate() && archer.hitRate() < 100);
-		assertTrue("fighter hit rate should include equiped wepon", archer.hitRate() == ennemy.hitRate() + 50);
+		assertTrue("accuracy should be between 0 & 100", archer.accuracy(ennemy) >= 0 && archer.accuracy(ennemy) <= 100);
+		assertTrue("accuracy should be between 0 & 100", ennemy.accuracy(archer) >= 0 && ennemy.accuracy(archer) <= 100);
+		assertTrue("fighter acccuracy should include equiped weapon", archer.accuracy(ennemy) == accuracyWithNoWeapon + bow.getHitRate() || archer.accuracy(ennemy) == 100);
+		
+		bow.setHitRate((short)90);
+		assertTrue("accuracy should be between 0 & 100", archer.accuracy(ennemy) >= 0 && archer.accuracy(ennemy) <= 100);
+		assertTrue("accuracy should be between 0 & 100", ennemy.accuracy(archer) >= 0 && ennemy.accuracy(archer) <= 100);
+		assertTrue("fighter acccuracy should include equiped weapon", archer.accuracy(ennemy) == accuracyWithNoWeapon + bow.getHitRate() || archer.accuracy(ennemy) == 100);
 	}
+	
 	@Test
 	public void fight() {
 		fighter1 = new Ranger();

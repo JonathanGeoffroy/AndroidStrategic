@@ -1,6 +1,7 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
 import jonathan.geoffroy.androidstrategic.model.items.bags.FighterBag;
+import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 
 public abstract class Fighter {
 	private String name;
@@ -20,7 +21,8 @@ public abstract class Fighter {
 	protected short weight;
 	private boolean general;
 	protected FighterBag bag;
-
+	protected Terrain terrain;
+	
 	public Fighter() {
 		setName(defaultName());
 		initializeStats();
@@ -65,24 +67,52 @@ public abstract class Fighter {
 
 	/**
 	 * Calculate de strength of the Fighter magical defense
-	 * @return
+	 * @return magical strength
 	 */
 	public int calculateResistance() {
 		return resistance;
 	}
 
+	/** 
+	 * Calculate the hit rate of the Fighter
+	 * @return the hit rate
+	 */
 	public int hitRate() {
-		int hitRate = skill * 2 + luck;
-		if(hitRate > 100)
-			hitRate = 100;
-		return hitRate;
+		return skill * 2 + luck;
 	}
 	
+	/**
+	 * Calculate the evade of the Fighter
+	 * @return evade
+	 */
+	public int evade() {
+		return speed * 2 + luck + terrain.getAvoid();
+	}
+	
+	/**
+	 * Calculate the real accuracy of the fighter, depending on the ennemy.
+	 * It's actually fighter.hitRate() - ennemy.evade(), with limit of 100
+	 * @param other the ennemy
+	 * @return accuracy of the Fighter to the ennemy
+	 */
+	public int accuracy(Fighter other) {
+		int accuracy = hitRate() - other.evade();
+		if(accuracy > 100)
+			accuracy = 100;
+		return accuracy;
+	}
+	
+	/**
+	 * Calculate the number of hits, depending on the ennemy.
+	 * @param ennemy the ennemy
+	 * @return 2 if fighter.speed > ennemy.speed + 3, else 1
+	 */
 	public int hitNumber(Fighter ennemy) {
 		if(speed >= ennemy.speed + 3)
 			return 2;
 		return 1;
 	}
+	
 	/**
 	 * Calculate the chance to do a critical hit
 	 * @return a % of chance to do a critical hit
@@ -229,5 +259,13 @@ public abstract class Fighter {
 
 	public void setSkill(short skill) {
 		this.skill = skill;
+	}
+
+	public Terrain getTerrain() {
+		return terrain;
+	}
+
+	public void setTerrain(Terrain terrain) {
+		this.terrain = terrain;
 	}
 }

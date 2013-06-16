@@ -27,8 +27,6 @@ public abstract class Human extends Fighter {
 		int rate = super.hitRate();
 		if(equiped != null) {
 			rate += equiped.getHitRate();
-			if(rate > 100)
-				rate = 100;
 		}
 		return rate;
 	}
