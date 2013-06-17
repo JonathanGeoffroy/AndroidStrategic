@@ -178,6 +178,10 @@ public abstract class Fighter {
 			return hitRate() - evade() > Math.random();
 		}
 	}
+	
+	public int calculateSpeed() {
+		return  speed;
+	}
 	/**
 	 * Calculate the number of hits, depending on the ennemy.
 	 * @param ennemy the ennemy

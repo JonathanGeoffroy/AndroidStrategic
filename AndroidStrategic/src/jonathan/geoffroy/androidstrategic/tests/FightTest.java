@@ -45,7 +45,6 @@ public class FightTest {
 		}
 	}
 
-
 	public void conditions(Fighter f) {
 		assertTrue("hp should be least or equals than hpMax", f.getHp() <= f.getHpMax());
 		assertTrue("if hp <= 0,\n fighter should be dead", f.getHp() > 0 || f.isDead());
@@ -168,7 +167,7 @@ public class FightTest {
 		FightResult result;
 
 		int nbCritical[] = new int[2];
-		for(int i = 0; i < 1000000; i++) {
+		for(int i = 0; i < 500000; i++) {
 			fighters[0].setHp(fighters[0].getHpMax());
 			fighters[1].setHp(fighters[1].getHpMax());
 			result = fighters[0].fight(fighters[1]);
@@ -180,8 +179,8 @@ public class FightTest {
 		}
 
 		assertTrue("Both fighters should do critical hits at the same frequence",
-				nbCritical[0] >= nbCritical[1] - 200 &&
-				nbCritical[0] <= nbCritical[1] + 200
+				nbCritical[0] >= nbCritical[1] - 500 &&
+				nbCritical[0] <= nbCritical[1] + 500
 				);
 
 		for(int i = 0; i < 2; i++) {

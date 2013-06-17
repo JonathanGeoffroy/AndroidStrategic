@@ -40,6 +40,18 @@ public abstract class Human extends Fighter {
 		return critical;
 	}
 
+	@Override
+	public int calculateSpeed() {
+		int speed = super.calculateSpeed();
+		int weaponSpeed = 0;
+		if(equiped != null) {
+			weaponSpeed = equiped.getWeight() - strength;
+			if(weaponSpeed < 0)
+				weaponSpeed = 0;
+		}
+		return speed - weaponSpeed;
+	}
+	
 	public Weapon getEquiped() {
 		return equiped;
 	}
