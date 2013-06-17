@@ -27,25 +27,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class FightTest {
-	Fighter fighter1, fighter2;
+	Fighter fighters[];
 
 	@Before
 	public void preConditions() {
-		if(fighter1 != null) {
-			conditions(fighter1);
-		}
-		if (fighter2 != null) {
-			conditions(fighter2);
+		if(fighters != null) {
+			for(int i = 0; i < fighters.length; i++)
+				conditions(fighters[i]);
 		}
 	}
 
 	@After
 	public void postConditions() {
-		if(fighter1 != null) {
-			conditions(fighter1);
-		}
-		if (fighter2 != null) {
-			conditions(fighter2);
+		if(fighters != null) {
+			for(int i = 0; i < fighters.length; i++)
+				conditions(fighters[i]);
 		}
 	}
 
@@ -59,7 +55,7 @@ public class FightTest {
 
 	@Test
 	public void fighterInitialization() {
-		Fighter[] fighters = {
+		Fighter[] fightersArray = {
 				new Archer(),
 				new Axman(),
 				new Cat(),
@@ -72,6 +68,8 @@ public class FightTest {
 				new Ranger(),
 				new Thief()
 		};
+		this.fighters = fightersArray;
+		
 		for(Fighter f: fighters) {
 			assertTrue(f.getName() + ": at initialization, hp should be > 0", f.getHp() > 0);
 			assertEquals(f.getName() + ": at initialization, hp should be equals hpMax", f.getHp(), f.getHpMax());
@@ -82,40 +80,43 @@ public class FightTest {
 
 	@Test
 	public void hitNumber() {
-		Archer archer = new Archer();
-		Archer ennemy = new Archer();
-		assertEquals("should hit only 1 time", archer.hitNumber(ennemy), 1);
-		archer.setSpeed((short) (archer.getSpeed() + 3));
-		assertEquals("should hit twice", archer.hitNumber(ennemy), 2);
-		archer.setSpeed((short) (archer.getSpeed() + 3));
-		assertEquals("should hit twice", archer.hitNumber(ennemy), 2);
+		fighters = new Fighter[2];
+		fighters[0] = new Archer();
+		fighters[1] = new Archer();
+		assertEquals("should hit only 1 time", fighters[0].hitNumber(fighters[1]), 1);
+		fighters[0].setSpeed((short) (fighters[0].getSpeed() + 3));
+		assertEquals("should hit twice", fighters[0].hitNumber(fighters[1]), 2);
+		fighters[0].setSpeed((short) (fighters[0].getSpeed() + 3));
+		assertEquals("should hit twice", fighters[0].hitNumber(fighters[1]), 2);
 	}
 
 	@Test
 	public void accuracy() {
-		Archer archer = new Archer();
-		Archer ennemy = new Archer();
-		archer.setTerrain(new Road());
-		ennemy.setTerrain(new Desert());
+		fighters = new Fighter[2];
+		fighters[0] = new Archer();
+		fighters[1] = new Archer();
+		fighters[0].setTerrain(new Road());
+		fighters[1].setTerrain(new Desert());
 		Bow bow = new Bow();
 		bow.setHitRate((short)50);
 
-		int accuracyWithNoWeapon = archer.accuracy(ennemy);
-		archer.setEquiped(bow);
+		int accuracyWithNoWeapon = fighters[0].accuracy(fighters[1]);
+		Human h = (Human)fighters[0];
+		h.setEquiped(bow);
 
-		assertTrue("accuracy should be between 0 & 100", archer.accuracy(ennemy) >= 0 && archer.accuracy(ennemy) <= 100);
-		assertTrue("accuracy should be between 0 & 100", ennemy.accuracy(archer) >= 0 && ennemy.accuracy(archer) <= 100);
-		assertTrue("fighter acccuracy should include equiped weapon", archer.accuracy(ennemy) == accuracyWithNoWeapon + bow.getHitRate() || archer.accuracy(ennemy) == 100);
+		assertTrue("accuracy should be between 0 & 100", fighters[0].accuracy(fighters[1]) >= 0 && fighters[0].accuracy(fighters[1]) <= 100);
+		assertTrue("accuracy should be between 0 & 100", fighters[1].accuracy(fighters[0]) >= 0 && fighters[1].accuracy(fighters[0]) <= 100);
+		assertTrue("fighter acccuracy should include equiped weapon", fighters[0].accuracy(fighters[1]) == accuracyWithNoWeapon + bow.getHitRate() || fighters[0].accuracy(fighters[1]) == 100);
 
 		bow.setHitRate((short)90);
-		assertTrue("accuracy should be between 0 & 100", archer.accuracy(ennemy) >= 0 && archer.accuracy(ennemy) <= 100);
-		assertTrue("accuracy should be between 0 & 100", ennemy.accuracy(archer) >= 0 && ennemy.accuracy(archer) <= 100);
-		assertTrue("fighter acccuracy should include equiped weapon", archer.accuracy(ennemy) == accuracyWithNoWeapon + bow.getHitRate() || archer.accuracy(ennemy) == 100);
+		assertTrue("accuracy should be between 0 & 100", fighters[0].accuracy(fighters[1]) >= 0 && fighters[0].accuracy(fighters[1]) <= 100);
+		assertTrue("accuracy should be between 0 & 100", fighters[1].accuracy(fighters[0]) >= 0 && fighters[1].accuracy(fighters[0]) <= 100);
+		assertTrue("fighter acccuracy should include equiped weapon", fighters[0].accuracy(fighters[1]) == accuracyWithNoWeapon + bow.getHitRate() || fighters[0].accuracy(fighters[1]) == 100);
 	}
 
 	@Test
 	public void touchedRate() {
-		Fighter fighters[] = new Fighter[2];
+		fighters = new Fighter[2];
 		Terrain terrain = new Grass();
 		terrain.setAvoid((short)0);
 		for(int i = 0; i < 2; i++) {
@@ -152,7 +153,7 @@ public class FightTest {
 
 	@Test 
 	public void criticalRate() {
-		Human fighters[] = new Human[2];
+		fighters = new Human[2];
 		Sword sword = new Sword();
 		sword.setHitRate((short) 80);
 		Terrain terrain = new Grass();
@@ -160,7 +161,8 @@ public class FightTest {
 		for(int i = 0; i < 2; i++) {
 			fighters[i] = new Ranger();
 			fighters[i].setTerrain(terrain);
-			fighters[i].setEquiped(sword);
+			Human h = (Human)fighters[i];
+			h.setEquiped(sword);
 		}
 
 		FightResult result;
