@@ -24,4 +24,7 @@ public class Mage extends Human {
 		return "Mage";
 	}
 	
+	protected boolean isPhysicalAttack() {
+		return false;
+	}
 }

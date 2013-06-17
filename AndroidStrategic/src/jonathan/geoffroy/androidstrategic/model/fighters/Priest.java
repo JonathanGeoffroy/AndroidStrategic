@@ -23,4 +23,8 @@ public class Priest extends Human {
 	protected String defaultName() {
 		return "Priest";
 	}
+	
+	protected boolean isPhysicalAttack() {
+		return false;
+	}
 }

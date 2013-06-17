@@ -22,31 +22,80 @@ public abstract class Fighter {
 	private boolean general;
 	protected FighterBag bag;
 	protected Terrain terrain;
-	
+
 	public Fighter() {
 		setName(defaultName());
 		initializeStats();
 	}
-	
+
 	public Fighter(String name) {
 		this.setName(name);
 		initializeStats();
 	}
-	
+
 	/**
 	 * Permit to initialize stat for Fighter  
 	 */
 	protected abstract void initializeStats();
 	protected abstract String defaultName();
-	
+
 	/**
 	 * 
 	 * @param adv
-	 * @return true if and only if the adv died during the fight
+	 * @return a FightResult which retrace all battle
 	 */
-	public boolean fight(Fighter adv) {
-		// TODO
-		return false;
+	public FightResult fight(Fighter assaulted) {
+		FightResult result = new FightResult(this, assaulted);
+		
+		Fighter fighters[] = {this, assaulted};
+		int random;
+
+		int hitNumber[] = new int[2];
+		hitNumber[0] = this.hitNumber(assaulted);
+		hitNumber[1] = this.hitNumber(this);
+
+		boolean physicalAttack[] = new boolean[2];
+		physicalAttack[0] = this.isPhysicalAttack();
+		physicalAttack[1] = assaulted.isPhysicalAttack();
+
+		int hitStrength[] = new int[2];
+		hitStrength[0] = this.calculatePower() - assaulted.calculateDefense(physicalAttack[0]);
+		hitStrength[1] = assaulted.calculatePower() - this.calculateDefense(physicalAttack[1]);
+
+		int criticalRate[] = new int[2];
+		criticalRate[0] = this.criticalRates();
+		criticalRate[1] = assaulted.criticalRates();
+		boolean criticalAttack;
+		boolean touched;
+		int attackStrength;
+		int attack = 0, defense = 1;
+
+		while(! (hitNumber[0] == 0 && hitNumber[1] == 0) && !this.isDead() && !assaulted.isDead()) {
+			if(hitNumber[attack] > 0) {
+				random = (int)(Math.random() * 100);
+				criticalAttack = criticalRate[attack] >= random;
+
+				touched = fighters[attack].hasTouched(fighters[defense], criticalAttack);
+				if(touched) {
+					attackStrength = hitStrength[attack];
+					if(criticalAttack)
+						attackStrength *= 3;
+						
+					fighters[defense].addHp(- attackStrength);
+				}
+				else {
+					attackStrength = 0;
+				}
+
+				result.addAttack(attack, attackStrength, touched, criticalAttack);
+			}
+
+			hitNumber[attack] --;
+			attack = (attack + 1) % 2;
+			defense = (defense + 1) % 2;
+		}
+
+		return result;
 	}
 
 	/**
@@ -54,22 +103,22 @@ public abstract class Fighter {
 	 * @return strength of the Fighter attack
 	 */
 	public int calculatePower() {
-		return strength;
+		if(isPhysicalAttack())
+			return strength;
+		return magic;
+	}
+
+	protected boolean isPhysicalAttack() {
+		return true;
 	}
 
 	/**
-	 * Calculate de strength of the Fighter physical defense
+	 * Calculate de strength of the Fighter defense
 	 * @return
 	 */
-	public int calculateDefense() {
-		return defense;
-	}
-
-	/**
-	 * Calculate de strength of the Fighter magical defense
-	 * @return magical strength
-	 */
-	public int calculateResistance() {
+	public int calculateDefense(boolean isPhysicalAttack) {
+		if(isPhysicalAttack)
+			return defense;
 		return resistance;
 	}
 
@@ -80,15 +129,34 @@ public abstract class Fighter {
 	public int hitRate() {
 		return skill * 2 + luck;
 	}
-	
+
 	/**
 	 * Calculate the evade of the Fighter
-	 * @return evade
+	 * @return a rate of evade for a non critical attack
 	 */
 	public int evade() {
 		return speed * 2 + luck + terrain.getAvoid();
 	}
-	
+
+	/**
+	 * Calculate the evade, depending on it's a critical attack or not.
+	 * if isCriticalAttack return criticalEvade() else return evade()
+	 * @param isCriticalAttack
+	 * @return a rate of evade 
+	 */
+	public int evade(boolean isCriticalAttack) {
+		if(isCriticalAttack)
+			return criticalEvade();
+		return evade();
+	}
+
+	/**
+	 * Calculate the evade for a critical attack
+	 * @return a rate of evade for a critical attack
+	 */
+	public int criticalEvade() {
+		return luck;
+	}
 	/**
 	 * Calculate the real accuracy of the fighter, depending on the ennemy.
 	 * It's actually fighter.hitRate() - ennemy.evade(), with limit of 100
@@ -101,7 +169,15 @@ public abstract class Fighter {
 			accuracy = 100;
 		return accuracy;
 	}
-	
+
+	private boolean hasTouched(Fighter fighter, boolean criticalAttack) {
+		if(criticalAttack) {
+			return criticalRates() - criticalEvade() > Math.random();
+		}
+		else {
+			return hitRate() - evade() > Math.random();
+		}
+	}
 	/**
 	 * Calculate the number of hits, depending on the ennemy.
 	 * @param ennemy the ennemy
@@ -112,7 +188,7 @@ public abstract class Fighter {
 			return 2;
 		return 1;
 	}
-	
+
 	/**
 	 * Calculate the chance to do a critical hit
 	 * @return a % of chance to do a critical hit
@@ -120,7 +196,7 @@ public abstract class Fighter {
 	public short criticalRates() {
 		return (short)(skill / 2);
 	}
-	
+
 	public boolean isGeneral() {
 		return general;
 	}
@@ -135,6 +211,14 @@ public abstract class Fighter {
 
 	public void setHp(short hp) {
 		this.hp = hp;
+	}
+
+	private void addHp(int hpAdded) {
+		hp += hpAdded;
+		if(hp < 0)
+			hp = 0;
+		else if (hp > hpMax)
+			hp = hpMax;
 	}
 
 	public short getHpMax() {
