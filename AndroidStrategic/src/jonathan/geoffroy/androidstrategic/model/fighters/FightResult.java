@@ -39,7 +39,7 @@ public class FightResult {
 		inflictedDamages[fighterNumber][hitNumber[fighterNumber]] = damage;
 		touched[fighterNumber][hitNumber[fighterNumber]] = hasTouched;
 		criticalDamages[fighterNumber][hitNumber[fighterNumber]] = critical;
-		
+
 		hitNumber[fighterNumber]++;
 		assert(hitNumber[fighterNumber] >= 0 && hitNumber[fighterNumber] <= 2);
 	}
@@ -52,6 +52,19 @@ public class FightResult {
 	public boolean isDead(int player) {
 		assert(player == 0 || player == 1);
 		return fighters[player].isDead();
+	}
+
+	/**
+	 * Return fighter's index
+	 * @param fighter the fighter to find
+	 * @return fighter's index if exists, else -1
+	 */
+	public int getFighterNumber(Fighter fighter) {
+		for(int i = 0; i < fighters.length; i++) {
+			if(fighter.equals(fighters[i]))
+				return i;
+		}
+		return -1;
 	}
 
 	public Fighter[] getFighters() {
@@ -80,5 +93,21 @@ public class FightResult {
 
 	public void setExperienceWon(int experienceWon[]) {
 		this.experienceWon = experienceWon;
+	}
+
+	public int getSumDamages(int fighterNum) {
+		assert(fighterNum == 0 || fighterNum == 1);
+		int sum = 0;
+		for(int i = 0; i < hitNumber[fighterNum]; i++) {
+			assert(inflictedDamages[fighterNum][i] >= 0) : "inflicted damages should be > 0 (actual: " + inflictedDamages[fighterNum][i] + ")";
+			sum += inflictedDamages[fighterNum][i];
+		}
+		return sum;
+	}
+
+	public void calculateExperienceWon() {
+		for(int i = 0; i < fighters.length; i++) {
+			experienceWon[i] = fighters[i].experienceWon(this);
+		}
 	}
 }

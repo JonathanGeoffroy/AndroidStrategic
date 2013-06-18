@@ -212,8 +212,8 @@ public class FightTest {
 			assertTrue("Fighter missed attack should hit 0 pv", result.getTouched()[i][0] || result.getInflictedDamages()[i][0] == 0);
 			assertTrue("Fighter critical attack should hit 3 * strength", 
 					!result.getTouched()[i][0] || 
-					result.getCriticalDamages()[i][0] && result.getInflictedDamages()[i][0] == 3 * (fighters[i].calculatePower() - fighters[(i+1)%2].calculateDefense(true)) ||
-					!result.getCriticalDamages()[i][0] && result.getInflictedDamages()[i][0] == fighters[i].calculatePower() - fighters[(i+1)%2].calculateDefense(true)
+					result.getCriticalDamages()[i][0] && result.getInflictedDamages()[i][0] == 3 * fighters[i].attackStrength(fighters[(i+1)%2], true) ||
+					!result.getCriticalDamages()[i][0] && result.getInflictedDamages()[i][0] == fighters[i].attackStrength(fighters[(i+1)%2], true)
 					);
 			assertEquals("Fighter should not be dead", result.isDead(i), false);
 		}
@@ -241,5 +241,91 @@ public class FightTest {
 		assertEquals("Fighter should not be dead", result.isDead(0), false);
 		assertEquals("Fighter should be dead", result.isDead(1), true);
 		assertEquals("Fighter should not be hit because is dead", result.getNumberAttacks(1), 0);
+	}
+	
+	
+	@Test
+	public void experience() {
+		Terrain terrain = new Grass();
+		terrain.setAvoid((short)0);
+		Sword sword = new Sword();
+		sword.setHitRate((short)(100)); //To hitRate = 100%
+		sword.setMight((short)5);
+		fighters = new Fighter[2];
+		Human h;
+		for(int i = 0; i < 2; i++) {
+			fighters[i] = new Ranger();
+			fighters[i].setTerrain(terrain);
+			h = (Human)fighters[i];
+			h.setEquiped(sword);
+		}		
+		FightResult result;
+		
+		//no touch case:
+		// TODO
+		
+		//doing no damage case:
+		fighters = new Fighter[2];
+		for(int i = 0; i < 2; i++) {
+			fighters[i] = new Ranger();
+			fighters[i].setTerrain(terrain);
+			h = (Human)fighters[i];
+			h.setEquiped(sword);
+		}
+		fighters[0].setStrength((short)1);
+		fighters[1].setDefense((short)100);
+		result = fighters[0].fight(fighters[1]);
+		assertEquals("fighter who take no damage should receive only 1 exp", result.getExperienceWon()[0], 1);
+		assertTrue("fighter who take damages should receive more than 1 exp", result.getExperienceWon()[1] > 1);
+	
+		//doing damage case:
+		fighters = new Fighter[2];
+		for(int i = 0; i < 2; i++) {
+			fighters[i] = new Ranger();
+			fighters[i].setTerrain(terrain);
+		}
+		result = fighters[0].fight(fighters[1]);
+		
+		//kill ennemy case:
+		fighters = new Fighter[2];
+		for(int i = 0; i < 2; i++) {
+			fighters[i] = new Ranger();
+			fighters[i].setTerrain(terrain);
+			h = (Human)fighters[i];
+			h.setEquiped(sword);
+		}
+		
+		int xp = fighters[0].fight(fighters[1]).getExperienceWon()[0]; //First battle where nobody's died
+		
+		fighters[0].setStrength((short)100);
+		result = fighters[0].fight(fighters[1]); // second battle where assaulted died
+		
+		assertTrue("fighter should be dead", fighters[1].isDead());
+		assertTrue("fighter who kill ennemy should be receive more experience", result.getExperienceWon()[0] > xp);
+		
+		//kill  boss case:
+		fighters = new Fighter[2];
+		for(int i = 0; i < 2; i++) {
+			fighters[i] = new Ranger();
+			fighters[i].setTerrain(terrain);
+			h = (Human)fighters[i];
+			h.setEquiped(sword);
+		}
+		fighters[0].setStrength((short)100);
+		xp = fighters[0].fight(fighters[1]).getExperienceWon()[0];
+		
+		fighters = new Fighter[2];
+		for(int i = 0; i < 2; i++) {
+			fighters[i] = new Ranger();
+			fighters[i].setTerrain(terrain);
+			h = (Human)fighters[i];
+			h.setEquiped(sword);
+		}
+		fighters[0].setStrength((short)100);
+		fighters[1].setGeneral(true);
+		result = fighters[0].fight(fighters[1]);
+		
+		assertTrue("fighter should be dead", fighters[1].isDead());
+		assertTrue("fighter who kill boss should be receive more experience", result.getExperienceWon()[0] > xp);
 	}
 }
