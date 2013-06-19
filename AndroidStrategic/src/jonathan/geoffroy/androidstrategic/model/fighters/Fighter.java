@@ -5,8 +5,6 @@ import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 
 public abstract class Fighter {
 	private String name;
-	protected short level;
-	protected short experience;
 	protected short hp;
 	protected short hpMax;
 	protected short constitution;
@@ -21,7 +19,6 @@ public abstract class Fighter {
 	protected short luck;
 	protected short skill;
 	protected short weight;
-	protected short classBonus;
 	private boolean general;
 	protected FighterBag bag;
 	protected Terrain terrain;
@@ -49,7 +46,7 @@ public abstract class Fighter {
 	 */
 	public FightResult fight(Fighter assaulted) {
 		FightResult result = new FightResult(this, assaulted);
-
+		
 		Fighter fighters[] = {this, assaulted};
 		int random;
 
@@ -62,8 +59,8 @@ public abstract class Fighter {
 		physicalAttack[1] = assaulted.isPhysicalAttack();
 
 		int hitStrength[] = new int[2];
-		hitStrength[0] = this.attackStrength(assaulted, physicalAttack[0]);
-		hitStrength[1] = assaulted.attackStrength(this, physicalAttack[1]);
+		hitStrength[0] = this.calculatePower() - assaulted.calculateDefense(physicalAttack[0]);
+		hitStrength[1] = assaulted.calculatePower() - this.calculateDefense(physicalAttack[1]);
 
 		int criticalRate[] = new int[2];
 		criticalRate[0] = this.criticalRates();
@@ -83,13 +80,13 @@ public abstract class Fighter {
 					attackStrength = hitStrength[attack];
 					if(criticalAttack)
 						attackStrength *= 3;
-
+						
 					fighters[defense].addHp(- attackStrength);
 				}
 				else {
 					attackStrength = 0;
 				}
-				assert(attackStrength >= 0) : "attack strength should be positive (actual:" + attackStrength + ")";
+
 				result.addAttack(attack, attackStrength, touched, criticalAttack);
 			}
 
@@ -98,17 +95,7 @@ public abstract class Fighter {
 			defense = (defense + 1) % 2;
 		}
 
-		result.calculateExperienceWon();
-		this.addExperience(result.getExperienceWon()[0]);
-		assaulted.addExperience(result.getExperienceWon()[1]);
 		return result;
-	}
-
-	public int attackStrength(Fighter assaulted, boolean isPhysicalAttack) {
-		int strength = this.calculatePower() - assaulted.calculateDefense(isPhysicalAttack);
-		if (strength < 0)
-			return 0;
-		return strength;
 	}
 
 	/**
@@ -191,11 +178,10 @@ public abstract class Fighter {
 			return hitRate() - evade() > Math.random();
 		}
 	}
-
+	
 	public int calculateSpeed() {
 		return  speed;
 	}
-
 	/**
 	 * Calculate the number of hits, depending on the ennemy.
 	 * @param ennemy the ennemy
@@ -213,67 +199,6 @@ public abstract class Fighter {
 	 */
 	public short criticalRates() {
 		return (short)(skill / 2);
-	}
-
-
-	private int experiencePower() {
-		return level + classBonus; 
-	}
-
-	private int battleBasedExperience(Fighter ennemy) {
-		int diffPower = diffPower(ennemy);
-		int xp = (21 + diffPower) / 2;
-		return xp;
-	}
-
-	private int diffPower(Fighter ennemy) {
-		int diff = ennemy.experiencePower() - this.experiencePower();
-		if (diff < 0)
-			return 0;
-		return diff;
-	}
-
-	/**
-	 * Take bonus XP points depending on game level
-	 * @return a bonus XP points depending on game level 
-	 */
-	private int modeBonusExperience() {
-		return 20; //TODO: implements bonus XP depending on Game level mode (easy = 30, normal = 20, hard = 10)
-	}
-
-	/**
-	 * Take bonus XP points depending on game level when fighter kill a general
-	 * @return a bonus XP points depending on game level 
-	 */
-	private int bossBonusExperience() {
-		return 30; //TODO: implements bonus XP depending on Game level mode (easy = 40) 
-	}
-
-
-	public int experienceWon(FightResult fightResult) {
-		int experience = 0;
-		int fighterNum = fightResult.getFighterNumber(this);
-		int ennemyNum = (fighterNum + 1) % 2;
-		Fighter ennemy = fightResult.getFighters()[ennemyNum];
-		assert(fighterNum > -1 && fighterNum < 2);
-		assert(ennemyNum > -1 && ennemyNum < 2);
-		assert(fighterNum != ennemyNum);
-
-		if(this.isDead()) { // dead case
-			experience = 0;
-		}
-		else if(fightResult.getSumDamages(fighterNum) == 0)	//no take damage case:
-			experience = 1;
-		else if(ennemy.isDead()) { // kill case
-			experience = battleBasedExperience(ennemy) + diffPower(ennemy) + modeBonusExperience();
-			if(ennemy.isGeneral()) {
-				experience += bossBonusExperience();
-			}
-		}
-		else { // no kill but hit case
-			experience = battleBasedExperience(ennemy);
-		}
-		return experience;
 	}
 
 	public boolean isGeneral() {
@@ -430,30 +355,5 @@ public abstract class Fighter {
 
 	public void setTerrain(Terrain terrain) {
 		this.terrain = terrain;
-	}
-
-	public short getLevel() {
-		return level;
-	}
-
-	public short getExperience() {
-		return experience;
-	}
-
-	public void addExperience(int xp) {
-		experience += xp;
-		levelUp();
-	}
-	private void levelUp() {
-		int nbLevelUp = experience / 100;
-		for(int i = 0; i < nbLevelUp; i++) {
-			// TODO increment attributs points
-		}
-		level += nbLevelUp;
-		experience = (short) (experience % 100);
-	}
-
-	public short getClassBonus() {
-		return classBonus;
 	}
 }

@@ -5,7 +5,7 @@ public class Ranger extends Human {
 	@Override
 	protected void initializeStats() {
 		hp = hpMax = 18;
-		strength = 6;
+		strength = 3;
 		magic = 1;
 		skill = 3;
 		speed = 4;

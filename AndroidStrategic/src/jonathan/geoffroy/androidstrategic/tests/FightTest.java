@@ -221,8 +221,8 @@ public class FightTest {
 			assertTrue("Fighter missed attack should hit 0 pv", result.getTouched()[i][0] || result.getInflictedDamages()[i][0] == 0);
 			assertTrue("Fighter critical attack should hit 3 * strength", 
 					!result.getTouched()[i][0] || 
-					result.getCriticalDamages()[i][0] && result.getInflictedDamages()[i][0] == 3 * fighters[i].attackStrength(fighters[(i+1)%2], true) ||
-					!result.getCriticalDamages()[i][0] && result.getInflictedDamages()[i][0] == fighters[i].attackStrength(fighters[(i+1)%2], true)
+					result.getCriticalDamages()[i][0] && result.getInflictedDamages()[i][0] == 3 * (fighters[i].calculatePower() - fighters[(i+1)%2].calculateDefense(true)) ||
+					!result.getCriticalDamages()[i][0] && result.getInflictedDamages()[i][0] == fighters[i].calculatePower() - fighters[(i+1)%2].calculateDefense(true)
 					);
 			assertEquals("Fighter should not be dead", result.isDead(i), false);
 		}
