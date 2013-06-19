@@ -97,6 +97,8 @@ public class FightResult {
 
 	public int getSumDamages(int fighterNum) {
 		assert(fighterNum == 0 || fighterNum == 1);
+		assert(fighters[fighterNum] != null);
+		
 		int sum = 0;
 		for(int i = 0; i < hitNumber[fighterNum]; i++) {
 			assert(inflictedDamages[fighterNum][i] >= 0) : "inflicted damages should be > 0 (actual: " + inflictedDamages[fighterNum][i] + ")";

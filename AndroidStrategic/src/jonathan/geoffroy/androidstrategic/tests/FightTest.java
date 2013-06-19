@@ -28,12 +28,16 @@ import org.junit.Test;
 
 public class FightTest {
 	Fighter fighters[];
+	FightResult result;
 
 	@Before
 	public void preConditions() {
 		if(fighters != null) {
 			for(int i = 0; i < fighters.length; i++)
-				conditions(fighters[i]);
+				fightConditions(fighters[i]);
+			if(result != null) {
+				fightResultConditions();
+			}
 		}
 	}
 
@@ -41,16 +45,34 @@ public class FightTest {
 	public void postConditions() {
 		if(fighters != null) {
 			for(int i = 0; i < fighters.length; i++)
-				conditions(fighters[i]);
+				fightConditions(fighters[i]);
+		}
+		if(result != null) {
+			fightResultConditions();
 		}
 	}
 
-	public void conditions(Fighter f) {
+	public void fightConditions(Fighter f) {
 		assertTrue("hp should be least or equals than hpMax", f.getHp() <= f.getHpMax());
 		assertTrue("if hp <= 0,\n fighter should be dead", f.getHp() > 0 || f.isDead());
 		assertTrue("hp shouldn't be negative", f.getHp() >= 0);
 	}
 
+	private void fightResultConditions() {
+		assertEquals("a battle should have 2 fighters", result.getFighters().length, 2);
+		assertTrue("fighters shouldn't be null", result.getFighters()[0] != null && result.getFighters()[1] != null);
+		for(int i = 0; i < 2; i++) {
+			assertTrue("hit sum should be positive", result.getSumDamages(i) >= 0);
+			for(int j = 0; j < result.getNumberAttacks(i); j++)
+				assertTrue("each hit should be positive", result.getInflictedDamages()[i][j] >= 0);
+			
+			assertTrue("fighter should lost sum inflicted points (or hp = 0 if he's died)",
+					result.getSumDamages(i) == fighters[(i + 1) % 2].getHpMax() - fighters[(i + 1) % 2].getHp() ||
+					fighters[(i + 1) % 2].isDead() && fighters[(i + 1) % 2].getHp() == 0 
+					);
+			assertEquals("fighter.isDead() should be equals to result.isDead()", fighters[i].isDead(), result.isDead(i));
+		}
+	}
 
 	@Test
 	public void fighterInitialization() {
@@ -68,7 +90,7 @@ public class FightTest {
 				new Thief()
 		};
 		this.fighters = fightersArray;
-		
+
 		for(Fighter f: fighters) {
 			assertTrue(f.getName() + ": at initialization, hp should be > 0", f.getHp() > 0);
 			assertEquals(f.getName() + ": at initialization, hp should be equals hpMax", f.getHp(), f.getHpMax());
@@ -123,8 +145,6 @@ public class FightTest {
 			fighters[i].setTerrain(terrain);
 		}
 
-		FightResult result;
-
 		int nbTouched[] = new int[2];
 		for(int i = 0; i < 1000000; i++) {
 			fighters[0].setHp(fighters[0].getHpMax());
@@ -164,8 +184,6 @@ public class FightTest {
 			h.setEquiped(sword);
 		}
 
-		FightResult result;
-
 		int nbCritical[] = new int[2];
 		for(int i = 0; i < 500000; i++) {
 			fighters[0].setHp(fighters[0].getHpMax());
@@ -193,18 +211,9 @@ public class FightTest {
 
 	@Test
 	public void fight() {
-		Human fighters[] = new Human[2];
-		Sword sword = new Sword();
-		sword.setHitRate((short) 80);
-		Terrain terrain = new Grass();
-		terrain.setAvoid((short)0);
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-			fighters[i].setEquiped(sword);
-		}		
+		initializeRangers();
 
-		FightResult result = fighters[0].fight(fighters[1]);
+		result = fighters[0].fight(fighters[1]);
 
 		//Equals strength & speed case
 		for(int i = 0; i < 2; i++) {
@@ -219,22 +228,14 @@ public class FightTest {
 		}
 
 		//twice hitting case
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-			fighters[i].setEquiped(sword);
-		}
+		initializeRangers();
 		fighters[0].setSpeed((short) (fighters[0].getSpeed() + 3));
 		result = fighters[0].fight(fighters[1]);
 		assertEquals("Fighter should be hit twice", result.getNumberAttacks(0), 2);
 		assertEquals("Fighter should be hit only 1 time", result.getNumberAttacks(1), 1);
 
 		//Dead case
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-			fighters[i].setEquiped(sword);
-		}
+		initializeRangers();
 		fighters[0].setStrength((short)100);
 		result = fighters[0].fight(fighters[1]);
 		assertEquals("Fighter should be hit only 1 time", result.getNumberAttacks(0), 1);
@@ -242,90 +243,65 @@ public class FightTest {
 		assertEquals("Fighter should be dead", result.isDead(1), true);
 		assertEquals("Fighter should not be hit because is dead", result.getNumberAttacks(1), 0);
 	}
-	
-	
+
+
 	@Test
 	public void experience() {
-		Terrain terrain = new Grass();
-		terrain.setAvoid((short)0);
-		Sword sword = new Sword();
-		sword.setHitRate((short)(100)); //To hitRate = 100%
-		sword.setMight((short)5);
-		fighters = new Fighter[2];
-		Human h;
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-			h = (Human)fighters[i];
-			h.setEquiped(sword);
-		}		
-		FightResult result;
-		
+		initializeRangers();
+
 		//no touch case:
 		// TODO
-		
+
 		//doing no damage case:
-		fighters = new Fighter[2];
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-			h = (Human)fighters[i];
-			h.setEquiped(sword);
-		}
+		initializeRangers();
 		fighters[0].setStrength((short)1);
 		fighters[1].setDefense((short)100);
 		result = fighters[0].fight(fighters[1]);
 		assertEquals("fighter who take no damage should receive only 1 exp", result.getExperienceWon()[0], 1);
 		assertTrue("fighter who take damages should receive more than 1 exp", result.getExperienceWon()[1] > 1);
-	
+
 		//doing damage case:
-		fighters = new Fighter[2];
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-		}
+		initializeRangers();
 		result = fighters[0].fight(fighters[1]);
-		
+
 		//kill ennemy case:
-		fighters = new Fighter[2];
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-			h = (Human)fighters[i];
-			h.setEquiped(sword);
-		}
-		
+		initializeRangers();
+
 		int xp = fighters[0].fight(fighters[1]).getExperienceWon()[0]; //First battle where nobody's died
-		
+
 		fighters[0].setStrength((short)100);
 		result = fighters[0].fight(fighters[1]); // second battle where assaulted died
-		
+
 		assertTrue("fighter should be dead", fighters[1].isDead());
 		assertTrue("fighter who kill ennemy should be receive more experience", result.getExperienceWon()[0] > xp);
-		
+		assertEquals("fighter who's died should be receive no experience", result.getExperienceWon()[1], 0);
+
 		//kill  boss case:
-		fighters = new Fighter[2];
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-			h = (Human)fighters[i];
-			h.setEquiped(sword);
-		}
+		initializeRangers();
 		fighters[0].setStrength((short)100);
 		xp = fighters[0].fight(fighters[1]).getExperienceWon()[0];
-		
-		fighters = new Fighter[2];
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-			h = (Human)fighters[i];
-			h.setEquiped(sword);
-		}
+
+		initializeRangers();
 		fighters[0].setStrength((short)100);
 		fighters[1].setGeneral(true);
 		result = fighters[0].fight(fighters[1]);
-		
+
 		assertTrue("fighter should be dead", fighters[1].isDead());
 		assertTrue("fighter who kill boss should be receive more experience", result.getExperienceWon()[0] > xp);
+	}
+
+	private void initializeRangers() {
+		fighters = new Fighter[2];
+		Human h;
+		Terrain terrain = new Grass();
+		Sword sword = new Sword();
+		sword.setMight((short)10);
+		sword.setHitRate((short)100);
+		for(int i = 0; i < 2; i++) {
+			fighters[i] = new Ranger();
+			fighters[i].setTerrain(terrain);
+			h = (Human)fighters[i];
+			h.setEquiped(sword);
+		}
 	}
 }
