@@ -268,7 +268,7 @@ public class FightTest {
 		initializeRangers();
 
 		int xp = fighters[0].fight(fighters[1]).getExperienceWon()[0]; //First battle where nobody's died
-
+		initializeRangers();
 		fighters[0].setStrength((short)100);
 		result = fighters[0].fight(fighters[1]); // second battle where assaulted died
 
@@ -289,6 +289,29 @@ public class FightTest {
 		assertTrue("fighter should be dead", fighters[1].isDead());
 		assertTrue("fighter who kill boss should be receive more experience", result.getExperienceWon()[0] > xp);
 	}
+	
+	@Test
+	public void level() {
+		initializeRangers();
+		assertEquals("at initialization, fighter should be level 1", 1, fighters[0].getLevel());
+		
+		fighters[0].addExperience(100);
+		assertEquals("fighter should be level 2", 2, fighters[0].getLevel());
+		assertEquals("fighter's xp should be reduce to 0", 0, fighters[0].getExperience());
+		
+		initializeRangers();
+		fighters[0].addExperience(50);
+		assertEquals("fighter should be level 1", 1, fighters[0].getLevel());
+		assertEquals("fighter's xp should be 50", 50, fighters[0].getExperience());
+		fighters[0].addExperience(80);
+		assertEquals("fighter should be level 2", 2, fighters[0].getLevel());
+		assertEquals("fighter's xp should be 30", 30, fighters[0].getExperience());
+		
+		initializeRangers();
+		fighters[0].addExperience(350);
+		assertEquals("fighter should be level 4", 4, fighters[0].getLevel());
+		assertEquals("fighter's xp should be 50", 50, fighters[0].getExperience());
+	}
 
 	private void initializeRangers() {
 		fighters = new Fighter[2];
@@ -296,7 +319,7 @@ public class FightTest {
 		Terrain terrain = new Grass();
 		Sword sword = new Sword();
 		sword.setMight((short)10);
-		sword.setHitRate((short)100);
+		sword.setHitRate((short)150);
 		for(int i = 0; i < 2; i++) {
 			fighters[i] = new Ranger();
 			fighters[i].setTerrain(terrain);

@@ -28,11 +28,13 @@ public abstract class Fighter {
 
 	public Fighter() {
 		setName(defaultName());
+		level = 1;
 		initializeStats();
 	}
 
 	public Fighter(String name) {
 		this.setName(name);
+		level = 1;
 		initializeStats();
 	}
 
