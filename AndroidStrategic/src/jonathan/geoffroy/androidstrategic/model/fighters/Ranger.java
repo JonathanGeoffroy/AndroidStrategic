@@ -4,16 +4,17 @@ public class Ranger extends Human {
 
 	@Override
 	protected void initializeStats() {
-		hp = hpMax = 18;
-		strength = 6;
-		magic = 1;
-		skill = 3;
-		speed = 4;
-		luck = 6;
-		defense = 5;
-		resistance = 0;
-		movement = movementMax = 6;
-		constitution = 9;
+		super.initializeStats();
+		hp = attributes[HPMAX] = 18;
+		attributes[STRENGTH] = 6;
+		attributes[MAGIC] = 1;
+		attributes[SKILL] = 3;
+		attributes[SPEED] = 4;
+		attributes[LUCK] = 6;
+		attributes[DEFENSE] = 5;
+		attributes[RESISTANCE] = 0;
+		movement = attributes[MOVEMENTMAX] = 6;
+		attributes[CONSTITUTION] = 9;
 		weight = 9;
 		
 		swordClass = 1;

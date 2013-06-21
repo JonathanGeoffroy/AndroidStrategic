@@ -4,17 +4,18 @@ public class Priest extends Human {
 
 	@Override
 	protected void initializeStats() {
-		hp = hpMax = 18;
-		strength = 0;
-		magic = 3;
-		skill = 3;
-		speed = 3;
-		luck = 8;
-		defense = 1;
-		resistance = 8;
-		constitution = 9;
+		super.initializeStats();
+		hp = attributes[HPMAX] = 18;
+		attributes[STRENGTH] = 0;
+		attributes[MAGIC] = 3;
+		attributes[SKILL] = 3;
+		attributes[SPEED] = 3;
+		attributes[LUCK] = 8;
+		attributes[DEFENSE] = 1;
+		attributes[RESISTANCE] = 8;
+		attributes[CONSTITUTION] = 9;
 		weight = 9;
-		movement = movementMax = 5;
+		movement = attributes[MOVEMENTMAX] = 5;
 		
 		scepterClass = 1;
 	}

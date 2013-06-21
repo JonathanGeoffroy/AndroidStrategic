@@ -4,16 +4,17 @@ public class Thief extends Human {
 
 	@Override
 	protected void initializeStats() {
-		hp = hpMax = 16;
-		strength = 4;
-		magic = 0;
-		skill = 2;
-		speed = 9;
-		luck = 5;
-		defense = 2;
-		resistance = 0;
-		movement = movementMax = 7;
-		constitution = 9;
+		super.initializeStats();
+		hp = attributes[HPMAX] = 16;
+		attributes[STRENGTH] = 4;
+		attributes[MAGIC] = 0;
+		attributes[SKILL] = 2;
+		attributes[SPEED] = 9;
+		attributes[LUCK] = 5;
+		attributes[DEFENSE] = 2;
+		attributes[RESISTANCE] = 0;
+		movement = attributes[MOVEMENTMAX] = 7;
+		attributes[CONSTITUTION] = 9;
 		weight = 9;
 		
 		knifeClass = 1;

@@ -45,7 +45,7 @@ public abstract class Human extends Fighter {
 		int speed = super.calculateSpeed();
 		int weaponSpeed = 0;
 		if(equiped != null) {
-			weaponSpeed = equiped.getWeight() - strength;
+			weaponSpeed = equiped.getWeight() - attributes[STRENGTH];
 			if(weaponSpeed < 0)
 				weaponSpeed = 0;
 		}

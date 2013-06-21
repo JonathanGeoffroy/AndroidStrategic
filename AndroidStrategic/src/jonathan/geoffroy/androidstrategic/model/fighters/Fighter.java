@@ -4,22 +4,14 @@ import jonathan.geoffroy.androidstrategic.model.items.bags.FighterBag;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 
 public abstract class Fighter {
+	public int HPMAX = 0, CONSTITUTION = 1, DEFENSE = 2, RESISTANCE = 3, STRENGTH = 4, MAGIC = 5, SPEED = 6, MOVEMENTMAX = 7, LUCK = 8, SKILL = 9;
+	protected short attributes[];
 	private String name;
 	protected short level;
 	protected short experience;
 	protected short hp;
-	protected short hpMax;
-	protected short constitution;
-	protected short defense;
-	protected short resistance;
-	protected short strength;
-	protected short magic;
-	protected short speed;
 	protected short aid;
 	protected short movement;
-	protected short movementMax;
-	protected short luck;
-	protected short skill;
 	protected short weight;
 	protected short classBonus;
 	private boolean general;
@@ -28,20 +20,21 @@ public abstract class Fighter {
 
 	public Fighter() {
 		setName(defaultName());
-		level = 1;
 		initializeStats();
 	}
 
 	public Fighter(String name) {
 		this.setName(name);
-		level = 1;
 		initializeStats();
 	}
 
 	/**
 	 * Permit to initialize stat for Fighter  
 	 */
-	protected abstract void initializeStats();
+	protected void initializeStats() {
+		level = 1;
+		attributes = new short[10];
+	}
 	protected abstract String defaultName();
 
 	/**
@@ -119,8 +112,8 @@ public abstract class Fighter {
 	 */
 	public int calculatePower() {
 		if(isPhysicalAttack())
-			return strength;
-		return magic;
+			return attributes[STRENGTH];
+		return attributes[LUCK];
 	}
 
 	protected boolean isPhysicalAttack() {
@@ -133,8 +126,8 @@ public abstract class Fighter {
 	 */
 	public int calculateDefense(boolean isPhysicalAttack) {
 		if(isPhysicalAttack)
-			return defense;
-		return resistance;
+			return getDefense();
+		return getResistance();
 	}
 
 	/** 
@@ -142,7 +135,7 @@ public abstract class Fighter {
 	 * @return the hit rate
 	 */
 	public int hitRate() {
-		return skill * 2 + luck;
+		return getSkill() * 2 + getLuck();
 	}
 
 	/**
@@ -150,7 +143,7 @@ public abstract class Fighter {
 	 * @return a rate of evade for a non critical attack
 	 */
 	public int evade() {
-		return speed * 2 + luck + terrain.getAvoid();
+		return attributes[SPEED]* 2 + attributes[LUCK] + terrain.getAvoid();
 	}
 
 	/**
@@ -170,7 +163,7 @@ public abstract class Fighter {
 	 * @return a rate of evade for a critical attack
 	 */
 	public int criticalEvade() {
-		return luck;
+		return attributes[LUCK];
 	}
 	/**
 	 * Calculate the real accuracy of the fighter, depending on the ennemy.
@@ -195,7 +188,7 @@ public abstract class Fighter {
 	}
 
 	public int calculateSpeed() {
-		return  speed;
+		return  attributes[SPEED];
 	}
 
 	/**
@@ -204,7 +197,7 @@ public abstract class Fighter {
 	 * @return 2 if fighter.speed > ennemy.speed + 3, else 1
 	 */
 	public int hitNumber(Fighter ennemy) {
-		if(speed >= ennemy.speed + 3)
+		if(attributes[SPEED] >= ennemy.attributes[SPEED] + 3)
 			return 2;
 		return 1;
 	}
@@ -214,7 +207,7 @@ public abstract class Fighter {
 	 * @return a % of chance to do a critical hit
 	 */
 	public short criticalRates() {
-		return (short)(skill / 2);
+		return (short)(attributes[SKILL] / 2);
 	}
 
 
@@ -298,64 +291,64 @@ public abstract class Fighter {
 		hp += hpAdded;
 		if(hp < 0)
 			hp = 0;
-		else if (hp > hpMax)
-			hp = hpMax;
+		else if (hp > attributes[HPMAX])
+			hp = attributes[HPMAX];
 	}
 
 	public short getHpMax() {
-		return hpMax;
+		return attributes[HPMAX];
 	}
 
 	public void setHpMax(short hpMax) {
-		this.hpMax = hpMax;
+		attributes[HPMAX ]= hpMax;
 	}
 
 	public short getConstitution() {
-		return constitution;
+		return attributes[CONSTITUTION];
 	}
 
 	public void setConstitution(short constitution) {
-		this.constitution = constitution;
+		attributes[CONSTITUTION] = constitution;
 	}
 
 	public short getDefense() {
-		return defense;
+		return attributes[DEFENSE];
 	}
 
 	public void setDefense(short defense) {
-		this.defense = defense;
+		attributes[DEFENSE] = defense;
 	}
 
 	public short getResistance() {
-		return resistance;
+		return attributes[RESISTANCE];
 	}
 
 	public void setResistance(short resistance) {
-		this.resistance = resistance;
+		attributes[RESISTANCE] = resistance;
 	}
 
 	public short getStrength() {
-		return strength;
+		return attributes[STRENGTH];
 	}
 
 	public void setStrength(short strength) {
-		this.strength = strength;
+		attributes[STRENGTH] = strength;
 	}
 
 	public short getMagic() {
-		return magic;
+		return attributes[MAGIC];
 	}
 
 	public void setMagic(short magic) {
-		this.magic = magic;
+		attributes[MAGIC] = magic;
 	}
 
 	public short getSpeed() {
-		return speed;
+		return attributes[SPEED];
 	}
 
 	public void setSpeed(short speed) {
-		this.speed = speed;
+		attributes[SPEED] = speed;
 	}
 
 	public short getAid() {
@@ -375,19 +368,19 @@ public abstract class Fighter {
 	}
 
 	public short getMovementMax() {
-		return movementMax;
+		return attributes[MOVEMENTMAX];
 	}
 
 	public void setMovementMax(short movementMax) {
-		this.movementMax = movementMax;
+		attributes[MOVEMENTMAX] = movementMax;
 	}
 
 	public short getLuck() {
-		return luck;
+		return attributes[LUCK];
 	}
 
 	public void setLuck(short luck) {
-		this.luck = luck;
+		attributes[LUCK] = luck;
 	}
 
 	public short getWeight() {
@@ -419,11 +412,11 @@ public abstract class Fighter {
 	}
 
 	public short getSkill() {
-		return skill;
+		return attributes[SKILL];
 	}
 
 	public void setSkill(short skill) {
-		this.skill = skill;
+		attributes[SKILL] = skill;
 	}
 
 	public Terrain getTerrain() {

@@ -4,15 +4,16 @@ public class Archer extends Human {
 
 	@Override
 	protected void initializeStats() {
-		hp = hpMax = 18;
-		strength = 3;
-		speed = 3;
-		skill = 6;
-		defense = 4;
-		luck = 0;
-		resistance = 0;
-		movement = movementMax = 1;
-		constitution = 9;
+		super.initializeStats();
+		hp = attributes[HPMAX] = 18;
+		attributes[STRENGTH] = 3;
+		attributes[SPEED] = 3;
+		attributes[SKILL] = 6;
+		attributes[DEFENSE] = 4;
+		attributes[LUCK] = 0;
+		attributes[RESISTANCE] = 0;
+		movement = attributes[MOVEMENTMAX] = 1;
+		attributes[CONSTITUTION] = 9;
 		weight = 9;
 		
 		bowClass = 1;

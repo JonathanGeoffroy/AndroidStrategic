@@ -4,17 +4,18 @@ public class Axman extends Human {
 
 	@Override
 	protected void initializeStats() {
-		hp = hpMax = 24;
-		strength = 5;
-		skill = 3;
-		magic = 0;
-		speed = 3;
-		luck = 0;
-		defense = 3;
-		resistance = 2;
-		constitution = 12;
+		super.initializeStats();
+		hp = attributes[HPMAX] = 24;
+		attributes[STRENGTH] = 5;
+		attributes[SKILL] = 3;
+		attributes[MAGIC] = 0;
+		attributes[SPEED] = 3;
+		attributes[LUCK] = 0;
+		attributes[DEFENSE] = 3;
+		attributes[RESISTANCE] = 2;
+		attributes[CONSTITUTION] = 12;
 		weight = 12;
-		movementMax = movement = 6;
+		movement = attributes[MOVEMENTMAX] = 6;
 		
 		axClass = 1;
 	}

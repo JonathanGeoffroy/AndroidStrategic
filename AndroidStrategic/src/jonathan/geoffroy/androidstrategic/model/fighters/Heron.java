@@ -4,13 +4,14 @@ public class Heron extends Laguz implements Flying {
 
 	@Override
 	protected void initializeStats() {
-		hp = hpMax = 18;
-		strength = 0;
-		magic = 5;
-		luck = 5;
-		resistance = 20;
-		movement = movementMax = 5;
-		constitution = 10;
+		super.initializeStats();
+		hp = attributes[HPMAX] = 18;
+		attributes[STRENGTH] = 0;
+		attributes[MAGIC] = 5;
+		attributes[LUCK] = 5;
+		attributes[RESISTANCE] = 20;
+		movement = attributes[MOVEMENTMAX] = 5;
+		attributes[CONSTITUTION] = 10;
 		weight = 10;
 		transStrength = 1;
 		transMovement = 1;
@@ -21,13 +22,13 @@ public class Heron extends Laguz implements Flying {
 		transWeight = 2;
 		
 		if(male) {
-			speed = 7;
-			defense = 2;
+			attributes[SPEED] = 7;
+			attributes[DEFENSE] = 2;
 			transConstitution = 8;
 		}
 		else {
-			speed = 8;
-			defense = 1;
+			attributes[SPEED] = 8;
+			attributes[DEFENSE] = 1;
 			transConstitution = 5;
 		}
 	}

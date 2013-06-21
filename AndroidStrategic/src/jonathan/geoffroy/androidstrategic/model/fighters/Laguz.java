@@ -12,35 +12,36 @@ public abstract class Laguz extends Fighter {
 	protected short transSpeed;
 	protected short transWeight;
 	protected short transMovement;
+
 	@Override
 	public short getConstitution() {
-		if(transformed) return (short)(constitution + transConstitution);
-		else return constitution;
+		if(transformed) return (short)(attributes[CONSTITUTION] + transConstitution);
+		else return attributes[CONSTITUTION];
 	}
 	@Override
 	public short getDefense() {
-		if(transformed) return (short)(defense + transDefense);
-		else return defense;
+		if(transformed) return (short)(attributes[DEFENSE]+ transDefense);
+		else return attributes[DEFENSE];
 	}
 	@Override
 	public short getResistance() {
-		if(transformed) return (short)(resistance + transResistance);
-		else return resistance;
+		if(transformed) return (short)(attributes[RESISTANCE]+ transResistance);
+		else return attributes[RESISTANCE];
 	}
 	@Override
 	public short getStrength() {
-		if(transformed) return (short)(strength + transStrength);
-		else return strength;
+		if(transformed) return (short)(attributes[STRENGTH] + transStrength);
+		else return attributes[STRENGTH];
 	}
 	@Override
 	public short getMagic() {
-		if(transformed) return (short)(magic + transMagic);
-		else return magic;
+		if(transformed) return (short)(attributes[MAGIC] + transMagic);
+		else return attributes[MAGIC];
 	}
 	@Override
 	public short getSpeed() {
-		if(transformed) return (short)(magic+ transMagic);
-		else return magic;
+		if(transformed) return (short)(attributes[SPEED] + transMagic);
+		else return attributes[SPEED];
 	}
 	@Override
 	public short getWeight() {
@@ -50,9 +51,7 @@ public abstract class Laguz extends Fighter {
 
 	@Override
 	public short getMovementMax() {
-		if(transformed) return (short)(movementMax + transMovement);
-		else return movementMax;
+		if(transformed) return (short)(attributes[MOVEMENTMAX] + transMovement);
+		else return attributes[MOVEMENTMAX];
 	}
-	
-	
 }
