@@ -6,6 +6,7 @@ import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 public abstract class Fighter {
 	public int HPMAX = 0, CONSTITUTION = 1, DEFENSE = 2, RESISTANCE = 3, STRENGTH = 4, MAGIC = 5, SPEED = 6, MOVEMENTMAX = 7, LUCK = 8, SKILL = 9;
 	protected short attributes[];
+	protected short levelUpRate[];
 	private String name;
 	protected short level;
 	protected short experience;
@@ -34,9 +35,15 @@ public abstract class Fighter {
 	protected void initializeStats() {
 		level = 1;
 		attributes = new short[10];
+		levelUpRate = new short[10];
+		for(int i = 0; i < levelUpRate.length; i++) {
+			levelUpRate[i] = 20;
+		}
 	}
 	protected abstract String defaultName();
 
+protected void afterAttacked() {}
+	
 	/**
 	 * 
 	 * @param adv
@@ -96,6 +103,7 @@ public abstract class Fighter {
 		result.calculateExperienceWon();
 		this.addExperience(result.getExperienceWon()[0]);
 		assaulted.addExperience(result.getExperienceWon()[1]);
+		assaulted.afterAttacked();
 		return result;
 	}
 
@@ -435,20 +443,45 @@ public abstract class Fighter {
 		return experience;
 	}
 
-	public void addExperience(int xp) {
+	public short[] addExperience(int xp) {
 		experience += xp;
-		levelUp();
+		return levelUp();
 	}
-	private void levelUp() {
+	private short[] levelUp() {
 		int nbLevelUp = experience / 100;
+		short[] result = new short[10];
+		int random;
 		for(int i = 0; i < nbLevelUp; i++) {
-			// TODO increment attributs points
+			for(int j = 0; j < levelUpRate.length; j++) {
+				random = (int)(Math.random() * 100);
+				if(levelUpRate[j] >= random) {
+					result[j]++;
+					attributes[j]++;
+				}
+			}
 		}
 		level += nbLevelUp;
 		experience = (short) (experience % 100);
+		return result;
 	}
 
 	public short getClassBonus() {
 		return classBonus;
+	}
+
+	public short[] getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(short[] attributes) {
+		this.attributes = attributes;
+	}
+
+	public short[] getLevelUpRate() {
+		return levelUpRate;
+	}
+
+	public void setLevelUpRate(short[] levelUpRate) {
+		this.levelUpRate = levelUpRate;
 	}
 }

@@ -9,12 +9,14 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.fighters.Hawk;
 import jonathan.geoffroy.androidstrategic.model.fighters.Heron;
 import jonathan.geoffroy.androidstrategic.model.fighters.Human;
+import jonathan.geoffroy.androidstrategic.model.fighters.Laguz;
 import jonathan.geoffroy.androidstrategic.model.fighters.Lion;
 import jonathan.geoffroy.androidstrategic.model.fighters.Mage;
 import jonathan.geoffroy.androidstrategic.model.fighters.Priest;
 import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
 import jonathan.geoffroy.androidstrategic.model.fighters.Ranger;
 import jonathan.geoffroy.androidstrategic.model.fighters.Thief;
+import jonathan.geoffroy.androidstrategic.model.fighters.TransformNotPossibleException;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Bow;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Sword;
 import jonathan.geoffroy.androidstrategic.model.mapping.Desert;
@@ -25,6 +27,7 @@ import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class FightTest {
 	Fighter fighters[];
@@ -65,7 +68,7 @@ public class FightTest {
 			assertTrue("hit sum should be positive", result.getSumDamages(i) >= 0);
 			for(int j = 0; j < result.getNumberAttacks(i); j++)
 				assertTrue("each hit should be positive", result.getInflictedDamages()[i][j] >= 0);
-			
+
 			assertTrue("fighter should lost sum inflicted points (or hp = 0 if he's died)",
 					result.getSumDamages(i) == fighters[(i + 1) % 2].getHpMax() - fighters[(i + 1) % 2].getHp() ||
 					fighters[(i + 1) % 2].isDead() && fighters[(i + 1) % 2].getHp() == 0 
@@ -137,18 +140,11 @@ public class FightTest {
 
 	@Test
 	public void touchedRate() {
-		fighters = new Fighter[2];
-		Terrain terrain = new Grass();
-		terrain.setAvoid((short)0);
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-		}
+		initializeRangers();
 
 		int nbTouched[] = new int[2];
 		for(int i = 0; i < 1000000; i++) {
-			fighters[0].setHp(fighters[0].getHpMax());
-			fighters[1].setHp(fighters[1].getHpMax());
+			initializeRangers();
 			result = fighters[0].fight(fighters[1]);
 			for(int j = 0; j < 2; j++) {
 				if(result.getTouched()[j][0]) {
@@ -156,16 +152,15 @@ public class FightTest {
 				}
 			}
 		}
-
-		assertTrue("Both fighters should do critical hits at the same frequence",
-				nbTouched[0] >= nbTouched[1] - 200 &&
-				nbTouched[0] <= nbTouched[1] + 200
+		assertTrue("Both fighters should hit at the same frequence",
+				nbTouched[0] >= nbTouched[1] - 500 &&
+				nbTouched[0] <= nbTouched[1] + 500
 				);
 
 		for(int i = 0; i < 2; i++) {
-			assertTrue("fighter critical frequence should follow his critical rates",
-					nbTouched[i] >= fighters[i].hitRate() - 100 &&
-					nbTouched[i] >= fighters[i].hitRate() - 100
+			assertTrue("fighter critical frequence should follow his touched rates",
+					nbTouched[i] >= (fighters[i].hitRate() * 1000000 / 100) - 200 &&
+					nbTouched[i] <= (fighters[i].hitRate() * 1000000 / 100) + 200 
 					);
 		}
 	}
@@ -186,8 +181,9 @@ public class FightTest {
 
 		int nbCritical[] = new int[2];
 		for(int i = 0; i < 500000; i++) {
-			fighters[0].setHp(fighters[0].getHpMax());
-			fighters[1].setHp(fighters[1].getHpMax());
+			initializeRangers();
+			//			fighters[0].setHp(fighters[0].getHpMax());
+			//			fighters[1].setHp(fighters[1].getHpMax());
 			result = fighters[0].fight(fighters[1]);
 			for(int j = 0; j < 2; j++) {
 				if(result.getCriticalDamages()[j][0]) {
@@ -201,10 +197,11 @@ public class FightTest {
 				nbCritical[0] <= nbCritical[1] + 500
 				);
 
+		initializeRangers();
 		for(int i = 0; i < 2; i++) {
 			assertTrue("fighter critical frequence should follow his critical rates",
-					nbCritical[i] >= fighters[i].criticalRates() - 100 &&
-					nbCritical[i] >= fighters[i].criticalRates() - 100
+					nbCritical[i] >= (fighters[i].criticalRates() * 500000 / 100) - 100 &&
+					nbCritical[i] <= (fighters[i].criticalRates() * 500000 / 100) + 100
 					);
 		}
 	}
@@ -289,28 +286,51 @@ public class FightTest {
 		assertTrue("fighter should be dead", fighters[1].isDead());
 		assertTrue("fighter who kill boss should be receive more experience", result.getExperienceWon()[0] > xp);
 	}
-	
+
 	@Test
 	public void level() {
+		short[] results;
 		initializeRangers();
 		assertEquals("at initialization, fighter should be level 1", 1, fighters[0].getLevel());
-		
+
 		fighters[0].addExperience(100);
 		assertEquals("fighter should be level 2", 2, fighters[0].getLevel());
 		assertEquals("fighter's xp should be reduce to 0", 0, fighters[0].getExperience());
-		
+
 		initializeRangers();
-		fighters[0].addExperience(50);
+		results = fighters[0].addExperience(50);
 		assertEquals("fighter should be level 1", 1, fighters[0].getLevel());
 		assertEquals("fighter's xp should be 50", 50, fighters[0].getExperience());
+		for(int i = 0; i < results.length; i++) {
+			assertEquals("fighter's attributes shouln't upgrade", 0, results[i]);
+		}
+
 		fighters[0].addExperience(80);
 		assertEquals("fighter should be level 2", 2, fighters[0].getLevel());
 		assertEquals("fighter's xp should be 30", 30, fighters[0].getExperience());
-		
+
 		initializeRangers();
 		fighters[0].addExperience(350);
 		assertEquals("fighter should be level 4", 4, fighters[0].getLevel());
 		assertEquals("fighter's xp should be 50", 50, fighters[0].getExperience());
+
+		//Rate test
+		int[] sumResults = new int[10];
+		for(int i = 0; i < 500000; i++) {
+			initializeRangers();
+			results = fighters[0].addExperience(100);
+			assertEquals("should level up", 2, fighters[0].getLevel());
+			for(int j = 0; j < results.length; j++) {
+				sumResults[j] += results[j];
+			}
+		}
+
+		for(int j = 0; j < results.length; j++) {
+			assertTrue("attributes should be upgrade", 
+					sumResults[j] > 500000 * (fighters[0].getLevelUpRate()[j] / 100) - 200 &&
+					sumResults[j] > 500000 * (fighters[0].getLevelUpRate()[j] / 100) + 200
+					);
+		}
 	}
 
 	private void initializeRangers() {
@@ -325,6 +345,89 @@ public class FightTest {
 			fighters[i].setTerrain(terrain);
 			h = (Human)fighters[i];
 			h.setEquiped(sword);
+		}
+	}
+
+
+	@Test
+	public void laguz() {
+		Lion lion;
+		initializeLaguz();
+		lion = (Lion) fighters[0];
+
+		// initialization
+		assertFalse("at initialization, laguz shouldn't be transformed", lion.isTransformed());
+		assertEquals("at intialization, laguz should have 0 transform points", 0, lion.getTransform());
+		assertFalse("a initialization, laguz should can't transform", lion.canTransform());
+
+		// transform < 30
+		ExpectedException exception = ExpectedException.none();
+		initializeLaguz();
+		lion = (Lion) fighters[0];
+		lion.setTransform((short) 25);
+		assertFalse("laguz shouldn't be transformed", lion.isTransformed());
+		assertFalse("laguz should can't transform", lion.canTransform());
+		
+		lion.setTransform((short) 25);
+		exception.expect(TransformNotPossibleException.class);
+		try {
+			lion.transform();
+		} catch (TransformNotPossibleException e1) {}
+		
+		// transform = 30
+		initializeLaguz();
+		lion = (Lion) fighters[0];
+		lion.setTransform((short) 30);
+		assertFalse("laguz shouldn't be transformed", lion.isTransformed());
+		assertTrue("laguz should can transform", lion.canTransform());
+
+		// transformation
+		initializeLaguz();
+		lion = (Lion) fighters[0];
+		lion.setTransform((short) 30);
+		try {
+			lion.transform();
+		} catch (TransformNotPossibleException e) {	}
+		assertTrue("laguz should be transformed", lion.isTransformed());
+		assertFalse("laguz shouldn't can transform", lion.canTransform());
+
+		// untransformed Fight
+		initializeLaguz();
+		lion = (Lion) fighters[0];
+		Lion lion2 = (Lion)fighters[1];
+		fighters[0].fight(fighters[1]);
+		assertFalse("laguz shouldn't be transformed", lion.isTransformed());
+		assertFalse("laguz shouldn't can transform", lion.canTransform());
+		assertEquals("laguz transform points should increase after each attack", Laguz.TRANFORM_POINTS_ON_ATTACK, lion2.getTransform());
+
+		// transformed Fight
+		initializeLaguz();
+		lion = (Lion) fighters[0];
+		lion.setTransform((short)30);
+		lion2 = (Lion) fighters[1];
+		lion2.setTransform((short) 30);
+		try {
+			lion.transform();
+			lion2.transform();
+		} catch (TransformNotPossibleException e) {	}
+		lion.setTransform(Laguz.TRANFORM_POINTS_ON_ATTACK);
+		
+		assertTrue("laguz should be transformed", lion.isTransformed());
+		assertFalse("laguz shouldn't can transform", lion.canTransform());
+		lion.fight(lion2);
+		assertEquals("laguz transform points should decrease after each assault", 0, lion.getTransform());
+		assertEquals("laguz transform points should decrease after each attack", 30 - Laguz.TRANFORM_POINTS_ON_ATTACK, lion2.getTransform());
+		assertFalse("laguz who have decrease his transfom points to 0 should be unstransformed", lion.isTransformed());
+		assertFalse("laguz who have more at least 1 transform points shouldn't unstranformed", lion.isTransformed());
+		
+	}
+
+	private void initializeLaguz() {
+		Terrain terrain = new Grass();
+		fighters = new Laguz[2];
+		for(int i = 0; i < 2; i++) {
+			fighters[i] = new Lion();
+			fighters[i].setTerrain(terrain);
 		}
 	}
 }
