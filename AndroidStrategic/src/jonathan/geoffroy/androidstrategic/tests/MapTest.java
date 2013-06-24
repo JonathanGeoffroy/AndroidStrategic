@@ -6,8 +6,10 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
 import jonathan.geoffroy.androidstrategic.model.fighters.Human;
 import jonathan.geoffroy.androidstrategic.model.fighters.Ranger;
+import jonathan.geoffroy.androidstrategic.model.items.weapons.Bow;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Sword;
 import jonathan.geoffroy.androidstrategic.model.mapping.ClosedDoor;
 import jonathan.geoffroy.androidstrategic.model.mapping.Desert;
@@ -83,7 +85,40 @@ public class MapTest extends Map {
 	@Test
 	public void range() {
 		fighterInitialization();
-		fail("not implemented yet");
+		try {
+			map = Map.load("Test", 2);
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+		
+		map.addFighter(fighters[0], 0, 0);
+		map.addFighter(fighters[1], 1, 0);
+		assertTrue("fighter 1 should can hit fighter 2", map.canHit(fighters[0], fighters[1]));
+		
+		map.moveFighter(fighters[1], 2, 0);
+		assertFalse("fighter 1 shouldn't can hit fighter 2", map.canHit(fighters[0], fighters[1]));
+		map.rmFighter(fighters[1]);
+		fighters[1] = new Archer();
+		fighters[1].setEquiped(new Bow());
+		map.addFighter(fighters[1], 2, 0);
+		assertTrue("Archer should can hit Ranger", map.canHit(fighters[1], fighters[0]));
+		assertFalse("Ranger shouldn't can hit Archer", map.canHit(fighters[0], fighters[1]));
+
+		map.moveFighter(fighters[1], 0, 2);
+		assertTrue("Archer should can hit Ranger", map.canHit(fighters[1], fighters[0]));
+		assertFalse("Ranger shouldn't can hit Archer", map.canHit(fighters[0], fighters[1]));
+
+		map.moveFighter(fighters[1], 1, 1);
+		assertTrue("Archer should can hit Ranger", map.canHit(fighters[1], fighters[0]));
+		assertFalse("Ranger shouldn't can hit Archer", map.canHit(fighters[0], fighters[1]));
+		
+		map.moveFighter(fighters[1], 2, 1);
+		assertFalse("Archer shouldn't can hit Ranger", map.canHit(fighters[1], fighters[0]));
+		assertFalse("Ranger shouldn't can hit Archer", map.canHit(fighters[0], fighters[1]));
+		
+		map.moveFighter(fighters[1], 0, 1);
+		assertFalse("Archer shouldn't can hit Ranger", map.canHit(fighters[1], fighters[0]));
+		assertTrue("Ranger should can hit Archer", map.canHit(fighters[0], fighters[1]));
 	}
 
 	private void fighterInitialization() {
@@ -93,5 +128,4 @@ public class MapTest extends Map {
 			fighters[i].setEquiped(new Sword());
 		}
 	}
-
 }

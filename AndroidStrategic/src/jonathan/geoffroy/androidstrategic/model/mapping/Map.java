@@ -85,6 +85,25 @@ public class Map {
 		}
 	}
 
+	/**
+	 * test if attacker can hit defender, depending on they own Terrain, and the attacker's range
+	 * @param attacker Fighter who attack defender
+	 * @param defender Fighter assaulted
+	 * @return TRUE if attacker can hit defender, depending on they own Terrain, and the attacker's range 
+	 */
+	public boolean canHit(Fighter attacker, Fighter defender) {
+		assert(fighters.containsKey(attacker));
+		assert(fighters.containsKey(defender));
+		
+		Coord2D coordAttacker = fighters.get(attacker);
+		Coord2D coordDefender = fighters.get(defender);
+		int attackerMinRange = attacker.minRange();
+		int attackerMaxRange = attacker.maxRange();
+		
+		int manhattanDistance = Math.abs(coordAttacker.x - coordDefender.x) + Math.abs(coordAttacker.y - coordDefender.y);
+		return attackerMinRange >= manhattanDistance && attackerMaxRange <= manhattanDistance;
+	}
+	
 	public Terrain getTerrain(int x, int y) {
 		return map[y][x];
 	}
@@ -97,10 +116,41 @@ public class Map {
 		this.map = map;
 	}
 
-	public boolean canHit(Fighter attacker, Fighter defender) {
-		Coord2D coordAttacker = fighters.get(attacker);
-		Coord2D coordDefender = fighters.get(defender);
+	/**
+	 * Add a non previously added fighter on the Map, to an empty Coord2D(x, y)
+	 * @param fighter
+	 * @param x
+	 * @param y
+	 */
+	public void addFighter(Fighter fighter, int x, int y) {
+		assert(!fighters.containsKey(fighter));
+		assert(y >= 0 && y < map.length);
+		assert(x >= 0 && x < map[y].length);
+		fighters.put(fighter, new Coord2D(x, y));
+	}
 
-		return false;
+	/**
+	 * Move a previously added fighter to an empty Coord2D(x, y);
+	 * @param fighter
+	 * @param x
+	 * @param y
+	 */
+	public void moveFighter(Fighter fighter, int x, int y) {
+		assert(fighters.containsKey(fighter));
+		assert(y >= 0 && y < map.length);
+		assert(x >= 0 && x < map[y].length);
+		assert(!fighters.containsValue(new Coord2D(x, y)));
+		Coord2D coord = fighters.get(fighter);
+		coord.x = x;
+		coord.y = y;
+	}
+
+	/** 
+	 * remove a previously added fighter
+	 * @param fighter
+	 */
+	public void rmFighter(Fighter fighter) {
+		assert(fighters.containsKey(fighter));
+		fighters.remove(fighter);
 	}
 }

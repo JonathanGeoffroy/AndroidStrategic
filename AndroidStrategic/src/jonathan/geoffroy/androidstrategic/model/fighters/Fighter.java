@@ -42,7 +42,10 @@ public abstract class Fighter {
 	}
 	protected abstract String defaultName();
 
-protected void afterAttacked() {}
+	protected void afterAttacked() {}
+
+	public int minRange() { return 1; }
+	public int maxRange() { return 1; }
 	
 	/**
 	 * 

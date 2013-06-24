@@ -86,10 +86,5 @@ public class WeaponTest {
 			assertFalse(fighters[i].getName() + "should can equip " + weapons[i].getName(), weapons[i].canEquip(fighters[i]));
 		}
 	}
-	
-	@Test
-	public void range() {
-		
-	}
 }
 	

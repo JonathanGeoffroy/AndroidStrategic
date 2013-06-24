@@ -51,7 +51,7 @@ public abstract class Human extends Fighter {
 		}
 		return speed - weaponSpeed;
 	}
-	
+
 	@Override
 	public int calculatePower() {
 		int strength = super.calculatePower();
@@ -60,7 +60,23 @@ public abstract class Human extends Fighter {
 		}
 		return strength;
 	}
-	
+
+	@Override
+	public int minRange() { 
+		if(equiped != null) {
+			return equiped.getMinRange();
+		}
+		return super.minRange();
+	}
+
+	@Override
+	public int maxRange() {
+		if(equiped != null) {
+			return equiped.getMaxRange();
+		}
+		return super.maxRange();
+	}
+
 	public Weapon getEquiped() {
 		return equiped;
 	}

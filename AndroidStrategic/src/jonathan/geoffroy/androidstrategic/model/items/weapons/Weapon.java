@@ -8,6 +8,13 @@ public abstract class Weapon extends Item {
 	protected short might;
 	protected short weaponClass;
 	protected short hitRate;
+	protected short minRange, maxRange;
+
+	public Weapon() {
+		minRange = maxRange = 1;
+		weaponClass = 1;
+	}
+
 	public short getHitRate() {
 		return hitRate;
 	}
@@ -17,11 +24,7 @@ public abstract class Weapon extends Item {
 	}
 
 	protected short criticalRate;
-	
-	public Weapon() {
-		weaponClass = 1;
-	}
-	
+
 	public int triangleMt(Weapon weapon) {
 		return 0;
 	}
@@ -41,14 +44,14 @@ public abstract class Weapon extends Item {
 		char chars[] = new char[1];
 		chars[0] = c;
 		assert(c >= 'A' && c <= 'E');
-		
+
 		return new String(chars);
 	}
 
 	public int calculateMight() {
 		return 0;
 	}
-	
+
 	public String getCharClass(int weaponclass) {
 		return null;
 	}
@@ -77,4 +80,19 @@ public abstract class Weapon extends Item {
 		this.criticalRate = criticalRate;
 	}
 
+	public short getMinRange() {
+		return minRange;
+	}
+
+	public void setMinRange(short minRange) {
+		this.minRange = minRange;
+	}
+
+	public short getMaxRange() {
+		return maxRange;
+	}
+
+	public void setMaxRange(short maxRange) {
+		this.maxRange = maxRange;
+	}
 }
