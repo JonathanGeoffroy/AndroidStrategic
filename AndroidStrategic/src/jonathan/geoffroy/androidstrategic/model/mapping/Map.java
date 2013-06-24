@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 
@@ -11,7 +12,10 @@ import javax.imageio.ImageIO;
 
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.items.Item;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.CureMagic;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.KillMagic;
 import jonathan.geoffroy.androidstrategic.model.mapping.magic.Magic;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.TrapMagic;
 import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
 
 public class Map {
@@ -19,18 +23,19 @@ public class Map {
 			FORT = -9539712, GATE = -15654456, GRASS = -10377914, MOUNTAIN = -7713017, 
 			PEAK = -3184105, PILLAR = -5395027, PIT = -10596800, PLAIN = -4325736, 
 			ROAD = -33024, SEA = -11602448, VILLAGE = -655362;
+	public final static int NOMAGIC = -1, TRAPMAGIC = -65536, KILLMAGIC = -16777216, CUREMAGIC = -16711936;
 	public final static String SCENARII_DIR = "data/scenarii/";
 
 	private Terrain[][] map;
 	private LinkedHashSet<Terrain> terrains;
-	private HashMap<Coord2D, Magic> terrainSpecs;
-	private HashMap<Coord2D, Item> terrainsItems;
+	private ArrayList<CoordMagic> terrainMagics;
+	private ArrayList<CoordItem> terrainsItems;
 	private HashMap<Fighter, Coord2D> fighters;
 
 	public Map() {
 		terrains = new LinkedHashSet<Terrain>();
-		terrainSpecs = new HashMap<Coord2D, Magic>();
-		terrainsItems = new HashMap<Coord2D, Item>();
+		terrainMagics = new ArrayList<CoordMagic>();
+		terrainsItems = new ArrayList<CoordItem>();
 		fighters = new HashMap<Fighter, Coord2D>();
 	}
 
@@ -39,6 +44,8 @@ public class Map {
 		Map loadedMap = new Map();
 
 		loadedMap.loadTerrains(scenarioName, chapterNum);
+		loadedMap.loadMagics(scenarioName, chapterNum);
+		
 		return loadedMap;
 	}
 
@@ -85,6 +92,41 @@ public class Map {
 		}
 	}
 
+	private void loadMagics(String scenarioName, int chapterNum)
+			throws IOException {
+		CureMagic cureMagic = new CureMagic();
+		KillMagic killMagic = new KillMagic();
+		TrapMagic trapMagic = new TrapMagic();
+
+		BufferedImage img;
+		try {
+			img = ImageIO.read(new FileInputStream(SCENARII_DIR + scenarioName + "/" + chapterNum + "_magics.png"));
+			int width = img.getWidth();
+			int height = img.getHeight();
+			int pixel;
+			for (int i = 0; i < height; i++) {
+				for (int j = 0; j < width; j++) {
+					pixel = img.getRGB(j, i);
+					switch(pixel) {
+					case NOMAGIC:
+						break;
+					case CUREMAGIC:
+						terrainMagics.add(new CoordMagic(new Coord2D(j, i), cureMagic));
+						break;
+					case KILLMAGIC:
+						terrainMagics.add(new CoordMagic(new Coord2D(j, i), killMagic));
+						break;
+					case TRAPMAGIC:
+						terrainMagics.add(new CoordMagic(new Coord2D(j, i), trapMagic));
+						break;
+					default:
+						throw new IOException("this magic is NOT available: " + i + " " + j);
+					}
+				}
+			}
+		} catch(FileNotFoundException e) {}
+	}
+
 	/**
 	 * test if attacker can hit defender, depending on they own Terrain, and the attacker's range
 	 * @param attacker Fighter who attack defender
@@ -94,20 +136,20 @@ public class Map {
 	public boolean canHit(Fighter attacker, Fighter defender) {
 		assert(fighters.containsKey(attacker));
 		assert(fighters.containsKey(defender));
-		
+
 		Coord2D coordAttacker = fighters.get(attacker);
 		Coord2D coordDefender = fighters.get(defender);
 		int attackerMinRange = attacker.minRange();
 		int attackerMaxRange = attacker.maxRange();
-		
+
 		int manhattanDistance = Math.abs(coordAttacker.x - coordDefender.x) + Math.abs(coordAttacker.y - coordDefender.y);
 		return manhattanDistance >= attackerMinRange && manhattanDistance <= attackerMaxRange;
 	}
-	
+
 	public Terrain getTerrain(int x, int y) {
 		return map[y][x];
 	}
-	
+
 	public Terrain getTerrain(Fighter fighter) {
 		assert(fighters.containsKey(fighter));
 		Coord2D coord = fighters.get(fighter);
@@ -162,5 +204,37 @@ public class Map {
 
 	public void clearFighters() {
 		fighters.clear();		
+	}
+	
+	public Magic getMagic(Coord2D coord) {
+		for(CoordMagic c : terrainMagics) {
+			if(coord.equals(c.coord))
+				return c.magic;
+		}
+		return null;
+	}
+
+	public ArrayList<CoordMagic> getTerrainMagics() {
+		return terrainMagics;
+	}
+}
+
+class CoordMagic {
+	public Coord2D coord;
+	public Magic magic;
+
+	public CoordMagic(Coord2D c, Magic m) {
+		coord = c;
+		magic = m;
+	}
+}
+
+class CoordItem {
+	public Coord2D coord;
+	public Item item;
+
+	public CoordItem(Coord2D c, Item i) {
+		coord = c;
+		item = i;
 	}
 }

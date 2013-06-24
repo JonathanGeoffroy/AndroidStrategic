@@ -28,6 +28,11 @@ import jonathan.geoffroy.androidstrategic.model.mapping.Road;
 import jonathan.geoffroy.androidstrategic.model.mapping.Sea;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 import jonathan.geoffroy.androidstrategic.model.mapping.Village;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.CureMagic;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.KillMagic;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.Magic;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.TrapMagic;
+import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
 
 public class MapTest extends Map {
 	private Human[] fighters;
@@ -50,12 +55,19 @@ public class MapTest extends Map {
 				new Forest(), new Fort(), new Gate(), new Grass(),
 				new Mountain(), new Peak(), new Pillar(), new Pit(),
 				new Plain(), new Road(), new Sea(), new Village() };
-
+		Magic[] magics = {null, null, null,
+				new CureMagic(), new CureMagic(), new CureMagic(),
+				new KillMagic(), new KillMagic(), new KillMagic(),
+				new TrapMagic(), new TrapMagic(), new TrapMagic(),
+				null, null, null
+		};
 		assertEquals("map should be completly loaded", 15, intMap[0].length);
 		for (int i = 0; i < intMap[0].length; i++) {
-			assertEquals("map " + 0 + "-" + i + "should be " + map.getTerrain(i, 0).getClass().getName(), 
+			assertEquals("map " + 0 + "-" + i + "should be " + terrains[i].getClass().getName(), 
 					terrains[i].getClass().getName(),
 					map.getTerrain(i, 0).getClass().getName());
+			
+			assertEquals("magic " + 0 + "-" + i + "should be " + magics[i], magics[i], map.getMagic(new Coord2D(i, 0)));
 		}
 
 		// Floor map test
@@ -70,6 +82,7 @@ public class MapTest extends Map {
 		Floor floor = new Floor();
 
 		assertEquals("map should be completly loaded", 480, intMap.length);
+		assertTrue("shouldn't have any magic on this map", map.getTerrainMagics().isEmpty());
 		for (int i = 0; i < intMap.length; i++) {
 			for (int j = 0; j < intMap[i].length; j++) {
 				assertEquals("map should be completly loaded", 640,
@@ -77,6 +90,7 @@ public class MapTest extends Map {
 				assertEquals("map " + i + "-" + j + "should be floor",
 						floor.getClass().getName(),
 						map.getTerrain(j, i).getClass().getName());
+				assertNull("shouldn't have any magic on this map", map.getMagic(new Coord2D(j, i)));
 			}
 		}
 
