@@ -32,8 +32,8 @@ public abstract class Human extends Fighter {
 	}
 
 	@Override
-	public short criticalRates() {
-		short critical = super.criticalRates();
+	public short criticalRate() {
+		short critical = super.criticalRate();
 		if(equiped != null) {
 			critical += equiped.getCriticalRate();
 		}

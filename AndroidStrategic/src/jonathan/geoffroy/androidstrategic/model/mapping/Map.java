@@ -107,6 +107,12 @@ public class Map {
 	public Terrain getTerrain(int x, int y) {
 		return map[y][x];
 	}
+	
+	public Terrain getTerrain(Fighter fighter) {
+		assert(fighters.containsKey(fighter));
+		Coord2D coord = fighters.get(fighter);
+		return getTerrain(coord.x, coord.y);
+	}
 
 	public Terrain[][] getMap() {
 		return map;
@@ -152,5 +158,9 @@ public class Map {
 	public void rmFighter(Fighter fighter) {
 		assert(fighters.containsKey(fighter));
 		fighters.remove(fighter);
+	}
+
+	public void clearFighters() {
+		fighters.clear();		
 	}
 }

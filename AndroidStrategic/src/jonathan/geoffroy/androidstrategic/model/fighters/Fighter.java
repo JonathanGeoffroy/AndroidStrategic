@@ -1,10 +1,12 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
 import jonathan.geoffroy.androidstrategic.model.items.bags.FighterBag;
+import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 
 public abstract class Fighter {
 	public int HPMAX = 0, CONSTITUTION = 1, DEFENSE = 2, RESISTANCE = 3, STRENGTH = 4, MAGIC = 5, SPEED = 6, MOVEMENTMAX = 7, LUCK = 8, SKILL = 9;
+	protected static Map map;
 	protected short attributes[];
 	protected short levelUpRate[];
 	private String name;
@@ -17,7 +19,6 @@ public abstract class Fighter {
 	protected short classBonus;
 	private boolean general;
 	protected FighterBag bag;
-	protected Terrain terrain;
 
 	public Fighter() {
 		setName(defaultName());
@@ -46,7 +47,7 @@ public abstract class Fighter {
 
 	public int minRange() { return 1; }
 	public int maxRange() { return 1; }
-	
+
 	/**
 	 * 
 	 * @param adv
@@ -60,7 +61,7 @@ public abstract class Fighter {
 
 		int hitNumber[] = new int[2];
 		hitNumber[0] = this.hitNumber(assaulted);
-		hitNumber[1] = this.hitNumber(this);
+		hitNumber[1] = assaulted.hitNumber(this);
 
 		boolean physicalAttack[] = new boolean[2];
 		physicalAttack[0] = this.isPhysicalAttack();
@@ -71,8 +72,8 @@ public abstract class Fighter {
 		hitStrength[1] = assaulted.attackStrength(this, physicalAttack[1]);
 
 		int criticalRate[] = new int[2];
-		criticalRate[0] = this.criticalRates();
-		criticalRate[1] = assaulted.criticalRates();
+		criticalRate[0] = this.criticalRate();
+		criticalRate[1] = assaulted.criticalRate();
 		boolean criticalAttack;
 		boolean touched;
 		int attackStrength;
@@ -154,7 +155,7 @@ public abstract class Fighter {
 	 * @return a rate of evade for a non critical attack
 	 */
 	public int evade() {
-		return attributes[SPEED]* 2 + attributes[LUCK] + terrain.getAvoid();
+		return attributes[SPEED]* 2 + attributes[LUCK] + getTerrain().getAvoid();
 	}
 
 	/**
@@ -186,16 +187,31 @@ public abstract class Fighter {
 		int accuracy = hitRate() - other.evade();
 		if(accuracy > 100)
 			accuracy = 100;
+		else if(accuracy < 0)
+			accuracy = 0;
+		return accuracy;
+	}
+
+	public int criticalAccuracy(Fighter other) {
+		int accuracy = hitRate() - other.criticalEvade();
+		if(accuracy > 100)
+			accuracy = 100;
+		else if(accuracy < 0)
+			accuracy = 0;
 		return accuracy;
 	}
 
 	private boolean hasTouched(Fighter fighter, boolean criticalAttack) {
+		int accuracy;
+		int random = (int)(Math.random() * 100);
 		if(criticalAttack) {
-			return criticalRates() - criticalEvade() > Math.random();
+			accuracy = criticalAccuracy(fighter);
 		}
 		else {
-			return hitRate() - evade() > Math.random();
+			accuracy = accuracy(fighter);
 		}
+
+		return accuracy >= random;
 	}
 
 	public int calculateSpeed() {
@@ -208,16 +224,28 @@ public abstract class Fighter {
 	 * @return 2 if fighter.speed > ennemy.speed + 3, else 1
 	 */
 	public int hitNumber(Fighter ennemy) {
+		if(!map.canHit(this, ennemy)) {
+			return 0;
+		}
 		if(attributes[SPEED] >= ennemy.attributes[SPEED] + 3)
 			return 2;
 		return 1;
+
+	}
+
+	public static Map getMap() {
+		return map;
+	}
+
+	public static void setMap(Map map) {
+		Fighter.map = map;
 	}
 
 	/**
 	 * Calculate the chance to do a critical hit
 	 * @return a % of chance to do a critical hit
 	 */
-	public short criticalRates() {
+	public short criticalRate() {
 		return (short)(attributes[SKILL] / 2);
 	}
 
@@ -431,11 +459,7 @@ public abstract class Fighter {
 	}
 
 	public Terrain getTerrain() {
-		return terrain;
-	}
-
-	public void setTerrain(Terrain terrain) {
-		this.terrain = terrain;
+		return map.getTerrain(this);
 	}
 
 	public short getLevel() {

@@ -1,6 +1,12 @@
 package jonathan.geoffroy.androidstrategic.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+
 import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
 import jonathan.geoffroy.androidstrategic.model.fighters.Axman;
 import jonathan.geoffroy.androidstrategic.model.fighters.Cat;
@@ -13,16 +19,12 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Laguz;
 import jonathan.geoffroy.androidstrategic.model.fighters.Lion;
 import jonathan.geoffroy.androidstrategic.model.fighters.Mage;
 import jonathan.geoffroy.androidstrategic.model.fighters.Priest;
-import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
 import jonathan.geoffroy.androidstrategic.model.fighters.Ranger;
+import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
 import jonathan.geoffroy.androidstrategic.model.fighters.Thief;
 import jonathan.geoffroy.androidstrategic.model.fighters.TransformNotPossibleException;
-import jonathan.geoffroy.androidstrategic.model.items.weapons.Bow;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Sword;
-import jonathan.geoffroy.androidstrategic.model.mapping.Desert;
-import jonathan.geoffroy.androidstrategic.model.mapping.Grass;
-import jonathan.geoffroy.androidstrategic.model.mapping.Road;
-import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
+import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,11 +32,19 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 public class FightTest {
-	Fighter fighters[];
-	FightResult result;
-
+	private Fighter fighters[];
+	private FightResult result;
+	private Map map;
+	private final static int NB_RATIO_TESTS = 100000;
 	@Before
 	public void preConditions() {
+		try {
+			map = Map.load("Test", 2);
+			Fighter.setMap(map);
+		} catch (IOException e) {
+			fail(e.getMessage());
+			e.printStackTrace();
+		}
 		if(fighters != null) {
 			for(int i = 0; i < fighters.length; i++)
 				fightConditions(fighters[i]);
@@ -104,9 +114,7 @@ public class FightTest {
 
 	@Test
 	public void hitNumber() {
-		fighters = new Fighter[2];
-		fighters[0] = new Archer();
-		fighters[1] = new Archer();
+		initializeRangers();
 		assertEquals("should hit only 1 time", fighters[0].hitNumber(fighters[1]), 1);
 		fighters[0].setSpeed((short) (fighters[0].getSpeed() + 3));
 		assertEquals("should hit twice", fighters[0].hitNumber(fighters[1]), 2);
@@ -116,35 +124,37 @@ public class FightTest {
 
 	@Test
 	public void accuracy() {
-		fighters = new Fighter[2];
-		fighters[0] = new Archer();
-		fighters[1] = new Archer();
-		fighters[0].setTerrain(new Road());
-		fighters[1].setTerrain(new Desert());
-		Bow bow = new Bow();
-		bow.setHitRate((short)50);
-
-		int accuracyWithNoWeapon = fighters[0].accuracy(fighters[1]);
+		initializeRangers();
 		Human h = (Human)fighters[0];
-		h.setEquiped(bow);
+		fighters[0].setSkill((short) 10);
+		h.setEquiped(null);
+		int accuracyWithNoWeapon = fighters[0].accuracy(fighters[1]);
+		Sword sword = new Sword();
+		sword.setHitRate((short)10);
+		h.setEquiped(sword);
 
 		assertTrue("accuracy should be between 0 & 100", fighters[0].accuracy(fighters[1]) >= 0 && fighters[0].accuracy(fighters[1]) <= 100);
 		assertTrue("accuracy should be between 0 & 100", fighters[1].accuracy(fighters[0]) >= 0 && fighters[1].accuracy(fighters[0]) <= 100);
-		assertTrue("fighter acccuracy should include equiped weapon", fighters[0].accuracy(fighters[1]) == accuracyWithNoWeapon + bow.getHitRate() || fighters[0].accuracy(fighters[1]) == 100);
+		assertTrue("fighter acccuracy should include equiped weapon", fighters[0].accuracy(fighters[1]) == accuracyWithNoWeapon + sword.getHitRate() || fighters[0].accuracy(fighters[1]) == 100);
 
-		bow.setHitRate((short)90);
+		sword.setHitRate((short)90);
 		assertTrue("accuracy should be between 0 & 100", fighters[0].accuracy(fighters[1]) >= 0 && fighters[0].accuracy(fighters[1]) <= 100);
 		assertTrue("accuracy should be between 0 & 100", fighters[1].accuracy(fighters[0]) >= 0 && fighters[1].accuracy(fighters[0]) <= 100);
-		assertTrue("fighter acccuracy should include equiped weapon", fighters[0].accuracy(fighters[1]) == accuracyWithNoWeapon + bow.getHitRate() || fighters[0].accuracy(fighters[1]) == 100);
+		assertTrue("fighter acccuracy should include equiped weapon", fighters[0].accuracy(fighters[1]) == accuracyWithNoWeapon + sword.getHitRate() || fighters[0].accuracy(fighters[1]) == 100);
 	}
 
 	@Test
 	public void touchedRate() {
 		initializeRangers();
-
+		Human h;
 		int nbTouched[] = new int[2];
-		for(int i = 0; i < 1000000; i++) {
+		for(int i = 0; i < NB_RATIO_TESTS; i++) {
 			initializeRangers();
+			for(int j = 0; j < 2; j++) {
+				h = (Human)(fighters[j]);
+				h.getEquiped().setHitRate((short)20);
+				h.getEquiped().setCriticalRate((short)0);
+			}
 			result = fighters[0].fight(fighters[1]);
 			for(int j = 0; j < 2; j++) {
 				if(result.getTouched()[j][0]) {
@@ -156,34 +166,26 @@ public class FightTest {
 				nbTouched[0] >= nbTouched[1] - 500 &&
 				nbTouched[0] <= nbTouched[1] + 500
 				);
-
 		for(int i = 0; i < 2; i++) {
 			assertTrue("fighter critical frequence should follow his touched rates",
-					nbTouched[i] >= (fighters[i].hitRate() * 1000000 / 100) - 200 &&
-					nbTouched[i] <= (fighters[i].hitRate() * 1000000 / 100) + 200 
+					nbTouched[i] >= fighters[i].accuracy(fighters[(i+1) % 2]) * (NB_RATIO_TESTS / 100) - 2000 &&
+					nbTouched[i] <= fighters[i].accuracy(fighters[(i+1) % 2]) * (NB_RATIO_TESTS / 100) + 2000
 					);
 		}
 	}
 
 	@Test 
 	public void criticalRate() {
-		fighters = new Human[2];
-		Sword sword = new Sword();
-		sword.setHitRate((short) 80);
-		Terrain terrain = new Grass();
-		terrain.setAvoid((short)0);
-		for(int i = 0; i < 2; i++) {
-			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
-			Human h = (Human)fighters[i];
-			h.setEquiped(sword);
-		}
-
+		initializeRangers();
+		Human h;
 		int nbCritical[] = new int[2];
-		for(int i = 0; i < 500000; i++) {
+		for(int i = 0; i < NB_RATIO_TESTS; i++) {
 			initializeRangers();
-			//			fighters[0].setHp(fighters[0].getHpMax());
-			//			fighters[1].setHp(fighters[1].getHpMax());
+			for(int j = 0; j < 2; j++) {
+				h = (Human)(fighters[j]);
+				h.getEquiped().setHitRate((short)100);
+				h.getEquiped().setCriticalRate((short)10);
+			}
 			result = fighters[0].fight(fighters[1]);
 			for(int j = 0; j < 2; j++) {
 				if(result.getCriticalDamages()[j][0]) {
@@ -197,11 +199,10 @@ public class FightTest {
 				nbCritical[0] <= nbCritical[1] + 500
 				);
 
-		initializeRangers();
 		for(int i = 0; i < 2; i++) {
-			assertTrue("fighter critical frequence should follow his critical rates",
-					nbCritical[i] >= (fighters[i].criticalRates() * 500000 / 100) - 100 &&
-					nbCritical[i] <= (fighters[i].criticalRates() * 500000 / 100) + 100
+			assertTrue("fighter critical frequence should follow his touched rates",
+					nbCritical[i] >= fighters[i].criticalRate() * (NB_RATIO_TESTS / 100) - 2000 &&
+					nbCritical[i] <= fighters[i].criticalRate() * (NB_RATIO_TESTS / 100) + 2000
 					);
 		}
 	}
@@ -316,7 +317,7 @@ public class FightTest {
 
 		//Rate test
 		int[] sumResults = new int[10];
-		for(int i = 0; i < 500000; i++) {
+		for(int i = 0; i < 5000; i++) {
 			initializeRangers();
 			results = fighters[0].addExperience(100);
 			assertEquals("should level up", 2, fighters[0].getLevel());
@@ -327,25 +328,27 @@ public class FightTest {
 
 		for(int j = 0; j < results.length; j++) {
 			assertTrue("attributes should be upgrade", 
-					sumResults[j] > 500000 * (fighters[0].getLevelUpRate()[j] / 100) - 200 &&
-					sumResults[j] > 500000 * (fighters[0].getLevelUpRate()[j] / 100) + 200
+					sumResults[j] > 5000 * (fighters[0].getLevelUpRate()[j] / 100) - 200 &&
+					sumResults[j] > 5000 * (fighters[0].getLevelUpRate()[j] / 100) + 200
 					);
 		}
 	}
 
 	private void initializeRangers() {
+		map.clearFighters();
 		fighters = new Fighter[2];
 		Human h;
-		Terrain terrain = new Grass();
 		Sword sword = new Sword();
-		sword.setMight((short)10);
+		sword.setMight((short)1);
 		sword.setHitRate((short)150);
 		for(int i = 0; i < 2; i++) {
 			fighters[i] = new Ranger();
-			fighters[i].setTerrain(terrain);
 			h = (Human)fighters[i];
 			h.setEquiped(sword);
 		}
+		map.addFighter(fighters[0], 0, 0);
+		map.addFighter(fighters[1], 1, 0);
+		
 	}
 
 
@@ -357,7 +360,7 @@ public class FightTest {
 
 		// initialization
 		assertFalse("at initialization, laguz shouldn't be transformed", lion.isTransformed());
-		assertEquals("at intialization, laguz should have 0 transform points", 0, lion.getTransform());
+		assertEquals("at initialization, laguz should have 0 transform points", 0, lion.getTransform());
 		assertFalse("a initialization, laguz should can't transform", lion.canTransform());
 
 		// transform < 30
@@ -423,11 +426,11 @@ public class FightTest {
 	}
 
 	private void initializeLaguz() {
-		Terrain terrain = new Grass();
 		fighters = new Laguz[2];
 		for(int i = 0; i < 2; i++) {
 			fighters[i] = new Lion();
-			fighters[i].setTerrain(terrain);
 		}
+		map.addFighter(fighters[0], 0, 0);
+		map.addFighter(fighters[1], 1, 0);
 	}
 }
