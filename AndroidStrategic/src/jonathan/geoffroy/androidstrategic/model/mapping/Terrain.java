@@ -86,4 +86,10 @@ public abstract class Terrain {
 		this.mageMovementCost = mageMovementCost;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return obj.getClass().equals(this.getClass());
+	}
+
+	
 }
