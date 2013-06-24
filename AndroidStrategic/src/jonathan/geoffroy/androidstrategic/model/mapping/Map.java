@@ -101,7 +101,7 @@ public class Map {
 		int attackerMaxRange = attacker.maxRange();
 		
 		int manhattanDistance = Math.abs(coordAttacker.x - coordDefender.x) + Math.abs(coordAttacker.y - coordDefender.y);
-		return attackerMinRange >= manhattanDistance && attackerMaxRange <= manhattanDistance;
+		return manhattanDistance >= attackerMinRange && manhattanDistance <= attackerMaxRange;
 	}
 	
 	public Terrain getTerrain(int x, int y) {

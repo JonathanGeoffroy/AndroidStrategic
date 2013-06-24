@@ -120,6 +120,17 @@ public class FightTest {
 		assertEquals("should hit twice", fighters[0].hitNumber(fighters[1]), 2);
 		fighters[0].setSpeed((short) (fighters[0].getSpeed() + 3));
 		assertEquals("should hit twice", fighters[0].hitNumber(fighters[1]), 2);
+		
+		initializeRangers();
+		Human h = (Human)fighters[0];
+		Sword sword = new Sword();
+		sword.setMaxRange((short)2);
+		h.setEquiped(sword);
+		map.moveFighter(fighters[0], 2, 2);
+		map.moveFighter(fighters[1], 2, 0);
+		fighters[0].fight(fighters[1]);
+		assertEquals("should hit only 1 time", 1, fighters[0].hitNumber(fighters[1]));
+		assertEquals("shouldn't can hit", 0, fighters[1].hitNumber(fighters[0]));
 	}
 
 	@Test
