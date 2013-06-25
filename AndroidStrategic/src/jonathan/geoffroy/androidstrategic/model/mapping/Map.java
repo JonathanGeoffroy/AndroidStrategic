@@ -31,6 +31,7 @@ public class Map {
 	private ArrayList<CoordMagic> terrainMagics;
 	private ArrayList<CoordItem> terrainsItems;
 	private HashMap<Fighter, Coord2D> fighters;
+	private Reachable reachable;
 
 	public Map() {
 		terrains = new LinkedHashSet<Terrain>();
@@ -45,7 +46,7 @@ public class Map {
 
 		loadedMap.loadTerrains(scenarioName, chapterNum);
 		loadedMap.loadMagics(scenarioName, chapterNum);
-		
+
 		return loadedMap;
 	}
 
@@ -87,6 +88,7 @@ public class Map {
 					terrains.add(t);
 				}
 			}
+			reachable = new Reachable(this);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -205,7 +207,7 @@ public class Map {
 	public void clearFighters() {
 		fighters.clear();		
 	}
-	
+
 	public Magic getMagic(Coord2D coord) {
 		for(CoordMagic c : terrainMagics) {
 			if(coord.equals(c.coord))
@@ -216,6 +218,92 @@ public class Map {
 
 	public ArrayList<CoordMagic> getTerrainMagics() {
 		return terrainMagics;
+	}
+
+	public int getWidth() {
+		return map[0].length;
+	}
+	public int getHeight() {
+		return map.length;
+	}
+
+	public Reachable getReachableTerrains(Fighter f) {
+		reachable.clear();
+		return addReachableTerrains(f);
+	}
+
+	public Reachable addReachableTerrains(Fighter f) {
+		Coord2D coord = fighters.get(f);
+		reachable.addReachable(coord);
+		HashMap<Coord2D, Integer> already = new HashMap<Coord2D, Integer>();
+		already.put(coord, (int) f.getMovementMax());
+		calculateReach(f, f.getMovementMax(), coord.x, coord.y, already);
+
+		return reachable;
+	}
+
+	private void calculateReach(Fighter fighter, int nbMovementsLeft, int x, int y, HashMap<Coord2D, Integer>alreadyReachable) {
+		Coord2D testsCoord[] = { new Coord2D(x - 1, y), new Coord2D(x + 1, y) , new Coord2D(x, y - 1), new Coord2D(x, y + 1) };
+		Coord2D currentCoord;
+		Terrain currentTerrain;
+		int currentMovementCost;
+		int nextMovementLeft;
+		Integer previousMovementLeft;
+		HashMap<Coord2D, Integer>nextAlreadyReachable;
+		for(int i = 0; i < testsCoord.length; i++) {
+			currentCoord = testsCoord[i];
+
+			if(currentCoord.y >= 0 && currentCoord.y < map.length &&
+					currentCoord.x >= 0 && currentCoord.x < map[y].length) {
+				currentTerrain = getTerrain(currentCoord.x, currentCoord.y);
+				currentMovementCost = currentTerrain.getMovementCost();
+				nextMovementLeft = nbMovementsLeft - currentMovementCost;
+
+				if(currentMovementCost <= nbMovementsLeft) {
+					if(currentTerrain.isStoppable(fighter)) {
+						previousMovementLeft = alreadyReachable.get(currentCoord);
+
+						if(previousMovementLeft == null || previousMovementLeft < nextMovementLeft) {	
+							reachable.addReachable(currentCoord);
+
+							if(currentTerrain.isTraversable(fighter)) {
+								nextAlreadyReachable = (HashMap<Coord2D, Integer>) alreadyReachable.clone();
+								nextAlreadyReachable.put(currentCoord, nextMovementLeft);
+								calculateReach(fighter, nextMovementLeft, currentCoord.x, currentCoord.y, nextAlreadyReachable);
+							}
+						}
+					}
+				}
+
+				// Assailable terrains 
+				else {
+					Coord2D touchCoord = new Coord2D();
+					for(int j = fighter.minRange() - 1, maxRange = fighter.maxRange(); j < maxRange; j++) {
+						if(currentCoord.x - j >= 0) {
+							touchCoord.x  = currentCoord.x - j;
+							touchCoord.y = currentCoord.y;
+							reachable.addAssailable(touchCoord);
+						}
+						if(currentCoord.x + j <= map[currentCoord.y].length) {
+							touchCoord.x  = currentCoord.x + j;
+							touchCoord.y = currentCoord.y;
+							reachable.addAssailable(touchCoord);
+						}
+
+						if(currentCoord.y - j >= 0) {
+							touchCoord.x  = currentCoord.x;
+							touchCoord.y = currentCoord.y - j;
+							reachable.addAssailable(touchCoord);
+						}
+						if(currentCoord.y + j <= map.length) {
+							touchCoord.x  = currentCoord.x;
+							touchCoord.y = currentCoord.y + j;
+							reachable.addAssailable(touchCoord);
+						}
+					}
+				}
+			}
+		}
 	}
 }
 

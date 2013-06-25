@@ -24,6 +24,7 @@ import jonathan.geoffroy.androidstrategic.model.mapping.Peak;
 import jonathan.geoffroy.androidstrategic.model.mapping.Pillar;
 import jonathan.geoffroy.androidstrategic.model.mapping.Pit;
 import jonathan.geoffroy.androidstrategic.model.mapping.Plain;
+import jonathan.geoffroy.androidstrategic.model.mapping.Reachable;
 import jonathan.geoffroy.androidstrategic.model.mapping.Road;
 import jonathan.geoffroy.androidstrategic.model.mapping.Sea;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
@@ -66,7 +67,7 @@ public class MapTest extends Map {
 			assertEquals("map " + 0 + "-" + i + "should be " + terrains[i].getClass().getName(), 
 					terrains[i].getClass().getName(),
 					map.getTerrain(i, 0).getClass().getName());
-			
+
 			assertEquals("magic " + 0 + "-" + i + "should be " + magics[i], magics[i], map.getMagic(new Coord2D(i, 0)));
 		}
 
@@ -104,11 +105,11 @@ public class MapTest extends Map {
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}
-		
+
 		map.addFighter(fighters[0], 0, 0);
 		map.addFighter(fighters[1], 1, 0);
 		assertTrue("fighter 1 should can hit fighter 2", map.canHit(fighters[0], fighters[1]));
-		
+
 		map.moveFighter(fighters[1], 2, 0);
 		assertFalse("fighter 1 shouldn't can hit fighter 2", map.canHit(fighters[0], fighters[1]));
 		map.rmFighter(fighters[1]);
@@ -125,11 +126,11 @@ public class MapTest extends Map {
 		map.moveFighter(fighters[1], 1, 1);
 		assertTrue("Archer should can hit Ranger", map.canHit(fighters[1], fighters[0]));
 		assertFalse("Ranger shouldn't can hit Archer", map.canHit(fighters[0], fighters[1]));
-		
+
 		map.moveFighter(fighters[1], 2, 1);
 		assertFalse("Archer shouldn't can hit Ranger", map.canHit(fighters[1], fighters[0]));
 		assertFalse("Ranger shouldn't can hit Archer", map.canHit(fighters[0], fighters[1]));
-		
+
 		map.moveFighter(fighters[1], 0, 1);
 		assertFalse("Archer shouldn't can hit Ranger", map.canHit(fighters[1], fighters[0]));
 		assertTrue("Ranger should can hit Archer", map.canHit(fighters[0], fighters[1]));
@@ -140,6 +141,68 @@ public class MapTest extends Map {
 		for (int i = 0; i < fighters.length; i++) {
 			fighters[i] = new Ranger();
 			fighters[i].setEquiped(new Sword());
+		}
+	}
+
+	private void mapInitialization(int num) {
+		try {
+			map = Map.load("Test", num);
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void reachability() {		
+		// fighter on top-left corner
+		fighterInitialization();
+		mapInitialization(2);
+		reachTest(new Coord2D(0, 0));
+		map.clearFighters();
+
+		//fighter on top-right corner
+		reachTest(new Coord2D(map.getWidth() - 1, 0));
+		map.clearFighters();
+
+		//fighter on bottom-left corner
+		reachTest(new Coord2D(0, map.getHeight() - 1));
+		map.clearFighters();
+
+		//fighter on bottom-right corner
+		reachTest(new Coord2D(map.getWidth() - 1, map.getHeight() - 1));
+		map.clearFighters();
+
+		//fighter on middle
+		reachTest(new Coord2D(map.getWidth()/2, map.getHeight()/2));
+		map.clearFighters();
+
+
+
+	}
+
+	private void reachTest(Coord2D fighterCoord) {
+		Reachable reachables;
+		int[][] reachableMap;
+
+		map.addFighter(fighters[0], fighterCoord.x, fighterCoord.y);
+		reachables = map.getReachableTerrains(fighters[0]);
+		reachableMap = reachables.getReachableMap();
+		for(int i = 0 ; i < reachableMap.length; i++) {
+			for(int j = 0; j < reachableMap[i].length; j++) {
+				if(!map.getTerrain(j, i).isTraversable(fighters[0])) {
+					assertEquals("figher shouln't reach a non traversable Terrain", Reachable.NONE, reachableMap[i][j]);
+				}
+				else if(Math.abs(fighterCoord.x - j) + Math.abs(fighterCoord.y - i) <= fighters[0].getMovementMax()) {
+					assertEquals("fighter should reach this terrain: " + j + "-" + i,
+							Reachable.REACHABLE, reachableMap[i][j]);
+				}
+				else if(Math.abs(fighterCoord.x - j) + Math.abs(fighterCoord.y - i) >= fighters[0].getMovementMax() + fighters[0].minRange() &&
+						Math.abs(fighterCoord.x - j) + Math.abs(fighterCoord.y - i) <= fighters[0].getMovementMax() + fighters[0].maxRange()) {
+					assertEquals("fighter should hit this terrain: " + j + "-" + i,
+							Reachable.ASSAILABLE, reachableMap[i][j]);
+				}
+			}
 		}
 	}
 }

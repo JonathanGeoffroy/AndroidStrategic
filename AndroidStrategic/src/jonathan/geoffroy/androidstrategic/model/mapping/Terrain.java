@@ -1,17 +1,18 @@
 package jonathan.geoffroy.androidstrategic.model.mapping;
 
-public abstract class Terrain {
-	private short avoid;
-	private short defense;
-	private short thiefMovementCost;
-	private short priestMovementCost;
-	private short swordManMovementCost;
-	private short axManMovementCost;
-	private short bowmanMovementCost;
-	private short spireManMovementCost;
-	private short mageMovementCost;
+import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 
-	public void isTraversable() {
+public abstract class Terrain {
+	protected short avoid;
+	protected short defense;
+	protected short movementCost;
+	
+	public boolean isTraversable(Fighter fighter) {
+		return true;
+	}
+	
+	public boolean isStoppable(Fighter fighter) {
+		return true;
 	}
 
 	public short getAvoid() {
@@ -30,66 +31,16 @@ public abstract class Terrain {
 		this.defense = defense;
 	}
 
-	public short getThiefMovementCost() {
-		return thiefMovementCost;
-	}
-
-	public void setThiefMovementCost(short thiefMovementCost) {
-		this.thiefMovementCost = thiefMovementCost;
-	}
-
-	public short getPriestMovementCost() {
-		return priestMovementCost;
-	}
-
-	public void setPriestMovementCost(short priestMovementCost) {
-		this.priestMovementCost = priestMovementCost;
-	}
-
-	public short getSwordManMovementCost() {
-		return swordManMovementCost;
-	}
-
-	public void setSwordManMovementCost(short swordManMovementCost) {
-		this.swordManMovementCost = swordManMovementCost;
-	}
-
-	public short getAxManMovementCost() {
-		return axManMovementCost;
-	}
-
-	public void setAxManMovementCost(short axManMovementCost) {
-		this.axManMovementCost = axManMovementCost;
-	}
-
-	public short getBowmanMovementCost() {
-		return bowmanMovementCost;
-	}
-
-	public void setBowmanMovementCost(short bowmanMovementCost) {
-		this.bowmanMovementCost = bowmanMovementCost;
-	}
-
-	public short getSpireManMovementCost() {
-		return spireManMovementCost;
-	}
-
-	public void setSpireManMovementCost(short spireManMovementCost) {
-		this.spireManMovementCost = spireManMovementCost;
-	}
-
-	public short getMageMovementCost() {
-		return mageMovementCost;
-	}
-
-	public void setMageMovementCost(short mageMovementCost) {
-		this.mageMovementCost = mageMovementCost;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		return obj.getClass().equals(this.getClass());
 	}
 
-	
+	public int getMovementCost() {
+		return movementCost;
+	}
+
+	public void setMovementCost(short movementCost) {
+		this.movementCost = movementCost;
+	}
 }
