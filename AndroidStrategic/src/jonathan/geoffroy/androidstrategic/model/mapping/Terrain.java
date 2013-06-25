@@ -1,18 +1,27 @@
 package jonathan.geoffroy.androidstrategic.model.mapping;
 
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
+import jonathan.geoffroy.androidstrategic.model.fighters.Flying;
+import jonathan.geoffroy.androidstrategic.model.fighters.Riding;
 
 public abstract class Terrain {
 	protected short avoid;
 	protected short defense;
-	protected short movementCost;
+	protected short pedestrianMovementCost;
+	protected short riderMovementCost;
 	
 	public boolean isTraversable(Fighter fighter) {
-		return true;
+		if(fighter instanceof Flying) {
+			return true;
+		}
+		if(fighter instanceof Riding) {
+			return riderMovementCost > 0;
+		}
+		return pedestrianMovementCost > 0;
 	}
 	
 	public boolean isStoppable(Fighter fighter) {
-		return true;
+		return isTraversable(fighter);
 	}
 
 	public short getAvoid() {
@@ -36,11 +45,13 @@ public abstract class Terrain {
 		return obj.getClass().equals(this.getClass());
 	}
 
-	public int getMovementCost() {
-		return movementCost;
-	}
-
-	public void setMovementCost(short movementCost) {
-		this.movementCost = movementCost;
+	public int getMovementCost(Fighter fighter) {
+		if(fighter instanceof Flying) {
+			return 1;
+		}
+		if(fighter instanceof Riding) {
+			return riderMovementCost;
+		}
+		return pedestrianMovementCost;
 	}
 }

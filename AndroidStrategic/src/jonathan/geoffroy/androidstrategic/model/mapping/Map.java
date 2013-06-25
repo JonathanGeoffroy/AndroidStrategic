@@ -242,6 +242,7 @@ public class Map {
 		return reachable;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void calculateReach(Fighter fighter, int nbMovementsLeft, int x, int y, HashMap<Coord2D, Integer>alreadyReachable) {
 		Coord2D testsCoord[] = { new Coord2D(x - 1, y), new Coord2D(x + 1, y) , new Coord2D(x, y - 1), new Coord2D(x, y + 1) };
 		Coord2D currentCoord;
@@ -256,7 +257,7 @@ public class Map {
 			if(currentCoord.y >= 0 && currentCoord.y < map.length &&
 					currentCoord.x >= 0 && currentCoord.x < map[y].length) {
 				currentTerrain = getTerrain(currentCoord.x, currentCoord.y);
-				currentMovementCost = currentTerrain.getMovementCost();
+				currentMovementCost = currentTerrain.getMovementCost(fighter);
 				nextMovementLeft = nbMovementsLeft - currentMovementCost;
 
 				if(currentMovementCost <= nbMovementsLeft) {
