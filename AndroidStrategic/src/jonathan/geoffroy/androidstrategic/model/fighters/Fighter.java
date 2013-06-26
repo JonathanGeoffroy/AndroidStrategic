@@ -19,7 +19,8 @@ public abstract class Fighter {
 	protected short classBonus;
 	private boolean general;
 	protected FighterBag bag;
-
+	protected Team team;
+	
 	public Fighter() {
 		setName(defaultName());
 		initializeStats();
@@ -313,6 +314,10 @@ public abstract class Fighter {
 		return experience;
 	}
 
+	public boolean isEnnemy(Fighter fighter) {
+		return !team.isInTeam(fighter);
+	}
+	
 	public boolean isGeneral() {
 		return general;
 	}

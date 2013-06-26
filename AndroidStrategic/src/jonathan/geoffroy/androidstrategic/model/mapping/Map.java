@@ -31,6 +31,7 @@ public class Map {
 	private ArrayList<CoordMagic> terrainMagics;
 	private ArrayList<CoordItem> terrainsItems;
 	private HashMap<Fighter, Coord2D> fighters;
+	private HashMap<Coord2D, Fighter> coordFighters;
 	private Reachable reachable;
 
 	public Map() {
@@ -38,6 +39,7 @@ public class Map {
 		terrainMagics = new ArrayList<CoordMagic>();
 		terrainsItems = new ArrayList<CoordItem>();
 		fighters = new HashMap<Fighter, Coord2D>();
+		coordFighters = new HashMap<Coord2D, Fighter>();
 	}
 
 	public static Map load(String scenarioName, int chapterNum)
@@ -173,10 +175,13 @@ public class Map {
 	 * @param y
 	 */
 	public void addFighter(Fighter fighter, int x, int y) {
+		Coord2D coord = new Coord2D(x, y);
 		assert(!fighters.containsKey(fighter));
+		assert(!coordFighters.containsKey(coord));
 		assert(y >= 0 && y < map.length);
 		assert(x >= 0 && x < map[y].length);
-		fighters.put(fighter, new Coord2D(x, y));
+		fighters.put(fighter, coord);
+		coordFighters.put(coord, fighter);
 	}
 
 	/**
@@ -193,6 +198,7 @@ public class Map {
 		Coord2D coord = fighters.get(fighter);
 		coord.x = x;
 		coord.y = y;
+		assert(coordFighters.containsKey(coord));
 	}
 
 	/** 
@@ -201,11 +207,15 @@ public class Map {
 	 */
 	public void rmFighter(Fighter fighter) {
 		assert(fighters.containsKey(fighter));
+		Coord2D coord = fighters.get(fighter);
+		assert(coordFighters.containsKey(coord));
 		fighters.remove(fighter);
+		coordFighters.remove(coord);
 	}
 
 	public void clearFighters() {
-		fighters.clear();		
+		fighters.clear();
+		coordFighters.clear();
 	}
 
 	public Magic getMagic(Coord2D coord) {
@@ -250,7 +260,9 @@ public class Map {
 		int currentMovementCost;
 		int nextMovementLeft;
 		Integer previousMovementLeft;
+		Fighter fighterAtCoord;
 		HashMap<Coord2D, Integer>nextAlreadyReachable;
+
 		for(int i = 0; i < testsCoord.length; i++) {
 			currentCoord = testsCoord[i];
 
@@ -261,13 +273,12 @@ public class Map {
 				nextMovementLeft = nbMovementsLeft - currentMovementCost;
 
 				if(currentMovementCost <= nbMovementsLeft) {
-					if(currentTerrain.isStoppable(fighter)) {
+					fighterAtCoord = coordFighters.get(currentCoord);
+					if(currentTerrain.isStoppable(fighter) && fighterAtCoord == null) {
 						previousMovementLeft = alreadyReachable.get(currentCoord);
 
-						if(previousMovementLeft == null || previousMovementLeft < nextMovementLeft) {	
-							reachable.addReachable(currentCoord);
-
-							if(currentTerrain.isTraversable(fighter)) {
+						if(previousMovementLeft == null || previousMovementLeft < nextMovementLeft) {
+							if(currentTerrain.isTraversable(fighter) && (fighterAtCoord == null || !fighterAtCoord.isEnnemy(fighter))) {
 								nextAlreadyReachable = (HashMap<Coord2D, Integer>) alreadyReachable.clone();
 								nextAlreadyReachable.put(currentCoord, nextMovementLeft);
 								calculateReach(fighter, nextMovementLeft, currentCoord.x, currentCoord.y, nextAlreadyReachable);

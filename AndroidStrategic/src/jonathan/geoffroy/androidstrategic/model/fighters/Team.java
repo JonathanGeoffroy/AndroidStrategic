@@ -1,11 +1,22 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
-import java.util.Vector;
+import java.util.LinkedList;
 
 public class Team {
-
+	private static int nbTeams = 1;
 	private String name;
-	private Vector<Fighter> fighters;
+	private LinkedList<Fighter> fighters;
+	
+	public Team() {
+		name = "Team " + nbTeams;
+		nbTeams++;
+		fighters = new LinkedList<Fighter>();
+	}
+	
+	public Team(String name) {
+		this.name = name;
+		fighters = new LinkedList<Fighter>();
+	}
 	
 	public String getName() {
 		return name;
@@ -13,11 +24,24 @@ public class Team {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Vector<Fighter> getFighters() {
+	public LinkedList<Fighter> getFighters() {
 		return fighters;
 	}
-	public void setFighters(Vector<Fighter> fighters) {
-		this.fighters = fighters;
+	
+	/**
+	 * Add a fighter to the team
+	 * @param fighter the fighter to add
+	 */
+	public void addFighter(Fighter fighter) {
+		fighters.add(fighter);
 	}
 
+	/**
+	 * Check if fighter is in this team or not
+	 * @param fighter
+	 * @return true if the fighter is in this team
+	 */
+	public boolean isInTeam(Fighter fighter) {
+		return fighters.contains(fighter);
+	}
 }
