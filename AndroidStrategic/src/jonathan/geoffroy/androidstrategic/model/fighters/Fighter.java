@@ -137,9 +137,12 @@ public abstract class Fighter {
 	 * @return
 	 */
 	public int calculateDefense(boolean isPhysicalAttack) {
+		int defense = getTerrain().getDefense();
 		if(isPhysicalAttack)
-			return getDefense();
-		return getResistance();
+			defense += getDefense();
+		else
+			defense += getResistance();
+		return defense;
 	}
 
 	/** 
