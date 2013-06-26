@@ -102,6 +102,35 @@ public class MapTest extends Map {
 
 	}
 
+	
+	@Test
+	public void fighterMoving() {
+		mapInitialization(2);
+		fighterInitialization();
+		
+		for(int i = 0; i < map.getHeight(); i++) {
+			for(int j = 0; j < map.getWidth(); j++) {
+				map.addFighter(fighters[0], j, i);
+				assertEquals("fighter should be in terrain " + j + "-" + i, fighters[0], map.getCoordFighters().get(new Coord2D(j, i)));
+				assertEquals("should have only 1 fighter", 1, map.getCoordFighters().size());
+				assertEquals("should have only 1 fighter", 1, map.getFighters().size());
+				map.rmFighter(fighters[0]);
+				assertEquals("shouldn't have any fighter", 0, map.getCoordFighters().size());
+				assertEquals("shouldn't have any fighter", 0, map.getFighters().size());
+			}
+		}
+		
+		map.addFighter(fighters[1], 0, 0);
+		for(int i = 0; i < map.getHeight(); i++) {
+			for(int j = 0; j < map.getWidth(); j++) {
+				map.moveFighter(fighters[1], j, i);
+				assertEquals("fighter should be in terrain " + j + "-" + i, fighters[1], map.getCoordFighters().get(new Coord2D(j, i)));
+				assertEquals("should have only 1 fighter", 1, map.getCoordFighters().size());
+				assertEquals("should have only 1 fighter", 1, map.getFighters().size());
+			}
+		}
+	}
+	
 	@Test
 	public void range() {
 		fighterInitialization();

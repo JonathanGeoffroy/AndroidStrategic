@@ -11,10 +11,26 @@ public class Coord2D {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof Coord2D) {
-			Coord2D other = (Coord2D) obj;
-			return x == other.x && y == other.y;
-		}
-		return false;
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Coord2D other = (Coord2D) obj;
+		if (x != other.x)
+			return false;
+		if (y != other.y)
+			return false;
+		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + x;
+		result = prime * result + y;
+		return result;
 	}
 }

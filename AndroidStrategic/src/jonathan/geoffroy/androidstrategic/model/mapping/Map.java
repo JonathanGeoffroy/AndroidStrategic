@@ -160,6 +160,14 @@ public class Map {
 		return getTerrain(coord.x, coord.y);
 	}
 
+	public HashMap<Fighter, Coord2D> getFighters() {
+		return fighters;
+	}
+
+	public HashMap<Coord2D, Fighter> getCoordFighters() {
+		return coordFighters;
+	}
+
 	public Terrain[][] getMap() {
 		return map;
 	}
@@ -194,11 +202,13 @@ public class Map {
 		assert(fighters.containsKey(fighter));
 		assert(y >= 0 && y < map.length);
 		assert(x >= 0 && x < map[y].length);
-		assert(!fighters.containsValue(new Coord2D(x, y)));
+		assert(!fighters.containsValue(new Coord2D(x, y))  || coordFighters.get(new Coord2D(x, y)).equals(fighter));
 		Coord2D coord = fighters.get(fighter);
+		assert(coordFighters.containsKey(coord));
+		coordFighters.remove(coord);
 		coord.x = x;
 		coord.y = y;
-		assert(coordFighters.containsKey(coord));
+		coordFighters.put(coord, fighter);
 	}
 
 	/** 
@@ -208,9 +218,10 @@ public class Map {
 	public void rmFighter(Fighter fighter) {
 		assert(fighters.containsKey(fighter));
 		Coord2D coord = fighters.get(fighter);
-		assert(coordFighters.containsKey(coord));
+		assert(coordFighters.containsValue(fighter));
 		fighters.remove(fighter);
-		coordFighters.remove(coord);
+		Fighter f = coordFighters.remove(coord);
+		assert f != null;
 	}
 
 	public void clearFighters() {
@@ -266,27 +277,30 @@ public class Map {
 		for(int i = 0; i < testsCoord.length; i++) {
 			currentCoord = testsCoord[i];
 
+			// If the testde terrain is in map
 			if(currentCoord.y >= 0 && currentCoord.y < map.length &&
 					currentCoord.x >= 0 && currentCoord.x < map[y].length) {
+
 				currentTerrain = getTerrain(currentCoord.x, currentCoord.y);
 				currentMovementCost = currentTerrain.getMovementCost(fighter);
 				nextMovementLeft = nbMovementsLeft - currentMovementCost;
+				fighterAtCoord = coordFighters.get(currentCoord);
+				previousMovementLeft = alreadyReachable.get(currentCoord);
 
-				if(currentMovementCost <= nbMovementsLeft) {
-					fighterAtCoord = coordFighters.get(currentCoord);
-					if(currentTerrain.isStoppable(fighter) && fighterAtCoord == null) {
-						previousMovementLeft = alreadyReachable.get(currentCoord);
+				//if fighter can reach the terrain
+				if(currentMovementCost <= nbMovementsLeft &&
+						currentTerrain.isStoppable(fighter) && fighterAtCoord == null &&
+						(previousMovementLeft == null || previousMovementLeft < nextMovementLeft) &&	
+						(currentTerrain.isTraversable(fighter) && (fighterAtCoord == null || !fighterAtCoord.isEnnemy(fighter))))
+				{
 
-						if(previousMovementLeft == null || previousMovementLeft < nextMovementLeft) {
-							if(currentTerrain.isTraversable(fighter) && (fighterAtCoord == null || !fighterAtCoord.isEnnemy(fighter))) {
-								nextAlreadyReachable = (HashMap<Coord2D, Integer>) alreadyReachable.clone();
-								nextAlreadyReachable.put(currentCoord, nextMovementLeft);
-								calculateReach(fighter, nextMovementLeft, currentCoord.x, currentCoord.y, nextAlreadyReachable);
-							}
-						}
-					}
+					reachable.addReachable(currentCoord);
+					//recursive for next terrains 
+					nextAlreadyReachable = (HashMap<Coord2D, Integer>) alreadyReachable.clone();
+					nextAlreadyReachable.put(currentCoord, nextMovementLeft);
+					calculateReach(fighter, nextMovementLeft, currentCoord.x, currentCoord.y, nextAlreadyReachable);
 				}
-
+				
 				// Assailable terrains 
 				else {
 					Coord2D touchCoord = new Coord2D();

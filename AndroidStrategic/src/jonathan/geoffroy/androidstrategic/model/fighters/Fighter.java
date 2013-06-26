@@ -1,5 +1,7 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
+import java.util.Arrays;
+
 import jonathan.geoffroy.androidstrategic.model.items.bags.FighterBag;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
@@ -31,6 +33,22 @@ public abstract class Fighter {
 		initializeStats();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(attributes);
+		result = prime * result + classBonus;
+		result = prime * result + experience;
+		result = prime * result + (general ? 1231 : 1237);
+		result = prime * result + hp;
+		result = prime * result + level;
+		result = prime * result + movement;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + weight;
+		return result;
+	}
+	
 	/**
 	 * Permit to initialize stat for Fighter  
 	 */
