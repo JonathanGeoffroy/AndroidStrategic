@@ -2,7 +2,9 @@ package jonathan.geoffroy.androidstrategic.tests;
 
 import static org.junit.Assert.*;
 import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
+import jonathan.geoffroy.androidstrategic.model.fighters.Cat;
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
+import jonathan.geoffroy.androidstrategic.model.fighters.Laguz;
 import jonathan.geoffroy.androidstrategic.model.items.BlockItem;
 import jonathan.geoffroy.androidstrategic.model.items.CureItem;
 import jonathan.geoffroy.androidstrategic.model.items.Item;
@@ -135,17 +137,41 @@ public class ItemTest {
 	public void cure() {
 		CureItem cure = new CureItem(10);
 		Fighter f = new Archer();
-		
+
 		// no full life
 		f.setHp((short)1);
 		cure.use(f);
 		assertEquals("fighter should recover 10 hp", 11, f.getHp());
-		
+
 		// < 10 HP lost
 		cure = new CureItem(10);
 		f = new Archer();
 		f.setHp((short) (f.getHpMax() - 5));
 		cure.use(f);
 		assertEquals("fighter should recover all hp", f.getHpMax(), f.getHp());
+	}
+
+	@Test
+	public void transform() {
+		TransformItem trans = new TransformItem(10);
+		Laguz l = new Cat();
+
+		// 0 transform points
+		trans.use(l);
+		assertEquals("laguz should recover 10 transform points", 10, l.getTransform());
+
+		// < MAX - 10 points
+		trans = new TransformItem(10);
+		l = new Cat();
+		l.setTransform((short) (5));
+		trans.use(l);
+		assertEquals("laguz should recover only several transform points", 15, l.getTransform());
+
+		// > MAX - 10 points
+		trans = new TransformItem(10);
+		l = new Cat();
+		l.setTransform((short) ( Laguz.MAX_TRANSFORM_POINTS - 5));
+		trans.use(l);
+		assertEquals("fighter should recover all transform points", Laguz.MAX_TRANSFORM_POINTS, l.getTransform());
 	}
 }

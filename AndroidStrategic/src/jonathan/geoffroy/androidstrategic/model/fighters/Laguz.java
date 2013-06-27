@@ -1,7 +1,7 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
 public abstract class Laguz extends Fighter {
-	public static final short TRANFORM_POINTS_ON_ATTACK = 3, TRANSFORM_POINTS_ON_NEXT_TURN = 4;
+	public static final short TRANFORM_POINTS_ON_ATTACK = 3, TRANSFORM_POINTS_ON_NEXT_TURN = 4, MAX_TRANSFORM_POINTS = 20;
 
 	protected short transform;
 	protected boolean transformed;
@@ -34,8 +34,8 @@ public abstract class Laguz extends Fighter {
 			throw new TransformNotPossibleException();
 		}
 	}
-	
-	
+
+
 	/**
 	 * remove transform points if if laguz is transformed, add transform points else
 	 */
@@ -50,14 +50,14 @@ public abstract class Laguz extends Fighter {
 		}
 		setTransform((short) (transform + transPoints));
 	}
-	
+
 	/**
 	 * @return TRUE only if laguz can transform itself; i.e. if he has 30 transform points, and isn't yet transformed
 	 */
 	public boolean canTransform() {
 		return !transformed && transform == 30;
 	}
-	
+
 	@Override
 	public short getConstitution() {
 		if(transformed) return (short)(attributes[CONSTITUTION] + transConstitution);
@@ -102,7 +102,7 @@ public abstract class Laguz extends Fighter {
 	public short getTransform() {
 		return transform;
 	}
-	
+
 	public void setTransform(short transform) {
 		this.transform = transform;
 		if(transform > 30)
@@ -168,5 +168,15 @@ public abstract class Laguz extends Fighter {
 	}
 	public void setTransMovement(short transMovement) {
 		this.transMovement = transMovement;
+	}
+
+	public void addTransform(int trans) {
+		transform += trans;
+		if(transform < 0) {
+			transform = 0;
+		}
+		else if(transform > MAX_TRANSFORM_POINTS) {
+			transform = MAX_TRANSFORM_POINTS;
+		}
 	}
 }
