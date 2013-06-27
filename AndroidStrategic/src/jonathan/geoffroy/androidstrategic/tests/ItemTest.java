@@ -1,6 +1,8 @@
 package jonathan.geoffroy.androidstrategic.tests;
 
 import static org.junit.Assert.*;
+import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
+import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.items.BlockItem;
 import jonathan.geoffroy.androidstrategic.model.items.CureItem;
 import jonathan.geoffroy.androidstrategic.model.items.Item;
@@ -31,7 +33,7 @@ public class ItemTest {
 		Item addedItems[] = { new CureItem(), new BlockItem(),
 				new TransformItem(), new Ax(), new FireBook(), new Knife(),
 				new Scepter(), new Spire(), new Sword(), new Bow() };
-		
+
 		//first adding
 		for(int i = 0; i < addedItems.length; i++) {
 			teamBag.add(addedItems[i]);
@@ -46,12 +48,12 @@ public class ItemTest {
 			assertEquals("should have " + nb + " items into bag", nb, teamBag.size());
 		}
 		addedItems = null;
-		
+
 		// second adding
 		Item[] addedItems2 = { new CureItem(), new BlockItem(),
 				new TransformItem(), new Ax(), new FireBook(), new Knife(),
 				new Scepter(), new Spire(), new Sword(), new Bow() };
-		
+
 		for(int i = 0; i < addedItems2.length; i++) {
 			teamBag.add(addedItems2[i]);
 			nb++;
@@ -65,40 +67,40 @@ public class ItemTest {
 			assertEquals("should have " + nb + " items into bag", nb, teamBag.size());
 		}
 	}
-	
-	
+
+
 	@Test
 	public void fighterBag() {
 		bag = new FighterBag();
 		FighterBag fighterBag = (FighterBag)bag;
 		boolean added;
-		
+
 		for(int i = 0; i < FighterBag.NB_ITEMS_MAX; i++) {
 			added = fighterBag.add(new CureItem());
 			assertTrue("Item should be added", added);
 			assertEquals("bag should contains " + i +1 + " items", i+1, fighterBag.itemSize());
 			assertEquals("bag shouln't contains any weapon", 0, fighterBag.weaponsSize());
 		}
-		
+
 		added = fighterBag.add(new CureItem());
 		assertFalse("The bag is full, item shouln't be added", added);
 		assertEquals("bag should contains MAX items", FighterBag.NB_ITEMS_MAX, fighterBag.itemSize());
 		assertEquals("bag shouln't contains any weapon", 0, fighterBag.weaponsSize());
-		
-		
+
+
 		for(int i = 0; i < FighterBag.NB_WEAPONS_MAX; i++) {
 			added = fighterBag.add(new Sword());
 			assertTrue("Item should be added", added);
 			assertEquals("bag shoul contains " + (i + 1) + " weapons", i + 1, fighterBag.weaponsSize());
 			assertEquals("bag should contains MAX items", FighterBag.NB_ITEMS_MAX, fighterBag.itemSize());
 		}
-		
+
 		added = fighterBag.add(new Sword());
 		assertFalse("The bag is full, item shouln't be added", added);
 		assertEquals("bag should contains MAX items", FighterBag.NB_ITEMS_MAX, fighterBag.itemSize());
 		assertEquals("bag should contains MAX weapons", FighterBag.NB_WEAPONS_MAX, fighterBag.weaponsSize());
-		
-		
+
+
 		//add weapons with no items.
 		bag = new FighterBag();
 		fighterBag = (FighterBag)bag;
@@ -109,22 +111,41 @@ public class ItemTest {
 			assertEquals("bag shoul contains " + (i + 1) + " weapons", i + 1, fighterBag.weaponsSize());
 			assertEquals("bag shouldn't contains any item", 0, fighterBag.itemSize());
 		}
-		
+
 		added = fighterBag.add(new Sword());
 		assertFalse("The bag is full, item shouln't be added", added);
 		assertEquals("bag shouldn't contains MAX any item", 0, fighterBag.itemSize());
 		assertEquals("bag shoul contains MAX weapons", FighterBag.NB_WEAPONS_MAX, fighterBag.weaponsSize());
-		
+
 		for(int i = 0; i < FighterBag.NB_ITEMS_MAX; i++) {
 			added = fighterBag.add(new CureItem());
 			assertTrue("Item should be added", added);
 			assertEquals("bag should contains " + i + 1 + " items", i + 1, fighterBag.itemSize());
 			assertEquals("bag should contains MAX weapons", FighterBag.NB_WEAPONS_MAX, fighterBag.weaponsSize());
 		}
-		
+
 		added = fighterBag.add(new CureItem());
 		assertFalse("The bag is full, item shouln't be added", added);
 		assertEquals("bag should contains MAX items", FighterBag.NB_ITEMS_MAX, fighterBag.itemSize());
 		assertEquals("bag should contains MAX weapons", FighterBag.NB_WEAPONS_MAX, fighterBag.weaponsSize());
+	}
+
+
+	@Test
+	public void cure() {
+		CureItem cure = new CureItem(10);
+		Fighter f = new Archer();
+		
+		// no full life
+		f.setHp((short)1);
+		cure.use(f);
+		assertEquals("fighter should recover 10 hp", 11, f.getHp());
+		
+		// < 10 HP lost
+		cure = new CureItem(10);
+		f = new Archer();
+		f.setHp((short) (f.getHpMax() - 5));
+		cure.use(f);
+		assertEquals("fighter should recover all hp", f.getHpMax(), f.getHp());
 	}
 }

@@ -345,7 +345,7 @@ public abstract class Fighter {
 		this.hp = hp;
 	}
 
-	private void addHp(int hpAdded) {
+	public void addHp(int hpAdded) {
 		hp += hpAdded;
 		if(hp < 0)
 			hp = 0;

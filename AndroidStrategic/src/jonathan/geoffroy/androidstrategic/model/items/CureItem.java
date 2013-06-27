@@ -7,6 +7,14 @@ public class CureItem extends FighterItem {
 
 	private int cure;
 
+	public CureItem() {
+		cure = 10;
+	}
+	
+	public CureItem(int cure) {
+		this.cure = cure;
+	}
+
 	public int getCure() {
 		return cure;
 	}
@@ -17,8 +25,7 @@ public class CureItem extends FighterItem {
 
 	@Override
 	public void use(Fighter fighter) {
-		// TODO Auto-generated method stub
-		
+		fighter.addHp(cure);		
 	}
 
 	@Override
