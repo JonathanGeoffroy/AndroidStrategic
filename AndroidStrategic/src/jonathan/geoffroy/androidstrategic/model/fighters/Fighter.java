@@ -1,10 +1,12 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import jonathan.geoffroy.androidstrategic.model.items.bags.FighterBag;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
+import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
 
 public abstract class Fighter {
 	public int HPMAX = 0, CONSTITUTION = 1, DEFENSE = 2, RESISTANCE = 3, STRENGTH = 4, MAGIC = 5, SPEED = 6, MOVEMENTMAX = 7, LUCK = 8, SKILL = 9;
@@ -31,22 +33,6 @@ public abstract class Fighter {
 	public Fighter(String name) {
 		this.setName(name);
 		initializeStats();
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(attributes);
-		result = prime * result + classBonus;
-		result = prime * result + experience;
-		result = prime * result + (general ? 1231 : 1237);
-		result = prime * result + hp;
-		result = prime * result + level;
-		result = prime * result + movement;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + weight;
-		return result;
 	}
 	
 	/**
@@ -318,7 +304,7 @@ public abstract class Fighter {
 		if(this.isDead()) { // dead case
 			experience = 0;
 		}
-		else if(fightResult.getSumDamages(fighterNum) == 0)	//no take damage case:
+		else if(fightResult.getSumDamages(fighterNum) == 0)	//no give damage case:
 			experience = 1;
 		else if(ennemy.isDead()) { // kill case
 			experience = battleBasedExperience(ennemy) + diffPower(ennemy) + modeBonusExperience();

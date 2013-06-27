@@ -36,6 +36,7 @@ public class FightTest {
 	private FightResult result;
 	private Map map;
 	private final static int NB_RATIO_TESTS = 100000;
+	
 	@Before
 	public void preConditions() {
 		try {
@@ -437,6 +438,14 @@ public class FightTest {
 	}
 
 	private void initializeLaguz() {
+		try {
+			map = Map.load("Test", 2);
+			Fighter.setMap(map);
+		} catch (IOException e) {
+			fail(e.getMessage());
+			e.printStackTrace();
+		}
+		
 		fighters = new Laguz[2];
 		for(int i = 0; i < 2; i++) {
 			fighters[i] = new Lion();
