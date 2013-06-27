@@ -12,4 +12,9 @@ public class Bow extends Weapon {
 	public boolean canEquip(Human human) {
 		return human.getBowClass() >= weaponClass;
 	}
+
+	@Override
+	public int getType() {
+		return 9;
+	}
 }

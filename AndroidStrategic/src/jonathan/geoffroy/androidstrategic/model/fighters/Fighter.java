@@ -1,12 +1,8 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
 import jonathan.geoffroy.androidstrategic.model.items.bags.FighterBag;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
-import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
 
 public abstract class Fighter {
 	public int HPMAX = 0, CONSTITUTION = 1, DEFENSE = 2, RESISTANCE = 3, STRENGTH = 4, MAGIC = 5, SPEED = 6, MOVEMENTMAX = 7, LUCK = 8, SKILL = 9;
@@ -24,17 +20,19 @@ public abstract class Fighter {
 	private boolean general;
 	protected FighterBag bag;
 	protected Team team;
-	
+
 	public Fighter() {
+		bag = new FighterBag();
 		setName(defaultName());
 		initializeStats();
 	}
 
 	public Fighter(String name) {
+		bag = new FighterBag();
 		this.setName(name);
 		initializeStats();
 	}
-	
+
 	/**
 	 * Permit to initialize stat for Fighter  
 	 */
@@ -322,7 +320,7 @@ public abstract class Fighter {
 		assert(team != null);
 		return !team.isInTeam(fighter);
 	}
-	
+
 	public Team getTeam() {
 		return team;
 	}

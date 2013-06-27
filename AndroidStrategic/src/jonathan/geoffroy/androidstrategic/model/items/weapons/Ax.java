@@ -9,4 +9,9 @@ public class Ax extends Weapon {
 		return human.getAxClass() >= weaponClass;
 	}
 
+	@Override
+	public int getType() {
+		return 3;
+	}
+
 }

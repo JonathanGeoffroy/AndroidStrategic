@@ -8,4 +8,9 @@ public class Sword extends Weapon {
 	public boolean canEquip(Human human) {
 		return human.getSwordClass() >= weaponClass;
 	}
+
+	@Override
+	public int getType() {
+		return 8;
+	}
 }

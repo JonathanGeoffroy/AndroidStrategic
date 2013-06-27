@@ -8,4 +8,9 @@ public class Spire extends Weapon {
 	public boolean canEquip(Human human) {
 		return human.getSpearClass() >= weaponClass;
 	}
+
+	@Override
+	public int getType() {
+		return 7;
+	}
 }

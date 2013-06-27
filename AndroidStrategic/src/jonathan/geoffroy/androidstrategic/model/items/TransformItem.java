@@ -1,5 +1,7 @@
 package jonathan.geoffroy.androidstrategic.model.items;
 
+import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
+
 public class TransformItem extends LaguzItem {
 
 	private int transform;
@@ -12,4 +14,9 @@ public class TransformItem extends LaguzItem {
 		this.transform = transform;
 	}
 
+	@Override
+	public void use(Fighter fighter) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -8,4 +8,9 @@ public class Scepter extends Weapon {
 	public boolean canEquip(Human human) {
 		return human.getScepterClass() >= weaponClass;
 	}
+
+	@Override
+	public int getType() {
+		return 6;
+	}
 }

@@ -4,7 +4,6 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 
 public abstract class FighterItem extends Item {
 
-  public void use(Fighter fighter) {
-  }
+  public abstract void use(Fighter fighter);
 
 }
