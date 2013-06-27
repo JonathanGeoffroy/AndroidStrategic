@@ -115,7 +115,7 @@ public abstract class Fighter {
 	}
 
 	public int attackStrength(Fighter assaulted, boolean isPhysicalAttack) {
-		int strength = this.calculatePower() - assaulted.calculateDefense(isPhysicalAttack);
+		int strength = this.calculatePower(assaulted) - assaulted.calculateDefense(isPhysicalAttack);
 		if (strength < 0)
 			return 0;
 		return strength;
@@ -125,7 +125,7 @@ public abstract class Fighter {
 	 * Calculate de strength of the Fighter physical attack
 	 * @return strength of the Fighter attack
 	 */
-	public int calculatePower() {
+	public int calculatePower(Fighter fighter) {
 		if(isPhysicalAttack())
 			return attributes[STRENGTH];
 		return attributes[LUCK];
@@ -152,7 +152,7 @@ public abstract class Fighter {
 	 * Calculate the hit rate of the Fighter
 	 * @return the hit rate
 	 */
-	public int hitRate() {
+	public int hitRate(Fighter fighter) {
 		return getSkill() * 2 + getLuck();
 	}
 
@@ -190,7 +190,7 @@ public abstract class Fighter {
 	 * @return accuracy of the Fighter to the ennemy
 	 */
 	public int accuracy(Fighter other) {
-		int accuracy = hitRate() - other.evade();
+		int accuracy = hitRate(other) - other.evade();
 		if(accuracy > 100)
 			accuracy = 100;
 		else if(accuracy < 0)
@@ -199,7 +199,7 @@ public abstract class Fighter {
 	}
 
 	public int criticalAccuracy(Fighter other) {
-		int accuracy = hitRate() - other.criticalEvade();
+		int accuracy = hitRate(other) - other.criticalEvade();
 		if(accuracy > 100)
 			accuracy = 100;
 		else if(accuracy < 0)

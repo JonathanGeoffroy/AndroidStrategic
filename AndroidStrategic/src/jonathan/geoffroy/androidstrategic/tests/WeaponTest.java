@@ -86,5 +86,29 @@ public class WeaponTest {
 			assertFalse(fighters[i].getName() + "should can equip " + weapons[i].getName(), weapons[i].canEquip(fighters[i]));
 		}
 	}
+
+	@Test
+	public void effectiveness() {
+		Human[] humans = {new Ranger(), new Axman(), new Soldier()};
+		Weapon[] weapons = {new Sword(), new Ax(), new Spire()};
+
+		//none equiped effectiveness
+		for(int i = 0; i < humans.length - 1; i++) {
+			humans[i].setEquiped(weapons[i]);
+			assertFalse("with an ennemy with no equipement, shouldn't be effectiveness", humans[i].getEquiped().isEffectiveness(humans[i + 1]));
+		}
+		humans[2].setEquiped(weapons[2]);
+
+		for(int i = 0; i < humans.length; i++) {
+			for(int j = 0; j < humans.length; j++) {
+				if(i == j) continue;
+				if(j == (i+1) % 3) {
+					assertTrue("should be effectiveness", humans[i].getEquiped().isEffectiveness(humans[j]));
+				}
+				else {
+					assertFalse("shouldn't be effectiveness", humans[i].getEquiped().isEffectiveness(humans[j]));
+				}
+			}
+		}
+	}
 }
-	

@@ -23,10 +23,20 @@ public abstract class Human extends Fighter {
 	protected short knifeExp;
 
 	@Override
-	public int hitRate() {
-		int rate = super.hitRate();
+	public int hitRate(Fighter fighter) {
+		int rate = super.hitRate(fighter);
 		if(equiped != null) {
 			rate += equiped.getHitRate();
+			if(equiped.isEffectiveness(fighter)) {
+				rate += (rate * 20) / 100;
+			}
+			else if(fighter instanceof Human) {
+				Human human = (Human)fighter;
+				Weapon weapon = human.getEquiped();
+				if(weapon != null && weapon.isEffectiveness(this)) {
+					rate -= (rate * 20) / 100;
+				}
+			}
 		}
 		return rate;
 	}
@@ -53,10 +63,20 @@ public abstract class Human extends Fighter {
 	}
 
 	@Override
-	public int calculatePower() {
-		int strength = super.calculatePower();
+	public int calculatePower(Fighter fighter) {
+		int strength = super.calculatePower(fighter);
 		if(equiped != null) {
 			strength += equiped.getMight();
+			if(equiped.isEffectiveness(fighter)) {
+				strength += 1;
+			}
+			else if (fighter instanceof Human) {
+				Human human = (Human)fighter;
+				Weapon weapon = human.getEquiped();
+				if(weapon != null && weapon.isEffectiveness(this)) {
+					strength -= 1;
+				}
+			}
 		}
 		return strength;
 	}
