@@ -333,9 +333,18 @@ public abstract class Fighter {
 	}
 
 	public boolean isEnnemy(Fighter fighter) {
+		assert(team != null);
 		return !team.isInTeam(fighter);
 	}
 	
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+
 	public boolean isGeneral() {
 		return general;
 	}

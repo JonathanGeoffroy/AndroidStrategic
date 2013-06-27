@@ -34,6 +34,7 @@ public class Team {
 	 */
 	public void addFighter(Fighter fighter) {
 		fighters.add(fighter);
+		fighter.setTeam(this);
 	}
 
 	/**

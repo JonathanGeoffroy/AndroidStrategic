@@ -289,7 +289,7 @@ public class Map {
 
 				//if fighter can reach the terrain
 				if(currentMovementCost <= nbMovementsLeft &&
-						currentTerrain.isStoppable(fighter) && fighterAtCoord == null &&
+						currentTerrain.isStoppable(fighter) && 
 						(previousMovementLeft == null || previousMovementLeft < nextMovementLeft) &&	
 						(currentTerrain.isTraversable(fighter) && (fighterAtCoord == null || !fighterAtCoord.isEnnemy(fighter))))
 				{

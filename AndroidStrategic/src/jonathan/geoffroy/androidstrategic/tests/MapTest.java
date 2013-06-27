@@ -286,4 +286,27 @@ public class MapTest extends Map {
 			}
 		}
 	}
+	
+	@Test
+	public void alliesNonBlocks() {
+		mapInitialization(2);
+		Team team = new Team();
+		int x[] = {1, 0, 2, 1, 1};
+		int y[] = {1, 1, 1, 0, 2};
+		fighters = new Human[5];
+		Sword sword = new Sword();
+		Human h;
+		for(int i = 0; i < fighters.length; i++) {
+			fighters[i] = new Ranger();
+			h = fighters[i];
+			h.setEquiped(sword);
+			team.addFighter(h);
+		}
+		
+		for(int i = 1; i < fighters.length; i++) {
+			map.addFighter(fighters[i], x[i], y[i]);
+		}
+		
+		reachTest(new Coord2D(x[0], y[0]));
+	}
 }
