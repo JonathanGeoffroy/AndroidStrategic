@@ -1,12 +1,12 @@
 package jonathan.geoffroy.androidstrategic.model.items;
 
-import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.BlockMagic;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.Magic;
 
 public class BlockItem extends TerrainItem {
 
 	@Override
-	public void use(Terrain terrain) {
-		// TODO Auto-generated method stub
-		
+	public Magic magic() {
+		return new BlockMagic();
 	}
 }

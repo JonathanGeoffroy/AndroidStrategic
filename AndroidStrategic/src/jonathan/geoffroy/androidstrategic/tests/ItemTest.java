@@ -174,4 +174,16 @@ public class ItemTest {
 		trans.use(l);
 		assertEquals("fighter should recover all transform points", Laguz.MAX_TRANSFORM_POINTS, l.getTransform());
 	}
+	
+	@Test
+	public void use() {
+		CureItem cure = new CureItem();
+		Archer fighter = new Archer();
+		for(int i = 0; i < cure.getUseMax(); i++) {
+			assertFalse("item shouldn't be destroyed", cure.isDestroyed());
+			assertEquals("cure's use should be decrease", cure.getUseMax() - i, (int)cure.getUse());
+			cure.use(fighter);
+		}
+		assertTrue("item should be destroyed", cure.isDestroyed());
+	}
 }

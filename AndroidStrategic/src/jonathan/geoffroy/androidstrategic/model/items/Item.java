@@ -1,10 +1,9 @@
 package jonathan.geoffroy.androidstrategic.model.items;
 
-
 public abstract class Item {
 
-	private short use;
-	private short useMax;
+	protected short use;
+	protected short useMax;
 	private short weight;
 	private int price;
 	private String name;
@@ -12,13 +11,26 @@ public abstract class Item {
 	public Item() {
 		name = defaultName();
 	}
-	
+
 	public String defaultName() {
 		return getClass().getName();
-		
 	}
+
+	/**
+	 * Decrements use number
+	 */
+	public void isUsed() {
+		assert(use > 0);
+		assert(use <= useMax);
+		use--;
+	}
+
 	public boolean isDestructible() {
 		return useMax < 0;
+	}
+
+	public boolean isDestroyed() {
+		return use == 0;
 	}
 
 	public short getUse() {
@@ -60,6 +72,6 @@ public abstract class Item {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public abstract int getType();
 }

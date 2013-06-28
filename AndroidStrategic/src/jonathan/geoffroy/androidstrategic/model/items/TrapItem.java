@@ -1,12 +1,12 @@
 package jonathan.geoffroy.androidstrategic.model.items;
 
-import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.Magic;
+import jonathan.geoffroy.androidstrategic.model.mapping.magic.TrapMagic;
 
 public class TrapItem extends TerrainItem {
-
+	
 	@Override
-	public void use(Terrain terrain) {
-		// TODO Auto-generated method stub
-		
+	public Magic magic() {
+		return new TrapMagic();
 	}
 }

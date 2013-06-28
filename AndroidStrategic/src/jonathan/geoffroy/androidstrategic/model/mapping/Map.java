@@ -29,7 +29,7 @@ public class Map {
 	private Terrain[][] map;
 	private LinkedHashSet<Terrain> terrains;
 	private ArrayList<CoordMagic> terrainMagics;
-	private ArrayList<CoordItem> terrainsItems;
+	private ArrayList<CoordItem> terrainItems;
 	private HashMap<Fighter, Coord2D> fighters;
 	private HashMap<Coord2D, Fighter> coordFighters;
 	private Reachable reachable;
@@ -37,7 +37,7 @@ public class Map {
 	public Map() {
 		terrains = new LinkedHashSet<Terrain>();
 		terrainMagics = new ArrayList<CoordMagic>();
-		terrainsItems = new ArrayList<CoordItem>();
+		terrainItems = new ArrayList<CoordItem>();
 		fighters = new HashMap<Fighter, Coord2D>();
 		coordFighters = new HashMap<Coord2D, Fighter>();
 	}
@@ -300,7 +300,7 @@ public class Map {
 					nextAlreadyReachable.put(currentCoord, nextMovementLeft);
 					calculateReach(fighter, nextMovementLeft, currentCoord.x, currentCoord.y, nextAlreadyReachable);
 				}
-				
+
 				// Assailable terrains 
 				else {
 					Coord2D touchCoord = new Coord2D();
@@ -330,6 +330,10 @@ public class Map {
 				}
 			}
 		}
+	}
+
+	public void addMagic(Coord2D coord, Magic magic) {
+		terrainMagics.add(new CoordMagic(coord, magic));
 	}
 }
 

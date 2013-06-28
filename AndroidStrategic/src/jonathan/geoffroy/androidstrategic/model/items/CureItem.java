@@ -8,6 +8,7 @@ public class CureItem extends FighterItem {
 	private int cure;
 
 	public CureItem() {
+		use = useMax = 3;
 		cure = 10;
 	}
 	
@@ -25,7 +26,8 @@ public class CureItem extends FighterItem {
 
 	@Override
 	public void use(Fighter fighter) {
-		fighter.addHp(cure);		
+		fighter.addHp(cure);
+		isUsed();
 	}
 
 	@Override

@@ -24,5 +24,6 @@ public class TransformItem extends LaguzItem {
 	@Override
 	public void use(Laguz laguz) {
 		laguz.addTransform(transform);
+		isUsed();
 	}
 }

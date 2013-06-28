@@ -6,5 +6,4 @@ public class Cavalier extends Human implements Riding {
 	protected String defaultName() {
 		return "Cavalier";
 	}
-
 }
