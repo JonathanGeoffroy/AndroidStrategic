@@ -6,7 +6,7 @@ public abstract class Item {
 	protected short useMax;
 	private short weight;
 	private int price;
-	private String name;
+	protected String name;
 
 	public Item() {
 		name = defaultName();

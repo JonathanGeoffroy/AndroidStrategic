@@ -18,6 +18,7 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Mage;
 import jonathan.geoffroy.androidstrategic.model.fighters.Priest;
 import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
 import jonathan.geoffroy.androidstrategic.model.fighters.Team;
+import jonathan.geoffroy.androidstrategic.model.items.CureItem;
 import jonathan.geoffroy.androidstrategic.model.items.Item;
 import jonathan.geoffroy.androidstrategic.model.mapping.magic.CureMagic;
 import jonathan.geoffroy.androidstrategic.model.mapping.magic.KillMagic;
@@ -34,6 +35,7 @@ public class Map {
 			ENNEMY_ARCHER = -16711936, ENNEMY_AXMAN = -65281,
 			ENNEMY_PRIEST = -16711681, ENNEMY_MAGE = -256;
 	public final static int NOMAGIC = -1, TRAPMAGIC = -65536, KILLMAGIC = -16777216, CUREMAGIC = -16711936;
+	private static final int NO_ITEM = -1, CURE_ITEM = -16711936;
 	public final static String SCENARII_DIR = "data/scenarii/";
 
 	private Terrain[][] map;
@@ -60,8 +62,32 @@ public class Map {
 
 		loadedMap.loadTerrains(scenarioName, chapterNum);
 		loadedMap.loadMagics(scenarioName, chapterNum);
+		loadedMap.loadItems(scenarioName, chapterNum);
 		loadedMap.loadFighters(scenarioName, chapterNum);
 		return loadedMap;
+	}
+
+	private void loadItems(String scenarioName, int chapterNum) 
+			throws IOException {
+		BufferedImage img;
+
+		try {
+			img = ImageIO.read(new FileInputStream(SCENARII_DIR + scenarioName + "/" + chapterNum + "_items.png"));
+			int width = img.getWidth();
+			int height = img.getHeight();
+
+			for (int i = 0; i < height; i++) {
+				for (int j = 0; j < width; j++) {
+					switch(img.getRGB(j, i)) {
+					case NO_ITEM: 
+						break;
+					case CURE_ITEM:
+						terrainItems.add(new CoordItem(new Coord2D(j, i), new CureItem("Potion", 10, (short) 3)));
+						break;
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {}
 	}
 
 	private void loadFighters(String scenarioName, int chapterNum) 
@@ -75,7 +101,7 @@ public class Map {
 			img = ImageIO.read(new FileInputStream(SCENARII_DIR + scenarioName + "/" + chapterNum + "_fighters.png"));
 			int width = img.getWidth();
 			int height = img.getHeight();
-			
+
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
 					switch(img.getRGB(j, i)) {
@@ -84,7 +110,7 @@ public class Map {
 					case PLAYER_CASE:
 						beginPlayers.add(new Coord2D(j, i));
 						continue;
-						
+
 					case ENNEMY_SOLDIER:
 						fighter = new Soldier();
 						break;
@@ -397,6 +423,20 @@ public class Map {
 
 	public void addMagic(Coord2D coord, Magic magic) {
 		terrainMagics.add(new CoordMagic(coord, magic));
+	}
+
+	/**
+	 * Return the item at Terrain defined by coord
+	 * @param coord the Terrain where we search the item
+	 * @return the item if exist, else null
+	 */
+	public Item getItem(Coord2D coord) {
+		for(CoordItem c : terrainItems) {
+			if(coord.equals(c.coord)) {
+				return c.item;
+			}
+		}
+		return null;
 	}
 }
 

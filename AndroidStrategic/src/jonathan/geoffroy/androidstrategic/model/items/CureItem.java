@@ -16,6 +16,12 @@ public class CureItem extends FighterItem {
 		this.cure = cure;
 	}
 
+	public CureItem(String name, int cure, short nbUseMax) {
+		this.name = name;
+		this.cure = cure;
+		this.use = this.useMax = nbUseMax;
+	}
+
 	public int getCure() {
 		return cure;
 	}

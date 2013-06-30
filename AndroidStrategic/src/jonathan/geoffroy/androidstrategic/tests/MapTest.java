@@ -90,6 +90,16 @@ public class MapTest extends Map {
 		for(int i = fighters.length; i < map.getWidth(); i++) {
 			assertNull("shouldn't have ennmy", map.getCoordFighters().get(new Coord2D(i, 0)));
 		}
+		
+		for(int i = 0; i < map.getWidth(); i++) {
+			if(i == 3) {
+				assertTrue("should have a potion", map.getItem(new Coord2D(i, 0)) != null);
+			}
+			else {
+				assertNull("shouldn't have any potion", map.getItem(new Coord2D(i, 0)));
+			}
+		}
+		
 		// Floor map test
 		try {
 			map = Map.load("Test", 2);
