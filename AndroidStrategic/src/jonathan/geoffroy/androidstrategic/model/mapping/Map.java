@@ -92,7 +92,6 @@ public class Map {
 
 	private void loadFighters(String scenarioName, int chapterNum) 
 			throws IOException {
-		Team player = new Team();
 		Team ennemy = new Team();
 		BufferedImage img;
 		Fighter fighter;
