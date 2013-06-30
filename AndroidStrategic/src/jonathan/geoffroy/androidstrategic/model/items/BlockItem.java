@@ -2,7 +2,6 @@ package jonathan.geoffroy.androidstrategic.model.items;
 
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
-import jonathan.geoffroy.androidstrategic.model.mapping.magic.BlockMagic;
 import jonathan.geoffroy.androidstrategic.model.mapping.magic.Magic;
 import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
 
