@@ -4,17 +4,21 @@ import static org.junit.Assert.*;
 import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
 import jonathan.geoffroy.androidstrategic.model.fighters.Axman;
 import jonathan.geoffroy.androidstrategic.model.fighters.Human;
+import jonathan.geoffroy.androidstrategic.model.fighters.Mage;
 import jonathan.geoffroy.androidstrategic.model.fighters.Priest;
 import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
 import jonathan.geoffroy.androidstrategic.model.fighters.Ranger;
 import jonathan.geoffroy.androidstrategic.model.fighters.Thief;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Ax;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Bow;
+import jonathan.geoffroy.androidstrategic.model.items.weapons.FireBook;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Knife;
+import jonathan.geoffroy.androidstrategic.model.items.weapons.LightBook;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Scepter;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Spire;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Sword;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Weapon;
+import jonathan.geoffroy.androidstrategic.model.items.weapons.WindBook;
 
 import org.junit.Test;
 
@@ -88,7 +92,7 @@ public class WeaponTest {
 	}
 
 	@Test
-	public void effectiveness() {
+	public void PhysicalEffectiveness() {
 		Human[] humans = {new Ranger(), new Axman(), new Soldier()};
 		Weapon[] weapons = {new Sword(), new Ax(), new Spire()};
 
@@ -110,5 +114,31 @@ public class WeaponTest {
 				}
 			}
 		}
+	}
+	
+	@Test
+	public void magicalEffectiveness() {
+		Human[] humans = {new Mage(), new Mage(), new Mage()};
+		Weapon[] weapons = {new FireBook(), new WindBook(), new LightBook()};
+
+		//none equiped effectiveness
+		for(int i = 0; i < humans.length - 1; i++) {
+			humans[i].setEquiped(weapons[i]);
+			assertFalse("with an ennemy with no equipement, shouldn't be effectiveness", humans[i].getEquiped().isEffectiveness(humans[i + 1]));
+		}
+		humans[2].setEquiped(weapons[2]);
+
+		for(int i = 0; i < humans.length; i++) {
+			for(int j = 0; j < humans.length; j++) {
+				if(i == j) continue;
+				if(j == (i+1) % 3) {
+					assertTrue("should be effectiveness", humans[i].getEquiped().isEffectiveness(humans[j]));
+				}
+				else {
+					assertFalse("shouldn't be effectiveness", humans[i].getEquiped().isEffectiveness(humans[j]));
+				}
+			}
+		}
+
 	}
 }

@@ -29,10 +29,6 @@ public abstract class Weapon extends Item {
 		return 0;
 	}
 
-	public int triangleHit(Weapon weapon) {
-		return 0;
-	}
-
 	public boolean isEffectiveness(Fighter fighter) {
 		return false;
 	}
