@@ -379,7 +379,7 @@ public class Map {
 				if(currentMovementCost <= nbMovementsLeft &&
 						currentTerrain.isStoppable(fighter) && 
 						(previousMovementLeft == null || previousMovementLeft < nextMovementLeft) &&	
-						(currentTerrain.isTraversable(fighter) && (fighterAtCoord == null || !fighterAtCoord.isEnnemy(fighter))))
+						currentTerrain.isTraversable(fighter) && (fighterAtCoord == null || !fighterAtCoord.isEnnemy(fighter)))
 				{
 
 					reachable.addReachable(currentCoord);
@@ -436,6 +436,12 @@ public class Map {
 			}
 		}
 		return null;
+	}
+
+	public void setTerrain(Coord2D coord, Terrain newTerrain) {
+		assert(coord.y >= 0 && coord.y < map.length);
+		assert(coord.x >= 0 && coord.y < map[coord.x].length);
+		map[coord.y][coord.x] = newTerrain;		
 	}
 }
 

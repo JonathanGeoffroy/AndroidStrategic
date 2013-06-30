@@ -1,6 +1,9 @@
 package jonathan.geoffroy.androidstrategic.tests;
 
 import static org.junit.Assert.*;
+
+import java.io.IOException;
+
 import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
 import jonathan.geoffroy.androidstrategic.model.fighters.Cat;
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
@@ -8,6 +11,7 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Laguz;
 import jonathan.geoffroy.androidstrategic.model.items.BlockItem;
 import jonathan.geoffroy.androidstrategic.model.items.CureItem;
 import jonathan.geoffroy.androidstrategic.model.items.Item;
+import jonathan.geoffroy.androidstrategic.model.items.TerrainItem;
 import jonathan.geoffroy.androidstrategic.model.items.TransformItem;
 import jonathan.geoffroy.androidstrategic.model.items.bags.Bag;
 import jonathan.geoffroy.androidstrategic.model.items.bags.FighterBag;
@@ -19,6 +23,8 @@ import jonathan.geoffroy.androidstrategic.model.items.weapons.Knife;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Scepter;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Spire;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Sword;
+import jonathan.geoffroy.androidstrategic.model.mapping.Map;
+import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
 
 import org.junit.Test;
 
@@ -173,6 +179,22 @@ public class ItemTest {
 		l.setTransform((short) ( Laguz.MAX_TRANSFORM_POINTS - 5));
 		trans.use(l);
 		assertEquals("fighter should recover all transform points", Laguz.MAX_TRANSFORM_POINTS, l.getTransform());
+	}
+	
+	@Test
+	public void terrain() {
+		Map map = null;
+		try {
+			map = Map.load("Test", 2);
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+		TerrainItem terrain = new BlockItem();
+		Fighter fighter = new Archer();
+		map.addFighter(fighter, 0, 0);
+		terrain.use(map, new Coord2D(1, 0));
+		int[][] test = map.getReachableTerrains(fighter).getReachableMap();
+		assertEquals("fighter shouldn't reach an blocked Terrain", 2, test[0][1]);
 	}
 	
 	@Test

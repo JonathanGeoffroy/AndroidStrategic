@@ -4,6 +4,14 @@ public abstract class DestroyableTerrain extends Terrain {
 
 	protected int hp;
 
+	public DestroyableTerrain() {
+		
+	}
+	
+	public DestroyableTerrain(DestroyableTerrain t) {
+		super(t);
+		this.hp = t.hp;
+	}
 	public abstract void onDestroyed();
 
 	@Override
