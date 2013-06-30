@@ -9,8 +9,14 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 
 import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
+import jonathan.geoffroy.androidstrategic.model.fighters.Axman;
+import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.fighters.Human;
+import jonathan.geoffroy.androidstrategic.model.fighters.Knight;
+import jonathan.geoffroy.androidstrategic.model.fighters.Mage;
+import jonathan.geoffroy.androidstrategic.model.fighters.Priest;
 import jonathan.geoffroy.androidstrategic.model.fighters.Ranger;
+import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
 import jonathan.geoffroy.androidstrategic.model.fighters.Team;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Bow;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Sword;
@@ -67,6 +73,8 @@ public class MapTest extends Map {
 				new TrapMagic(), new TrapMagic(), new TrapMagic(),
 				null, null, null
 		};
+		Fighter[] fighters = {null, new Soldier(), new Knight(), new Archer(), new Axman(), new Priest(), new Mage() };
+		
 		assertEquals("map should be completly loaded", 15, intMap[0].length);
 		for (int i = 0; i < intMap[0].length; i++) {
 			assertEquals("map " + 0 + "-" + i + "should be " + terrains[i].getClass().getName(), 
@@ -74,8 +82,14 @@ public class MapTest extends Map {
 					map.getTerrain(i, 0).getClass().getName());
 
 			assertEquals("magic " + 0 + "-" + i + "should be " + magics[i], magics[i], map.getMagic(new Coord2D(i, 0)));
-		}
+		} 
 
+		for(int i = 1; i < fighters.length; i++) {
+			assertEquals("should have an ennemy", fighters[i].getClass(), map.getCoordFighters().get(new Coord2D(i, 0)).getClass());
+		}
+		for(int i = fighters.length; i < map.getWidth(); i++) {
+			assertNull("shouldn't have ennmy", map.getCoordFighters().get(new Coord2D(i, 0)));
+		}
 		// Floor map test
 		try {
 			map = Map.load("Test", 2);
@@ -102,12 +116,12 @@ public class MapTest extends Map {
 
 	}
 
-	
+
 	@Test
 	public void fighterMoving() {
 		mapInitialization(2);
 		fighterInitialization();
-		
+
 		for(int i = 0; i < map.getHeight(); i++) {
 			for(int j = 0; j < map.getWidth(); j++) {
 				map.addFighter(fighters[0], j, i);
@@ -119,7 +133,7 @@ public class MapTest extends Map {
 				assertEquals("shouldn't have any fighter", 0, map.getFighters().size());
 			}
 		}
-		
+
 		map.addFighter(fighters[1], 0, 0);
 		for(int i = 0; i < map.getHeight(); i++) {
 			for(int j = 0; j < map.getWidth(); j++) {
@@ -130,7 +144,7 @@ public class MapTest extends Map {
 			}
 		}
 	}
-	
+
 	@Test
 	public void range() {
 		fighterInitialization();
@@ -286,7 +300,7 @@ public class MapTest extends Map {
 			}
 		}
 	}
-	
+
 	@Test
 	public void alliesNonBlocks() {
 		mapInitialization(2);
@@ -302,11 +316,11 @@ public class MapTest extends Map {
 			h.setEquiped(sword);
 			team.addFighter(h);
 		}
-		
+
 		for(int i = 1; i < fighters.length; i++) {
 			map.addFighter(fighters[i], x[i], y[i]);
 		}
-		
+
 		reachTest(new Coord2D(x[0], y[0]));
 	}
 }

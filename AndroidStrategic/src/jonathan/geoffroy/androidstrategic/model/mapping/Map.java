@@ -10,7 +10,14 @@ import java.util.LinkedHashSet;
 
 import javax.imageio.ImageIO;
 
+import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
+import jonathan.geoffroy.androidstrategic.model.fighters.Axman;
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
+import jonathan.geoffroy.androidstrategic.model.fighters.Knight;
+import jonathan.geoffroy.androidstrategic.model.fighters.Mage;
+import jonathan.geoffroy.androidstrategic.model.fighters.Priest;
+import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
+import jonathan.geoffroy.androidstrategic.model.fighters.Team;
 import jonathan.geoffroy.androidstrategic.model.items.Item;
 import jonathan.geoffroy.androidstrategic.model.mapping.magic.CureMagic;
 import jonathan.geoffroy.androidstrategic.model.mapping.magic.KillMagic;
@@ -23,6 +30,9 @@ public class Map {
 			FORT = -9539712, GATE = -15654456, GRASS = -10377914, MOUNTAIN = -7713017, 
 			PEAK = -3184105, PILLAR = -5395027, PIT = -10596800, PLAIN = -4325736, 
 			ROAD = -33024, SEA = -11602448, VILLAGE = -655362;
+	public static final int NO_ENNEMY = -1, PLAYER_CASE = -16776961, ENNEMY_SOLDIER = -52686, ENNEMY_KNIGHT = -16777216,
+			ENNEMY_ARCHER = -16711936, ENNEMY_AXMAN = -65281,
+			ENNEMY_PRIEST = -16711681, ENNEMY_MAGE = -256;
 	public final static int NOMAGIC = -1, TRAPMAGIC = -65536, KILLMAGIC = -16777216, CUREMAGIC = -16711936;
 	public final static String SCENARII_DIR = "data/scenarii/";
 
@@ -30,6 +40,7 @@ public class Map {
 	private LinkedHashSet<Terrain> terrains;
 	private ArrayList<CoordMagic> terrainMagics;
 	private ArrayList<CoordItem> terrainItems;
+	private ArrayList<Coord2D> beginPlayers; 
 	private HashMap<Fighter, Coord2D> fighters;
 	private HashMap<Coord2D, Fighter> coordFighters;
 	private Reachable reachable;
@@ -40,6 +51,7 @@ public class Map {
 		terrainItems = new ArrayList<CoordItem>();
 		fighters = new HashMap<Fighter, Coord2D>();
 		coordFighters = new HashMap<Coord2D, Fighter>();
+		beginPlayers = new ArrayList<Coord2D>();
 	}
 
 	public static Map load(String scenarioName, int chapterNum)
@@ -48,8 +60,59 @@ public class Map {
 
 		loadedMap.loadTerrains(scenarioName, chapterNum);
 		loadedMap.loadMagics(scenarioName, chapterNum);
-
+		loadedMap.loadFighters(scenarioName, chapterNum);
 		return loadedMap;
+	}
+
+	private void loadFighters(String scenarioName, int chapterNum) 
+			throws IOException {
+		Team player = new Team();
+		Team ennemy = new Team();
+		BufferedImage img;
+		Fighter fighter;
+
+		try {
+			img = ImageIO.read(new FileInputStream(SCENARII_DIR + scenarioName + "/" + chapterNum + "_fighters.png"));
+			int width = img.getWidth();
+			int height = img.getHeight();
+			
+			for (int i = 0; i < height; i++) {
+				for (int j = 0; j < width; j++) {
+					switch(img.getRGB(j, i)) {
+					case NO_ENNEMY: 
+						continue;
+					case PLAYER_CASE:
+						beginPlayers.add(new Coord2D(j, i));
+						continue;
+						
+					case ENNEMY_SOLDIER:
+						fighter = new Soldier();
+						break;
+					case ENNEMY_KNIGHT:
+						fighter = new Knight();
+						break;
+					case ENNEMY_ARCHER:
+						fighter = new Archer();
+						break;
+					case ENNEMY_AXMAN:
+						fighter = new Axman();
+						break;
+					case ENNEMY_PRIEST:
+						fighter = new Priest();
+						break;
+					case ENNEMY_MAGE:
+						fighter = new Mage();
+						break;
+					default:
+						throw new IOException("this fighter is NOT available: " + i + " " + j);
+					}
+					addFighter(fighter, j, i);
+					ennemy.addFighter(fighter);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void loadTerrains(String scenarioName, int chapterNum)
