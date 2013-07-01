@@ -3,7 +3,7 @@
 [Documentation en Français.](#french)  
 [Doc in English.](#english)
 
-<a id = "french"></a>## Généralités ##
+## <a id = "french"></a> Généralités ##
 
 Ce projet est un projet étudiant déstiné à réaliser un jeu vidéo sous plateforme Android.  
 Plus précisément, il s'agit de réaliser un jeu de stratégie au tour par tour, en utilisant les règles de très grands jeux déjà existants.  
@@ -96,7 +96,7 @@ On distingue:
 
 ------------------------------------------------------------------------------------------------------------------------
 
-<a id = "english"></a>## Generals ##
+## <a id = "english"></a> Generals ##
 
 This project is a student projet to create a video game for Android plateforms.  
 Specifically, it's a turn-based video-game, using basics rules of greats existing video-games.  
