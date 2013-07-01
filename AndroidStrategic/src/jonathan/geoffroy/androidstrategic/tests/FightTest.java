@@ -23,6 +23,8 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Ranger;
 import jonathan.geoffroy.androidstrategic.model.fighters.Soldier;
 import jonathan.geoffroy.androidstrategic.model.fighters.Thief;
 import jonathan.geoffroy.androidstrategic.model.fighters.TransformNotPossibleException;
+import jonathan.geoffroy.androidstrategic.model.items.weapons.Bow;
+import jonathan.geoffroy.androidstrategic.model.items.weapons.Spear;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Sword;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 
@@ -36,7 +38,7 @@ public class FightTest {
 	private FightResult result;
 	private Map map;
 	private final static int NB_RATIO_TESTS = 100000;
-	
+
 	@Before
 	public void preConditions() {
 		try {
@@ -121,7 +123,7 @@ public class FightTest {
 		assertEquals("should hit twice", fighters[0].hitNumber(fighters[1]), 2);
 		fighters[0].setSpeed((short) (fighters[0].getSpeed() + 3));
 		assertEquals("should hit twice", fighters[0].hitNumber(fighters[1]), 2);
-		
+
 		initializeRangers();
 		Human h = (Human)fighters[0];
 		Sword sword = new Sword();
@@ -257,10 +259,22 @@ public class FightTest {
 
 	@Test
 	public void experience() {
-		initializeRangers();
-
 		//no touch case:
-		// TODO
+		fighters = new Fighter[2];
+		Archer archer = new Archer();
+		Bow bow = new Bow();
+		bow.setMight((short)10);
+		bow.setHitRate((short)150);
+		archer.setEquiped(bow);
+		Soldier soldier = new Soldier();
+		soldier.setEquiped(new Spear());
+		fighters[0] = archer;
+		fighters[1] = soldier;
+		map.addFighter(archer, 0, 0);
+		map.addFighter(soldier, 2, 0);
+		result = archer.fight(soldier);
+		assertTrue("archer should win many xp", result.getExperienceWon()[0] > 1);
+		assertEquals("soldier should win only 1 xp", 1, result.getExperienceWon()[1]);
 
 		//doing no damage case:
 		initializeRangers();
@@ -360,7 +374,7 @@ public class FightTest {
 		}
 		map.addFighter(fighters[0], 0, 0);
 		map.addFighter(fighters[1], 1, 0);
-		
+
 	}
 
 
@@ -382,13 +396,13 @@ public class FightTest {
 		lion.setTransform((short) 25);
 		assertFalse("laguz shouldn't be transformed", lion.isTransformed());
 		assertFalse("laguz should can't transform", lion.canTransform());
-		
+
 		lion.setTransform((short) 25);
 		exception.expect(TransformNotPossibleException.class);
 		try {
 			lion.transform();
 		} catch (TransformNotPossibleException e1) {}
-		
+
 		// transform = 30
 		initializeLaguz();
 		lion = (Lion) fighters[0];
@@ -426,7 +440,7 @@ public class FightTest {
 			lion2.transform();
 		} catch (TransformNotPossibleException e) {	}
 		lion.setTransform(Laguz.TRANFORM_POINTS_ON_ATTACK);
-		
+
 		assertTrue("laguz should be transformed", lion.isTransformed());
 		assertFalse("laguz shouldn't can transform", lion.canTransform());
 		lion.fight(lion2);
@@ -434,7 +448,7 @@ public class FightTest {
 		assertEquals("laguz transform points should decrease after each attack", 30 - Laguz.TRANFORM_POINTS_ON_ATTACK, lion2.getTransform());
 		assertFalse("laguz who have decrease his transfom points to 0 should be unstransformed", lion.isTransformed());
 		assertFalse("laguz who have more at least 1 transform points shouldn't unstranformed", lion.isTransformed());
-		
+
 	}
 
 	private void initializeLaguz() {
@@ -445,7 +459,7 @@ public class FightTest {
 			fail(e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 		fighters = new Laguz[2];
 		for(int i = 0; i < 2; i++) {
 			fighters[i] = new Lion();
