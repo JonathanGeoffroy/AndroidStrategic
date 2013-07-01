@@ -1,5 +1,7 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
+import jonathan.geoffroy.androidstrategic.model.items.weapons.Weapon;
+
 public class Axman extends Human {
 
 	@Override
@@ -17,7 +19,7 @@ public class Axman extends Human {
 		weight = 12;
 		movement = attributes[MOVEMENTMAX] = 6;
 		
-		axClass = 1;
+		weaponClass[Weapon.AX] = 1;
 	}
 
 	@Override

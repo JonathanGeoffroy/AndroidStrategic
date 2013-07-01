@@ -5,6 +5,8 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Human;
 import jonathan.geoffroy.androidstrategic.model.items.Item;
 
 public abstract class Weapon extends Item {
+	public final static int AX = 0, BOW = 1, FIREBOOK = 2, KNIFE = 3, LIGHTBOOK = 4, SCEPTER = 5, SPEAR = 6, SWORD = 7, WINDBOOK = 8;
+	public final static int NB_WEAPONS_TYPE = 9;
 	protected short might;
 	protected short weaponClass;
 	protected short hitRate;
@@ -15,6 +17,8 @@ public abstract class Weapon extends Item {
 		weaponClass = 1;
 	}
 
+	public abstract int getWeaponType();
+	
 	public short getHitRate() {
 		return hitRate;
 	}

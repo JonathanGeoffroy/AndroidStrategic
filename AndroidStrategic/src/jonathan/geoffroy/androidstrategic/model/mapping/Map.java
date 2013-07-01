@@ -64,6 +64,7 @@ public class Map {
 		loadedMap.loadMagics(scenarioName, chapterNum);
 		loadedMap.loadItems(scenarioName, chapterNum);
 		loadedMap.loadFighters(scenarioName, chapterNum);
+		Fighter.setMap(loadedMap);
 		return loadedMap;
 	}
 

@@ -10,11 +10,16 @@ public class Bow extends Weapon {
 	
 	@Override
 	public boolean canEquip(Human human) {
-		return human.getBowClass() >= weaponClass;
+		return human.getWeaponClass(BOW) >= weaponClass;
 	}
 
 	@Override
 	public int getType() {
 		return 9;
+	}
+
+	@Override
+	public int getWeaponType() {
+		return BOW;
 	}
 }

@@ -1,5 +1,7 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
+import jonathan.geoffroy.androidstrategic.model.items.weapons.Weapon;
+
 public class Priest extends Human {
 
 	@Override
@@ -17,7 +19,7 @@ public class Priest extends Human {
 		weight = 9;
 		movement = attributes[MOVEMENTMAX] = 5;
 		
-		scepterClass = 1;
+		weaponClass[Weapon.SCEPTER] = 1;
 	}
 
 	@Override

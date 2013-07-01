@@ -7,7 +7,7 @@ public class LightBook extends Book {
 
 	@Override
 	public boolean canEquip(Human human) {
-		return human.getLightBookClass() >= weaponClass;
+		return human.getWeaponClass(LIGHTBOOK) >= weaponClass;
 	}
 	
 	@Override
@@ -20,5 +20,10 @@ public class LightBook extends Book {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public int getWeaponType() {
+		return LIGHTBOOK;
 	}
 }

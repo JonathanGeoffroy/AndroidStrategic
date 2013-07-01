@@ -7,7 +7,7 @@ public class Ax extends Weapon {
 
 	@Override
 	public boolean canEquip(Human human) {
-		return human.getAxClass() >= weaponClass;
+		return human.getWeaponClass(AX) >= weaponClass;
 	}
 
 	@Override
@@ -19,11 +19,15 @@ public class Ax extends Weapon {
 		if(fighter instanceof Human) {
 			Human human = (Human) fighter;
 			Weapon humanWeapon = human.getEquiped();
-			if(humanWeapon != null && humanWeapon instanceof Spire) {
+			if(humanWeapon != null && humanWeapon instanceof Spear) {
 				return true;
 			}
 		}
 		return false;
 	}
 
+	@Override
+	public int getWeaponType() {
+		return AX;
+	}
 }

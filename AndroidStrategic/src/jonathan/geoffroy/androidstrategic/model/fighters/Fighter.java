@@ -46,8 +46,7 @@ public abstract class Fighter {
 	}
 	protected abstract String defaultName();
 
-	protected void afterAttacked() {}
-
+	protected void afterAssaulted() {}
 	public int minRange() { return 1; }
 	public int maxRange() { return 1; }
 
@@ -110,7 +109,7 @@ public abstract class Fighter {
 		result.calculateExperienceWon();
 		this.addExperience(result.getExperienceWon()[0]);
 		assaulted.addExperience(result.getExperienceWon()[1]);
-		assaulted.afterAttacked();
+		assaulted.afterAssaulted();
 		return result;
 	}
 
@@ -529,5 +528,9 @@ public abstract class Fighter {
 
 	public void setLevelUpRate(short[] levelUpRate) {
 		this.levelUpRate = levelUpRate;
+	}
+
+	public int weaponExeperienceWon(Fighter fighter) {
+		return 0;
 	}
 }

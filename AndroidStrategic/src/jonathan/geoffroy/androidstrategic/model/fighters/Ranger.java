@@ -1,5 +1,7 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
+import jonathan.geoffroy.androidstrategic.model.items.weapons.Weapon;
+
 public class Ranger extends Human {
 
 	@Override
@@ -17,7 +19,7 @@ public class Ranger extends Human {
 		attributes[CONSTITUTION] = 9;
 		weight = 9;
 		
-		swordClass = 1;
+		weaponClass[Weapon.SWORD] = 1;
 	}
 
 	@Override

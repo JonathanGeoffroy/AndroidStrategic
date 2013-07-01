@@ -1,5 +1,7 @@
 package	 jonathan.geoffroy.androidstrategic.model.fighters;
 
+import jonathan.geoffroy.androidstrategic.model.items.weapons.Weapon;
+
 public class Soldier extends Human {
 
 	@Override
@@ -17,7 +19,7 @@ public class Soldier extends Human {
 		weight = 13;
 		movement = attributes[MOVEMENTMAX] = 6;
 		
-		spearClass = 1;
+		weaponClass[Weapon.SPEAR] = 1;
 	}
 
 	@Override

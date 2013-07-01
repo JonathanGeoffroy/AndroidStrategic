@@ -19,6 +19,11 @@ public class WindBook extends Book {
 	
 	@Override
 	public boolean canEquip(Human human) {
-		return human.getDarkBookClass() >= weaponClass;
+		return human.getWeaponClass(WINDBOOK) >= weaponClass;
+	}
+	
+	@Override
+	public int getWeaponType() {
+		return WINDBOOK;
 	}
 }

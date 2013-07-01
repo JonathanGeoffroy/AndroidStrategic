@@ -1,5 +1,7 @@
 package jonathan.geoffroy.androidstrategic.model.fighters;
 
+import jonathan.geoffroy.androidstrategic.model.items.weapons.Weapon;
+
 public class Mage extends Human {
 
 	@Override
@@ -17,7 +19,7 @@ public class Mage extends Human {
 		weight = 9;
 		movement = attributes[MOVEMENTMAX] = 5;
 		
-		lightBookClass = darkBookClass = fireBookClass = 1;
+		weaponClass[Weapon.LIGHTBOOK] = weaponClass[Weapon.FIREBOOK] = weaponClass[Weapon.WINDBOOK] = 1;
 	}
 
 	@Override

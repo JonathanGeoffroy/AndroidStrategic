@@ -7,7 +7,7 @@ public class Sword extends Weapon {
 
 	@Override
 	public boolean canEquip(Human human) {
-		return human.getSwordClass() >= weaponClass;
+		return human.getWeaponClass(SWORD) >= weaponClass;
 	}
 
 	@Override
@@ -24,5 +24,10 @@ public class Sword extends Weapon {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public int getWeaponType() {
+		return SWORD;
 	}
 }

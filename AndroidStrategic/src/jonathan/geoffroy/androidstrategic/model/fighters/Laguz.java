@@ -40,7 +40,7 @@ public abstract class Laguz extends Fighter {
 	 * remove transform points if if laguz is transformed, add transform points else
 	 */
 	@Override
-	public void afterAttacked() {
+	public void afterAssaulted() {
 		int transPoints;
 		if(transformed) {
 			transPoints = -TRANFORM_POINTS_ON_ATTACK;

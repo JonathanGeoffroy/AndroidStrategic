@@ -3,25 +3,12 @@ package jonathan.geoffroy.androidstrategic.model.fighters;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Weapon;
 
 public abstract class Human extends Fighter {
+	public static final int WEAPON_EXP_LVL = 20;
 	protected Weapon equiped;
-	protected short swordClass;
-	protected short axClass;
-	protected short bowClass;
-	protected short lightBookClass;
-	protected short darkBookClass;
-	protected short fireBookClass;
-	protected short spearClass;
-	protected short scepterClass;
-	protected short knifeClass;
-	protected short axExp;
-	protected short swordExp;
-	protected short bowExp;
-	protected short darkBookExp;
-	protected short fireBookExp;
-	protected short spearExp;
-	protected short scepterExp;
-	protected short knifeExp;
+	protected short[] weaponClass;
+	protected short[] weaponExp;
 
+	
 	@Override
 	public int hitRate(Fighter fighter) {
 		int rate = super.hitRate(fighter);
@@ -39,6 +26,13 @@ public abstract class Human extends Fighter {
 			}
 		}
 		return rate;
+	}
+
+	@Override
+	protected void initializeStats() {
+		super.initializeStats();
+		weaponClass = new short[Weapon.NB_WEAPONS_TYPE];
+		weaponExp = new short[Weapon.NB_WEAPONS_TYPE];
 	}
 
 	@Override
@@ -97,118 +91,49 @@ public abstract class Human extends Fighter {
 		return super.maxRange();
 	}
 
+	@Override
+	public int weaponExeperienceWon(Fighter fighter) {
+		short exp = 0;
+		
+		if(equiped != null) {
+			exp = (short) this.hitNumber(fighter);
+			incWeaponExp(equiped.getWeaponType(), exp);
+		}	
+		return exp;
+	}
 	public Weapon getEquiped() {
 		return equiped;
 	}
 	public void setEquiped(Weapon equiped) {
 		this.equiped = equiped;
 	}
-	public short getSwordClass() {
-		return swordClass;
+	public short getWeaponClass(int weaponType) {
+		return weaponClass[weaponType];
 	}
-	public void setSwordClass(short swordClass) {
-		this.swordClass = swordClass;
+	public void setWeaponClass(int weaponType, short value) {
+		weaponClass[weaponType] = value;	
 	}
-	public short getAxClass() {
-		return axClass;
+	public short getWeaponExp(int weaponType) {
+		return weaponExp[weaponType];
 	}
-	public void setAxClass(short axClass) {
-		this.axClass = axClass;
+	public void setWeaponExp(int weaponType, short value) {
+		weaponExp[weaponType] = value;	
 	}
-	public short getBowClass() {
-		return bowClass;
-	}
-	public void setBowClass(short bowClass) {
-		this.bowClass = bowClass;
-	}
-	public short getLightBookClass() {
-		return lightBookClass;
-	}
-	public void setLightBookClass(short lightBookClass) {
-		this.lightBookClass = lightBookClass;
-	}
-	public short getDarkBookClass() {
-		return darkBookClass;
-	}
-	public void setDarkBookClass(short darkBookClass) {
-		this.darkBookClass = darkBookClass;
-	}
-	public short getFireBookClass() {
-		return fireBookClass;
-	}
-	public void setFireBookClass(short fireBookClass) {
-		this.fireBookClass = fireBookClass;
-	}
-	public short getspearClass() {
-		return spearClass;
-	}
-	public void setspearClass(short spearClass) {
-		this.spearClass = spearClass;
-	}
-	public short getAxExp() {
-		return axExp;
-	}
-	public void setAxExp(short axExp) {
-		this.axExp = axExp;
-	}
-	public short getSwordExp() {
-		return swordExp;
-	}
-	public void setSwordExp(short swordExp) {
-		this.swordExp = swordExp;
-	}
-	public short getBowExp() {
-		return bowExp;
-	}
-	public void setBowExp(short bowExp) {
-		this.bowExp = bowExp;
-	}
-	public short getDarkBookExp() {
-		return darkBookExp;
-	}
-	public void setDarkBookExp(short darkBookExp) {
-		this.darkBookExp = darkBookExp;
-	}
-	public short getFireBookExp() {
-		return fireBookExp;
-	}
-	public void setFireBookExp(short fireBookExp) {
-		this.fireBookExp = fireBookExp;
-	}
-	public short getSpearExp() {
-		return spearExp;
-	}
-	public void setSpearExp(short spearExp) {
-		this.spearExp = spearExp;
-	}
-	public short getScepterClass() {
-		return scepterClass;
-	}
-	public void setScepterClass(short scepterClass) {
-		this.scepterClass = scepterClass;
-	}
-	public short getScepterExp() {
-		return scepterExp;
-	}
-	public void setScepterExp(short scepterExp) {
-		this.scepterExp = scepterExp;
-	}
-	public short getSpearClass() {
-		return spearClass;
-	}
-	public void setSpearClass(short spearClass) {
-		this.spearClass = spearClass;
-	}
-	public short getKnifeClass() {
-		return knifeClass;
-	}
-	public void setKnifeClass(short knifeClass) {
-		this.knifeClass = knifeClass;
-	}
-	public short getKnifeExp() {
-		return knifeExp;
-	}
-	public void setKnifeExp(short knifeExp) {
-		this.knifeExp = knifeExp;
+	
+	/**
+	 * 
+	 * @param weaponType 
+	 * @param value xp won
+	 * @return the number of level up
+	 */
+	public int incWeaponExp(int weaponType, short value) {
+		int nbLevelUp = (weaponExp[weaponType] + value) / WEAPON_EXP_LVL;
+		weaponExp[weaponType] += value;
+		weaponExp[weaponType] = (short) (weaponExp[weaponType] % WEAPON_EXP_LVL);
+		weaponClass[weaponType] += nbLevelUp;
+		
+		assert(weaponExp[weaponType] >= 0 && weaponExp[weaponType] < WEAPON_EXP_LVL);
+		assert(nbLevelUp >= 0);
+		return nbLevelUp;
 	}
 }

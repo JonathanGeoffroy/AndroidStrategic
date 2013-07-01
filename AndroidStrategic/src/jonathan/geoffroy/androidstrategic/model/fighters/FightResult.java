@@ -7,6 +7,7 @@ public class FightResult {
 	private boolean touched[][];
 	private int experienceWon[];
 	private int hitNumber[];
+	private int[] weaponExperienceWon;
 
 	public FightResult(Fighter assailant, Fighter assaulted) {
 		fighters = new Fighter[2];
@@ -25,6 +26,7 @@ public class FightResult {
 
 		touched = new boolean[2][2];
 		experienceWon = new int[2];
+		weaponExperienceWon = new int[2];
 	}
 
 	/**
@@ -94,7 +96,15 @@ public class FightResult {
 	public void setExperienceWon(int experienceWon[]) {
 		this.experienceWon = experienceWon;
 	}
+	
+	public int[] getWeaponExperienceWon() {
+		return weaponExperienceWon;
+	}
 
+	public void setWeaponExperienceWon(int[] weaponExperienceWon) {
+		this.weaponExperienceWon = weaponExperienceWon;
+	}
+	
 	public int getSumDamages(int fighterNum) {
 		assert(fighterNum == 0 || fighterNum == 1);
 		assert(fighters[fighterNum] != null);
@@ -110,6 +120,7 @@ public class FightResult {
 	public void calculateExperienceWon() {
 		for(int i = 0; i < fighters.length; i++) {
 			experienceWon[i] = fighters[i].experienceWon(this);
+			weaponExperienceWon[i] = fighters[i].weaponExeperienceWon(fighters[(i+1) % 2]);
 		}
 	}
 }

@@ -19,6 +19,11 @@ public class FireBook extends Book {
 	
 	@Override
 	public boolean canEquip(Human human) {
-		return human.getFireBookClass() >= weaponClass;
+		return human.getWeaponClass(Weapon.FIREBOOK) >= weaponClass;
+	}
+
+	@Override
+	public int getWeaponType() {
+		return FIREBOOK;
 	}
 }

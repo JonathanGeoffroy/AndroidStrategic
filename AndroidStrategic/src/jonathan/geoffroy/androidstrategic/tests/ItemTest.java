@@ -21,7 +21,7 @@ import jonathan.geoffroy.androidstrategic.model.items.weapons.Bow;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.FireBook;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Knife;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Scepter;
-import jonathan.geoffroy.androidstrategic.model.items.weapons.Spire;
+import jonathan.geoffroy.androidstrategic.model.items.weapons.Spear;
 import jonathan.geoffroy.androidstrategic.model.items.weapons.Sword;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
@@ -40,7 +40,7 @@ public class ItemTest {
 
 		Item addedItems[] = { new CureItem(), new BlockItem(),
 				new TransformItem(), new Ax(), new FireBook(), new Knife(),
-				new Scepter(), new Spire(), new Sword(), new Bow() };
+				new Scepter(), new Spear(), new Sword(), new Bow() };
 
 		//first adding
 		for(int i = 0; i < addedItems.length; i++) {
@@ -60,7 +60,7 @@ public class ItemTest {
 		// second adding
 		Item[] addedItems2 = { new CureItem(), new BlockItem(),
 				new TransformItem(), new Ax(), new FireBook(), new Knife(),
-				new Scepter(), new Spire(), new Sword(), new Bow() };
+				new Scepter(), new Spear(), new Sword(), new Bow() };
 
 		for(int i = 0; i < addedItems2.length; i++) {
 			teamBag.add(addedItems2[i]);
