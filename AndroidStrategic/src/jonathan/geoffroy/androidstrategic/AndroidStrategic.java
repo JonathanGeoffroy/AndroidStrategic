@@ -1,14 +1,5 @@
 package jonathan.geoffroy.androidstrategic;
 
-import com.badlogic.gdx.Game;
+import jonathan.geoffroy.androidstrategic.view.utils.App;
 
-
-
-public class AndroidStrategic extends Game {
-
-	@Override
-	public void create() {
-		// TODO Auto-generated method stub
-	}
-
-}
+public class AndroidStrategic extends App {}
