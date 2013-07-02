@@ -1,14 +1,14 @@
 package jonathan.geoffroy.androidstrategic.model.mapping;
 
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 
-import javax.imageio.ImageIO;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 
 import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
 import jonathan.geoffroy.androidstrategic.model.fighters.Axman;
@@ -27,15 +27,15 @@ import jonathan.geoffroy.androidstrategic.model.mapping.magic.TrapMagic;
 import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
 
 public class Map {
-	public final static int CLOSEDDOOR = -16777216, DESERT = -459750, FLOOR = -14750720, FOREST = -13525728, 
-			FORT = -9539712, GATE = -15654456, GRASS = -10377914, MOUNTAIN = -7713017, 
-			PEAK = -3184105, PILLAR = -5395027, PIT = -10596800, PLAIN = -4325736, 
-			ROAD = -33024, SEA = -11602448, VILLAGE = -655362;
-	public static final int NO_ENNEMY = -1, PLAYER_CASE = -16776961, ENNEMY_SOLDIER = -52686, ENNEMY_KNIGHT = -16777216,
-			ENNEMY_ARCHER = -16711936, ENNEMY_AXMAN = -65281,
-			ENNEMY_PRIEST = -16711681, ENNEMY_MAGE = -256;
-	public final static int NOMAGIC = -1, TRAPMAGIC = -65536, KILLMAGIC = -16777216, CUREMAGIC = -16711936;
-	private static final int NO_ITEM = -1, CURE_ITEM = -16711936;
+	public final static int CLOSEDDOOR = 255, DESERT = -65281, FLOOR = 518783231, FOREST = 832381183, 
+			FORT = 1852801279, GATE = 287426815, GRASS = 1638221567, MOUNTAIN = -1974532097, 
+			PEAK = -815130625, PILLAR = -1381126657, PIT = 1582186751, PLAIN = -1107388161, 
+			ROAD = -8453889, SEA = 1324740863, VILLAGE = -167772417;
+	public static final int NO_ENNEMY = -1, PLAYER_CASE = 65535, ENNEMY_SOLDIER = -16776961, ENNEMY_KNIGHT = 255,
+			ENNEMY_ARCHER = 16711935, ENNEMY_AXMAN = -16711681,
+			ENNEMY_PRIEST = 16777215, ENNEMY_MAGE = -65281;
+	public final static int NOMAGIC = -1, TRAPMAGIC = 255, KILLMAGIC = -16776961, CUREMAGIC = 16711935;
+	private static final int NO_ITEM = -1, CURE_ITEM = 16711935;
 	public final static String SCENARII_DIR = "data/scenarii/";
 
 	private Terrain[][] map;
@@ -68,18 +68,16 @@ public class Map {
 		return loadedMap;
 	}
 
-	private void loadItems(String scenarioName, int chapterNum) 
-			throws IOException {
-		BufferedImage img;
-
+	private void loadItems(String scenarioName, int chapterNum) {
 		try {
-			img = ImageIO.read(new FileInputStream(SCENARII_DIR + scenarioName + "/" + chapterNum + "_items.png"));
+			FileHandle file = Gdx.files.internal(SCENARII_DIR + scenarioName + "/" + chapterNum + "_items.bmp");
+			Pixmap img = new Pixmap(file);
 			int width = img.getWidth();
 			int height = img.getHeight();
 
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
-					switch(img.getRGB(j, i)) {
+					switch(img.getPixel(j, i)) {
 					case NO_ITEM: 
 						break;
 					case CURE_ITEM:
@@ -88,23 +86,23 @@ public class Map {
 					}
 				}
 			}
-		} catch (FileNotFoundException e) {}
+		} catch (Exception e) {}
 	}
 
 	private void loadFighters(String scenarioName, int chapterNum) 
 			throws IOException {
 		Team ennemy = new Team();
-		BufferedImage img;
 		Fighter fighter;
 
 		try {
-			img = ImageIO.read(new FileInputStream(SCENARII_DIR + scenarioName + "/" + chapterNum + "_fighters.png"));
+			FileHandle file = Gdx.files.internal(SCENARII_DIR + scenarioName + "/" + chapterNum + "_fighters.bmp");
+			Pixmap img = new Pixmap(file);
 			int width = img.getWidth();
 			int height = img.getHeight();
 
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
-					switch(img.getRGB(j, i)) {
+					switch(img.getPixel(j, i)) {
 					case NO_ENNEMY: 
 						continue;
 					case PLAYER_CASE:
@@ -160,9 +158,9 @@ public class Map {
 		createdTerrains.put(SEA, new Sea());
 		createdTerrains.put(VILLAGE, new Village());
 
-		BufferedImage img;
 		try {
-			img = ImageIO.read(new FileInputStream(SCENARII_DIR + scenarioName + "/" + chapterNum + "_map.png"));
+			FileHandle file = Gdx.files.internal(SCENARII_DIR + scenarioName + "/" + chapterNum + "_map.bmp");
+			Pixmap img = new Pixmap(file);
 			int width = img.getWidth();
 			int height = img.getHeight();
 			map = new Terrain[height][width];
@@ -170,10 +168,10 @@ public class Map {
 			Terrain t;
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
-					pixel = img.getRGB(j, i);
+					pixel = img.getPixel(j, i);
 					t = createdTerrains.get(pixel);
 					if (t == null) {
-						throw new IOException("this terrain is NOT available");
+						throw new IOException("this terrain is NOT available: " + j + " - " + i);
 					}
 					map[i][j] = t;
 					terrains.add(t);
@@ -191,15 +189,15 @@ public class Map {
 		KillMagic killMagic = new KillMagic();
 		TrapMagic trapMagic = new TrapMagic();
 
-		BufferedImage img;
 		try {
-			img = ImageIO.read(new FileInputStream(SCENARII_DIR + scenarioName + "/" + chapterNum + "_magics.png"));
+			FileHandle file = Gdx.files.internal(SCENARII_DIR + scenarioName + "/" + chapterNum + "_magics.bmp");
+			Pixmap img = new Pixmap(file);
 			int width = img.getWidth();
 			int height = img.getHeight();
 			int pixel;
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
-					pixel = img.getRGB(j, i);
+					pixel = img.getPixel(j, i);
 					switch(pixel) {
 					case NOMAGIC:
 						break;
@@ -249,8 +247,8 @@ public class Map {
 		return getTerrain(coord.x, coord.y);
 	}
 
-	public HashMap<Fighter, Coord2D> getFighters() {
-		return fighters;
+	public ArrayList<Fighter> getFighters() {
+		return new ArrayList<Fighter>(fighters.keySet());
 	}
 
 	public HashMap<Coord2D, Fighter> getCoordFighters() {
@@ -443,6 +441,10 @@ public class Map {
 		assert(coord.y >= 0 && coord.y < map.length);
 		assert(coord.x >= 0 && coord.y < map[coord.x].length);
 		map[coord.y][coord.x] = newTerrain;		
+	}
+
+	public ArrayList<Terrain> getTerrains() {
+		return new ArrayList<Terrain>(terrains);
 	}
 }
 
