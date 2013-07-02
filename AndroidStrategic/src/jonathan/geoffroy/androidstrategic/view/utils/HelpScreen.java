@@ -2,6 +2,8 @@ package jonathan.geoffroy.androidstrategic.view.utils;
 
 import java.util.ArrayList;
 
+import jonathan.geoffroy.androidstrategic.view.actors.MapActor;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -29,6 +31,7 @@ public abstract class HelpScreen implements Screen {
 
 	public static void initialize(App app) {
 		HelpScreen.app = app;
+		MapActor.initializeApp(app);
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
 	}
@@ -36,11 +39,9 @@ public abstract class HelpScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		if(app.hasLoaded()) {
-			System.out.println("has loaded");
 			draw(delta);
 		}
 		else {
-			System.out.println("not loaded");
 			drawLoader();
 		}
 	}

@@ -9,7 +9,9 @@ public abstract class StageScreen extends HelpScreen {
 	private float width, height;
 	
 	public StageScreen() {
-		stage = new Stage();
+		width = Gdx.graphics.getWidth();
+		height = Gdx.graphics.getHeight();
+		stage = new Stage(width, height, false);
 	}
 
 	@Override
@@ -24,5 +26,9 @@ public abstract class StageScreen extends HelpScreen {
 		stage.draw();
 	}
 	
-	
+	@Override
+	public void dispose() {
+		stage.dispose();
+		super.dispose();
+	}
 }

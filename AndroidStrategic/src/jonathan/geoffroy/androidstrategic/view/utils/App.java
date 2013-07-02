@@ -2,7 +2,7 @@ package jonathan.geoffroy.androidstrategic.view.utils;
 
 import java.util.ArrayList;
 
-import jonathan.geoffroy.androidstrategic.view.MapScreen;
+import jonathan.geoffroy.androidstrategic.view.screens.MapScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -21,7 +21,7 @@ public class App extends Game {
 	public void create() {
 		HelpScreen.initialize(this);
 		scenario = "Test";
-		chapter = 1;
+		chapter = 2;
 		manager = new AssetManager();
 		screens = new ArrayList<HelpScreen>();
 		screens.add(new MapScreen());
@@ -53,5 +53,9 @@ public class App extends Game {
 	}
 	public void setChapter(int chapter) {
 		this.chapter = chapter;
+	}
+
+	public Object getAsset(String name) {
+		return manager.get(name);
 	}
 }
