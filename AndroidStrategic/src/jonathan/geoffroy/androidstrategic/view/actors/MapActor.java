@@ -4,11 +4,15 @@ import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.view.utils.App;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
 
 public class MapActor extends Actor {
 	private static App app;
@@ -16,24 +20,68 @@ public class MapActor extends Actor {
 	private int nbTerrainsX, nbTerrainsY;
 	private int beginX, beginY;
 	private float terrainSize;
-	
+
 	public MapActor(Map map) {
 		this.map = map;
 		beginX = 0;
 		beginY = 0;
-		
+		addListener(new InputListener() {
+
+			@Override
+			public boolean scrolled(InputEvent event, float x, float y,
+					int amount) {
+				zoom(-amount);
+				return true;
+			}
+
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				switch(keycode) {
+				case Input.Keys.LEFT:
+					incBeginX(-1);
+					break;
+				case Input.Keys.RIGHT:
+					incBeginX(1);
+				case Input.Keys.UP:
+					incBeginY(-1);
+					break;
+				case Input.Keys.DOWN:
+					incBeginY(1);
+					break;
+				case Input.Keys.EQUALS:
+				case Input.Keys.PAGE_UP:
+					zoom(1);
+					break;
+				case Input.Keys.MINUS:
+				case Input.Keys.PAGE_DOWN:
+					zoom(-1);
+				default:
+					return false;
+				}
+				return true;
+			}
+			
+		});
 		addListener(new ActorGestureListener() {
+			private int lastZoomFactor;
+
 			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
 				int x = (int)(-velocityX / Gdx.graphics.getWidth()) * 2;
 				int y = (int)(velocityY / Gdx.graphics.getHeight()) * 2;
-				System.out.println(x + " " + y);
 				incBeginX(x);
 				incBeginY(y);
-				
 			}
 
 			public void zoom (InputEvent event, float initialDistance, float distance) {
+				int zoomFactor = (int) ((distance - initialDistance) / (getWidth() / 8)) - lastZoomFactor;
+				MapActor.this.zoom(zoomFactor);
+				lastZoomFactor = zoomFactor;
+			}
 
+			@Override
+			public void touchUp(InputEvent event, float x, float y,
+					int pointer, int button) {
+				lastZoomFactor = 0;
 			}
 		});
 	}
@@ -67,7 +115,7 @@ public class MapActor extends Actor {
 		terrainSize = width / nbTerrainsX;		
 		nbTerrainsY = Math.min((int)(height / terrainSize) + 1, map.getHeight());
 	}
-	
+
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		assert(app != null);
@@ -83,11 +131,11 @@ public class MapActor extends Actor {
 			}
 		}
 	}
-	
+
 	public static void initializeApp(App app) {
 		MapActor.app = app;
 	}
-	
+
 	public void incBeginX(int value) {
 		beginX += value;
 		if(beginX < 0)
@@ -96,13 +144,38 @@ public class MapActor extends Actor {
 			beginX = map.getWidth() - nbTerrainsX;
 		}
 	}
-	
+
 	public void incBeginY(int value) {
 		beginY += value;
 		if(beginY < 0)
 			beginY = 0;
 		else if (beginY > map.getWidth() - nbTerrainsY) {
 			beginY = map.getHeight() - nbTerrainsY;
+		}
+	}
+
+	private void zoom(int zoomFactor) {
+		if(terrainSize + zoomFactor < getWidth() / 5) {
+			terrainSize += zoomFactor;
+			setNbTerrainsX((int)(getWidth() / terrainSize));
+			setNbTerrainsY((int)(getHeight() / terrainSize));
+		}
+
+		// TODO: protect against ArrayBoundsException
+	}
+	
+	public void setNbTerrainsX(int value) {
+		nbTerrainsX = value;
+		if(beginX > map.getWidth() - nbTerrainsX) {
+			nbTerrainsX = map.getWidth() - beginX;
+			terrainSize = getWidth() / nbTerrainsX;
+		}
+	}
+	
+	public void setNbTerrainsY(int value) {
+		nbTerrainsY = value;
+		if(beginY > map.getWidth() - nbTerrainsY) {
+			nbTerrainsY = map.getHeight() - beginY;
 		}
 	}
 }

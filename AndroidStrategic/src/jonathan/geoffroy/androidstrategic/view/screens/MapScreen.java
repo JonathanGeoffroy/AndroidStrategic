@@ -45,6 +45,8 @@ public class MapScreen extends StageScreen {
 			mapActor.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			stage.addActor(mapActor);
 			Gdx.input.setInputProcessor(stage);
+			stage.setScrollFocus(mapActor);
+			stage.setKeyboardFocus(mapActor);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
