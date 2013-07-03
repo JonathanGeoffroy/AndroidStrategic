@@ -23,12 +23,33 @@ public class MapActor extends Actor {
 	@Override
 	public void setBounds(float x, float y, float width, float height) {
 		super.setBounds(x, y, width, height);
+		calculateTerrains(width, height);
+	}
+
+	@Override
+	public void setWidth(float width) {
+		super.setWidth(width);
+		calculateTerrains(width, getHeight());
+	}
+
+	@Override
+	public void setHeight(float height) {
+		super.setHeight(height);
+		calculateTerrains(getWidth(), height);
+	}
+
+	@Override
+	public void setSize(float width, float height) {
+		super.setSize(width, height);
+		calculateTerrains(width, height);
+	}
+
+	private void calculateTerrains(float width, float height) {
 		nbTerrainsX = Math.min(10, map.getWidth());
 		terrainSize = width / nbTerrainsX;		
 		nbTerrainsY = Math.min((int)(height / terrainSize) + 1, map.getHeight());
-		System.out.println(nbTerrainsX + " " + nbTerrainsY);
 	}
-
+	
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		assert(app != null);
