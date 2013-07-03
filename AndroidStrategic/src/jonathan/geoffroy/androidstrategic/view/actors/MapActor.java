@@ -42,6 +42,7 @@ public class MapActor extends Actor {
 					break;
 				case Input.Keys.RIGHT:
 					incBeginX(1);
+					break;
 				case Input.Keys.UP:
 					incBeginY(-1);
 					break;
