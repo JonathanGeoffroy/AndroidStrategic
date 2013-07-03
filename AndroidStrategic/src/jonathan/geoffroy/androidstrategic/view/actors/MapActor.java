@@ -1,6 +1,8 @@
 package jonathan.geoffroy.androidstrategic.view.actors;
 
+import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
+import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
 import jonathan.geoffroy.androidstrategic.view.utils.App;
 
 import com.badlogic.gdx.Gdx;
@@ -11,8 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
 
 public class MapActor extends Actor {
 	private static App app;
@@ -123,12 +123,22 @@ public class MapActor extends Actor {
 		super.draw(batch, parentAlpha);
 		Texture text;
 		float x, y;
+		Fighter fighter;
+		Coord2D coord = new Coord2D();
 		for(int i = 0; i < nbTerrainsY; i++) {
 			for(int j = 0 ; j < nbTerrainsX; j++) {
-				text = (Texture) app.getAsset(App.TEXTURES_DIR + map.getTerrain(j + beginX, i + beginY).getClass().getSimpleName() + ".bmp");
+				coord.x = j + beginX; coord.y = i + beginY;
+				
+				text = (Texture) app.getAsset(App.TEXTURES_DIR + map.getTerrain(coord.x, coord.y).getClass().getSimpleName() + ".bmp");
 				x = j * terrainSize;
 				y = getHeight() - (i+1) * terrainSize;
 				batch.draw(text, getX() + x , getY() + y, terrainSize, terrainSize);
+				
+				fighter = map.getFighterAt(coord);
+				if(fighter != null) {
+					text = (Texture) app.getAsset(fighter.getTextureName());
+					batch.draw(text, getX() + x , getY() + y, terrainSize, terrainSize);
+				}
 			}
 		}
 	}
@@ -161,8 +171,6 @@ public class MapActor extends Actor {
 			setNbTerrainsX((int)(getWidth() / terrainSize));
 			setNbTerrainsY((int)(getHeight() / terrainSize));
 		}
-
-		// TODO: protect against ArrayBoundsException
 	}
 	
 	public void setNbTerrainsX(int value) {

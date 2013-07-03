@@ -5,7 +5,6 @@ public abstract class Laguz extends Fighter {
 
 	protected short transform;
 	protected boolean transformed;
-	protected boolean male;
 	protected short transDefense;
 	protected short transConstitution;
 	protected short transMagic;

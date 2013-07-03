@@ -9,7 +9,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 
 public class App extends Game {
-	public static final String TEXTURES_DIR = "data/img/textures/", FONTS_DIR = "data/img/fonts", SOUNDS_DIR = "data/sounds/sounds/", MUSICS_DIR = "data/sounds/musics/";
+	public static final String TEXTURES_DIR = "data/img/textures/", FIGHTERS_DIR = "data/img/fighters/", FONTS_DIR = "data/img/fonts", SOUNDS_DIR = "data/sounds/sounds/", MUSICS_DIR = "data/sounds/musics/";
 	public static final int MAP = 0;
 	private AssetManager manager;
 	private ArrayList<HelpScreen> screens;

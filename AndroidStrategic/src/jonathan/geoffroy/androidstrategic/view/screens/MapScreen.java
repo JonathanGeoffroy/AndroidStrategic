@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.Texture;
 
+import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 import jonathan.geoffroy.androidstrategic.view.actors.MapActor;
@@ -28,9 +29,9 @@ public class MapScreen extends StageScreen {
 		for(Terrain t : map.getTerrains()) {
 			desc.add(new AssetDescriptor(App.TEXTURES_DIR + t.getClass().getSimpleName() + ".bmp", Texture.class));
 		}
-//		for(Fighter f : map.getFighters()) {
-//			desc.add(new AssetDescriptor(App.TEXTURES_DIR + f.getName(), Texture.class));
-//		}
+		for(Fighter f : map.getFighters()) {
+			desc.add(new AssetDescriptor(f.getTextureName(), Texture.class));
+		}
 		
 		return desc;
 	}

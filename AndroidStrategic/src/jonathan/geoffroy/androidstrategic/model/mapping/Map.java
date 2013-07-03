@@ -446,6 +446,15 @@ public class Map {
 	public ArrayList<Terrain> getTerrains() {
 		return new ArrayList<Terrain>(terrains);
 	}
+
+	/**
+	 * Return the fighter pointed by the parameter coord, or null if the coord's Terrain is empty.
+	 * @param coord
+	 * @return fighter on coord's Terrain, or null if Terrain is empty
+	 */
+	public Fighter getFighterAt(Coord2D coord) {
+		return coordFighters.get(coord);
+	}
 }
 
 class CoordMagic {

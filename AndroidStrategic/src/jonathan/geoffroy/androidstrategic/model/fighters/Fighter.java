@@ -3,6 +3,7 @@ package jonathan.geoffroy.androidstrategic.model.fighters;
 import jonathan.geoffroy.androidstrategic.model.items.bags.FighterBag;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
+import jonathan.geoffroy.androidstrategic.view.utils.App;
 
 public abstract class Fighter {
 	public int HPMAX = 0, CONSTITUTION = 1, DEFENSE = 2, RESISTANCE = 3, STRENGTH = 4, MAGIC = 5, SPEED = 6, MOVEMENTMAX = 7, LUCK = 8, SKILL = 9;
@@ -20,9 +21,11 @@ public abstract class Fighter {
 	private boolean general;
 	protected FighterBag bag;
 	protected Team team;
+	protected boolean male;
 
 	public Fighter() {
 		bag = new FighterBag();
+		male = true;
 		setName(defaultName());
 		initializeStats();
 	}
@@ -532,5 +535,18 @@ public abstract class Fighter {
 
 	public int weaponExeperienceWon(Fighter fighter) {
 		return 0;
+	}
+
+	public String getTextureName() {
+		String result = App.FIGHTERS_DIR + name;;
+		if(name.equals(defaultName())) {
+			if(male)
+				result += "_male";
+			else
+				result += "_female";
+		}
+		result += ".png";
+		
+		return result;
 	}
 }
