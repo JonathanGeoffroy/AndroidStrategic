@@ -1,5 +1,7 @@
 package jonathan.geoffroy.androidstrategic;
 
+import org.lwjgl.input.Keyboard;
+
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -12,5 +14,6 @@ public class Main {
 		cfg.height = 320;
 		
 		new LwjglApplication(new AndroidStrategic(), cfg);
+		Keyboard.enableRepeatEvents(true);
 	}
 }
