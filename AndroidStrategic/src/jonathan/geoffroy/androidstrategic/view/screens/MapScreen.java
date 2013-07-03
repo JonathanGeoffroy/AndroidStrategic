@@ -44,6 +44,7 @@ public class MapScreen extends StageScreen {
 			mapActor = new MapActor(map);
 			mapActor.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			stage.addActor(mapActor);
+			Gdx.input.setInputProcessor(stage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
