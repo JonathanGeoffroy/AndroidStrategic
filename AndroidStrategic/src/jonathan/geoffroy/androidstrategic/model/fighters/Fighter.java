@@ -538,7 +538,7 @@ public abstract class Fighter {
 	}
 
 	public String getTextureName() {
-		String result = App.FIGHTERS_DIR + name;;
+		String result = name;;
 		if(name.equals(defaultName())) {
 			if(male)
 				result += "_male";

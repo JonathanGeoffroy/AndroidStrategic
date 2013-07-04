@@ -170,7 +170,7 @@ public class MapActor extends Actor {
 
 				fighter = map.getFighterAt(coord);
 				if(fighter != null) {
-					text = (Texture) app.getAsset(fighter.getTextureName());
+					text = (Texture) app.getAsset(App.FIGHTERS_DIR + fighter.getTextureName());
 					batch.draw(text, getX() + x , getY() + y, terrainSize, terrainSize);
 				}
 			}
