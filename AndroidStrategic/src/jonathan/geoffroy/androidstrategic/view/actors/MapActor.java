@@ -4,6 +4,7 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Reachable;
 import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
+import jonathan.geoffroy.androidstrategic.view.screens.MapScreen;
 import jonathan.geoffroy.androidstrategic.view.utils.App;
 
 import com.badlogic.gdx.Gdx;
@@ -18,14 +19,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 public class MapActor extends Actor {
 	private static App app;
 	private Map map;
-	private Coord2D coordFighter;
+	private MapScreen mapScreen;
 	private Reachable reachable;
 	private int nbTerrainsX, nbTerrainsY;
 	private int beginX, beginY;
 	private float terrainSize;
 
-	public MapActor(Map map) {
-		this.map = map;
+	public MapActor(MapScreen mapScreen) {
+		this.mapScreen = mapScreen;
+		this.map = mapScreen.getMap();
 		beginX = 0;
 		beginY = 0;
 		addListener(new InputListener() {
@@ -40,15 +42,15 @@ public class MapActor extends Actor {
 
 				Fighter fighter = MapActor.this.map.getFighterAt(coord);
 				if(fighter != null) {
-					MapActor.this.coordFighter = coord;
+					MapActor.this.mapScreen.setCoordFighter(coord);
 					MapActor.this.reachable = MapActor.this.map.getReachableTerrains(fighter);
 				}
 				else {
-					coordFighter = null;
+					MapActor.this.mapScreen.setCoordFighter(null);
 					reachable = null;
 				}
 
-				assert( (coordFighter == null && reachable == null) || (coordFighter != null && reachable != null) );
+				assert( (MapActor.this.mapScreen.getCoordFighter() == null && reachable == null) || (MapActor.this.mapScreen.getCoordFighter() != null && reachable != null) );
 				return true;
 			}
 
@@ -150,7 +152,7 @@ public class MapActor extends Actor {
 		float x, y;
 		Fighter fighter;
 		Coord2D coord = new Coord2D();
-		
+
 		for(int i = 0; i < nbTerrainsY; i++) {
 			for(int j = 0 ; j < nbTerrainsX; j++) {
 				coord.x = j + beginX; coord.y = i + beginY;

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
+import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
 import jonathan.geoffroy.androidstrategic.view.actors.MapActor;
 import jonathan.geoffroy.androidstrategic.view.utils.App;
 import jonathan.geoffroy.androidstrategic.view.utils.StageScreen;
@@ -17,25 +18,26 @@ import jonathan.geoffroy.androidstrategic.view.utils.StageScreen;
 public class MapScreen extends StageScreen {
 	private Map map;
 	private MapActor mapActor;
-	
+	private Coord2D coordFighter;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public ArrayList<AssetDescriptor<Object>> getAssetDescriptors() {
 		assert map != null;
-		
+
 		ArrayList<AssetDescriptor<Object>> desc = new ArrayList<AssetDescriptor<Object>>();
-		
+
 		for(Terrain t : map.getTerrains()) {
 			desc.add(new AssetDescriptor(App.TEXTURES_DIR + t.getClass().getSimpleName() + ".bmp", Texture.class));
 		}
 		desc.add(new AssetDescriptor(App.TEXTURES_DIR + "reachable.bmp", Texture.class));
 		desc.add(new AssetDescriptor(App.TEXTURES_DIR + "assailable.bmp", Texture.class));
-		
+
 		for(Fighter f : map.getFighters()) {
-			desc.add(new AssetDescriptor(f.getTextureName(), Texture.class));
+			desc.add(new AssetDescriptor(App.FIGHTERS_DIR + f.getTextureName(), Texture.class));
+			desc.add(new AssetDescriptor(App.DIALOGS_DIR + f.getTextureName(), Texture.class));
 		}
-		
+
 		return desc;
 	}
 
@@ -45,7 +47,7 @@ public class MapScreen extends StageScreen {
 		assert(app.getChapter() != 0);
 		try {
 			map = Map.load(app.getScenario(), app.getChapter());
-			mapActor = new MapActor(map);
+			mapActor = new MapActor(this);
 			mapActor.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			stage.addActor(mapActor);
 			Gdx.input.setInputProcessor(stage);
@@ -60,6 +62,27 @@ public class MapScreen extends StageScreen {
 	@Override
 	public void dispose() {
 		super.dispose();
-		
+	}
+
+	public Coord2D getCoordFighter() {
+		return coordFighter;
+	}
+
+	public void setCoordFighter(Coord2D coordFighter) {
+		this.coordFighter = coordFighter;
+	}
+
+	/**
+	 * return the fighter pointed by the selected case. return null if there is no selected case.
+	 * @return the selected fighter (or null if there is no selected case)
+	 */
+	public Fighter getSelectedFighter() {
+		if(coordFighter == null)
+			return null;
+		return map.getFighterAt(coordFighter);
+	}
+
+	public Map getMap() {
+		return map;
 	}
 }
