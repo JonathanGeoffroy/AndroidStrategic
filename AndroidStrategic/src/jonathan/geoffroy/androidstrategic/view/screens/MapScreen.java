@@ -6,18 +6,22 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
+import jonathan.geoffroy.androidstrategic.view.actors.FighterInfoActor;
 import jonathan.geoffroy.androidstrategic.view.actors.MapActor;
+import jonathan.geoffroy.androidstrategic.view.actors.MapInfosGroup;
 import jonathan.geoffroy.androidstrategic.view.utils.App;
 import jonathan.geoffroy.androidstrategic.view.utils.StageScreen;
 
 public class MapScreen extends StageScreen {
 	private Map map;
 	private MapActor mapActor;
+	private MapInfosGroup mapInfos;
 	private Coord2D coordFighter;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -38,6 +42,8 @@ public class MapScreen extends StageScreen {
 			desc.add(new AssetDescriptor(App.DIALOGS_DIR + f.getTextureName(), Texture.class));
 		}
 
+		desc.add(new AssetDescriptor(FighterInfoActor.WALLPAPER, Texture.class));
+		desc.add(new AssetDescriptor(FighterInfoActor.FONT, BitmapFont.class));
 		return desc;
 	}
 
@@ -48,8 +54,14 @@ public class MapScreen extends StageScreen {
 		try {
 			map = Map.load(app.getScenario(), app.getChapter());
 			mapActor = new MapActor(this);
-			mapActor.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
 			stage.addActor(mapActor);
+			
+			FighterInfoActor fighterInfo = new FighterInfoActor(this);
+			mapInfos = new MapInfosGroup(fighterInfo);
+			mapInfos.setBounds(mapActor.getX() + mapActor.getWidth(), 0, Gdx.graphics.getWidth() - mapActor.getWidth(), Gdx.graphics.getHeight());
+			stage.addActor(mapInfos);
+			
 			Gdx.input.setInputProcessor(stage);
 			stage.setScrollFocus(mapActor);
 			stage.setKeyboardFocus(mapActor);

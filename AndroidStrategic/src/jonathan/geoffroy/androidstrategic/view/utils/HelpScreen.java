@@ -63,4 +63,13 @@ public abstract class HelpScreen implements Screen {
 	}
 
 	public abstract void draw(float delta);
+	
+	public static App getApp() {
+		return app;
+	}
+
+	public static void setApp(App app) {
+		HelpScreen.app = app;
+	}
+
 }
