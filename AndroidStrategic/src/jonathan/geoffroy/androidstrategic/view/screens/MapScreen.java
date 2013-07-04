@@ -29,6 +29,9 @@ public class MapScreen extends StageScreen {
 		for(Terrain t : map.getTerrains()) {
 			desc.add(new AssetDescriptor(App.TEXTURES_DIR + t.getClass().getSimpleName() + ".bmp", Texture.class));
 		}
+		desc.add(new AssetDescriptor(App.TEXTURES_DIR + "reachable.bmp", Texture.class));
+		desc.add(new AssetDescriptor(App.TEXTURES_DIR + "assailable.bmp", Texture.class));
+		
 		for(Fighter f : map.getFighters()) {
 			desc.add(new AssetDescriptor(f.getTextureName(), Texture.class));
 		}

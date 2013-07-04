@@ -2,6 +2,7 @@ package jonathan.geoffroy.androidstrategic.view.actors;
 
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
+import jonathan.geoffroy.androidstrategic.model.mapping.Reachable;
 import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
 import jonathan.geoffroy.androidstrategic.view.utils.App;
 
@@ -17,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 public class MapActor extends Actor {
 	private static App app;
 	private Map map;
+	private Coord2D coordFighter;
+	private Reachable reachable;
 	private int nbTerrainsX, nbTerrainsY;
 	private int beginX, beginY;
 	private float terrainSize;
@@ -26,6 +29,28 @@ public class MapActor extends Actor {
 		beginX = 0;
 		beginY = 0;
 		addListener(new InputListener() {
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				Coord2D coord = new Coord2D(
+						(int) (x / terrainSize) + beginX,
+						(int) ((getHeight() - y) / terrainSize) + beginY 
+						);
+
+				Fighter fighter = MapActor.this.map.getFighterAt(coord);
+				if(fighter != null) {
+					MapActor.this.coordFighter = coord;
+					MapActor.this.reachable = MapActor.this.map.getReachableTerrains(fighter);
+				}
+				else {
+					coordFighter = null;
+					reachable = null;
+				}
+
+				assert( (coordFighter == null && reachable == null) || (coordFighter != null && reachable != null) );
+				return true;
+			}
 
 			@Override
 			public boolean scrolled(InputEvent event, float x, float y,
@@ -61,7 +86,7 @@ public class MapActor extends Actor {
 				}
 				return true;
 			}
-			
+
 		});
 		addListener(new ActorGestureListener() {
 			private int lastZoomFactor;
@@ -125,15 +150,24 @@ public class MapActor extends Actor {
 		float x, y;
 		Fighter fighter;
 		Coord2D coord = new Coord2D();
+		
 		for(int i = 0; i < nbTerrainsY; i++) {
 			for(int j = 0 ; j < nbTerrainsX; j++) {
 				coord.x = j + beginX; coord.y = i + beginY;
-				
-				text = (Texture) app.getAsset(App.TEXTURES_DIR + map.getTerrain(coord.x, coord.y).getClass().getSimpleName() + ".bmp");
+
+				if(reachable != null && reachable.getReachableMap()[coord.y][coord.x] == Reachable.REACHABLE) {
+					text = (Texture) app.getAsset(App.TEXTURES_DIR + "reachable.bmp");
+				}
+				else if(reachable != null && reachable.getReachableMap()[coord.y][coord.x] == Reachable.ASSAILABLE) {
+					text = (Texture) app.getAsset(App.TEXTURES_DIR + "assailable.bmp");
+				}
+				else {
+					text = (Texture) app.getAsset(App.TEXTURES_DIR + map.getTerrain(coord.x, coord.y).getClass().getSimpleName() + ".bmp");
+				}
 				x = j * terrainSize;
 				y = getHeight() - (i+1) * terrainSize;
 				batch.draw(text, getX() + x , getY() + y, terrainSize, terrainSize);
-				
+
 				fighter = map.getFighterAt(coord);
 				if(fighter != null) {
 					text = (Texture) app.getAsset(fighter.getTextureName());
@@ -172,7 +206,7 @@ public class MapActor extends Actor {
 			setNbTerrainsY((int)(getHeight() / terrainSize));
 		}
 	}
-	
+
 	public void setNbTerrainsX(int value) {
 		nbTerrainsX = value;
 		if(beginX > map.getWidth() - nbTerrainsX) {
@@ -180,7 +214,7 @@ public class MapActor extends Actor {
 			terrainSize = getWidth() / nbTerrainsX;
 		}
 	}
-	
+
 	public void setNbTerrainsY(int value) {
 		nbTerrainsY = value;
 		if(beginY > map.getWidth() - nbTerrainsY) {
