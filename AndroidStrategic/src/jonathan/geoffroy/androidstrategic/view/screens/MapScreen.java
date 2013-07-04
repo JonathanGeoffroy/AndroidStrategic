@@ -22,6 +22,7 @@ public class MapScreen extends StageScreen {
 	private Map map;
 	private MapActor mapActor;
 	private MapInfosGroup mapInfos;
+	private FighterInfoActor fighterInfo;
 	private Coord2D coordFighter;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -53,15 +54,16 @@ public class MapScreen extends StageScreen {
 		assert(app.getChapter() != 0);
 		try {
 			map = Map.load(app.getScenario(), app.getChapter());
+
 			mapActor = new MapActor(this);
 			mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
 			stage.addActor(mapActor);
-			
-			FighterInfoActor fighterInfo = new FighterInfoActor(this);
+
+			fighterInfo = new FighterInfoActor();
 			mapInfos = new MapInfosGroup(fighterInfo);
 			mapInfos.setBounds(mapActor.getX() + mapActor.getWidth(), 0, Gdx.graphics.getWidth() - mapActor.getWidth(), Gdx.graphics.getHeight());
 			stage.addActor(mapInfos);
-			
+
 			Gdx.input.setInputProcessor(stage);
 			stage.setScrollFocus(mapActor);
 			stage.setKeyboardFocus(mapActor);
@@ -82,6 +84,7 @@ public class MapScreen extends StageScreen {
 
 	public void setCoordFighter(Coord2D coordFighter) {
 		this.coordFighter = coordFighter;
+		fighterInfo.onChangeSelectedFighter(getSelectedFighter());
 	}
 
 	/**
