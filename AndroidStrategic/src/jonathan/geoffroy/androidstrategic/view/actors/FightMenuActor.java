@@ -21,7 +21,6 @@ public class FightMenuActor extends TableActor {
 
 	public FightMenuActor(MapScreen mapScreen) {
 		super(mapScreen);
-		System.out.println(table);
 	}
 
 	private TextButton createEndTurnButton(TextButtonStyle style) {

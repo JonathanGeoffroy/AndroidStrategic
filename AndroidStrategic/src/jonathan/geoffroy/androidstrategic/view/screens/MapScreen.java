@@ -42,6 +42,7 @@ public class MapScreen extends StageScreen {
 
 		for(Fighter f : map.getFighters()) {
 			desc.add(new AssetDescriptor(App.FIGHTERS_DIR + f.getTextureName(), Texture.class));
+			desc.add(new AssetDescriptor(App.FIGHTERS_DIR + "moved_" + f.getTextureName(), Texture.class));
 			desc.add(new AssetDescriptor(App.DIALOGS_DIR + f.getTextureName(), Texture.class));
 		}
 
