@@ -557,4 +557,11 @@ public abstract class Fighter {
 	public boolean canSave(Fighter fighter) {
 		return !isEnnemy(fighter) && weight >= fighter.weight + 3;
 	}
+
+	public boolean hasMoved() {
+		return movement == 0;
+	}
+	public void setMoved() {
+		movement = 0;		
+	}
 }

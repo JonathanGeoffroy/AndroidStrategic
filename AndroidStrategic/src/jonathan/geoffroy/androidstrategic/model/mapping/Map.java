@@ -298,6 +298,8 @@ public class Map {
 		coord.x = x;
 		coord.y = y;
 		coordFighters.put(coord, fighter);
+		
+		fighter.setMoved();
 	}
 
 	/** 
@@ -346,8 +348,8 @@ public class Map {
 		Coord2D coord = fighters.get(f);
 		reachable.addReachable(coord);
 		HashMap<Coord2D, Integer> already = new HashMap<Coord2D, Integer>();
-		already.put(coord, (int) f.getMovementMax());
-		calculateReach(f, f.getMovementMax(), coord.x, coord.y, already);
+		already.put(coord, (int) f.getMovement());
+		calculateReach(f, f.getMovement(), coord.x, coord.y, already);
 
 		return reachable;
 	}

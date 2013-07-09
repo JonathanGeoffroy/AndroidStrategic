@@ -41,11 +41,16 @@ public class MapActor extends Actor {
 						);
 
 				Fighter fighter = MapActor.this.map.getFighterAt(coord);
-				if(fighter != null) {
+				if(fighter != null && !fighter.hasMoved()) {
 					MapActor.this.mapScreen.setCoordFighter(coord);
 					MapActor.this.reachable = MapActor.this.map.getReachableTerrains(fighter);
 				}
 				else {
+					Fighter selectedFighter = MapActor.this.mapScreen.getSelectedFighter();
+					
+					if(selectedFighter != null && reachable.isReachable(coord)) {
+						map.moveFighter(selectedFighter, coord.x, coord.y);
+					}
 					MapActor.this.mapScreen.setCoordFighter(null);
 					reachable = null;
 				}

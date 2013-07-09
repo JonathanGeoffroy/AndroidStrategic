@@ -58,4 +58,8 @@ public class Reachable {
 			reachableMap[touchCoord.y][touchCoord.x] = ASSAILABLE;
 		}
 	}
+
+	public boolean isReachable(Coord2D coord) {
+		return reachableMap[coord.y][coord.x] == REACHABLE;
+	}
 }
