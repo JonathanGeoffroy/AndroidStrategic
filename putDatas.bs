@@ -1,5 +1,4 @@
 #!/bin/bash
 
-cp -Rf ./data/* ./AndroidStrategic/data/
 cp -Rf ./data/* ./AndroidStrategic-desktop/bin/data/
 cp -Rf ./data/* ./AndroidStrategic-android/assets/data/
