@@ -14,10 +14,15 @@ gen/
 BatailleNavale-android/bin/jarlist.cache
 
 # android & desktop datas
-BatailleNavale-android/assets/data/
-BatailleNavale-android/bin/
-BatailleNavale-desktop/bin/
-BatailleNavale/data/
+BatailleNavale-android/assets/data/*
+BatailleNavale-android/bin/*
+BatailleNavale-desktop/bin/*
+BatailleNavale/data/*
+AndroidStrategic/data/img/fighters/*
+AndroidStrategic-android/assets/data/fonts/
+AndroidStrategic-android/assets/data/img/
+AndroidStrategic-android/assets/data/scenarii/
+data/scenarii/Test/*
 
 # Local configuration file (sdk path, etc)
 local.properties
