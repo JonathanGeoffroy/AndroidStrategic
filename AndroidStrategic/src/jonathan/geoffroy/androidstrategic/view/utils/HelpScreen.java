@@ -10,6 +10,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 
 public abstract class HelpScreen implements Screen {
 	protected static App app;
+	private boolean hasInit;
 	protected static float width, height;
 
 	@Override
@@ -28,6 +29,7 @@ public abstract class HelpScreen implements Screen {
 	}
 
 	public abstract ArrayList<AssetDescriptor<Object>> getAssetDescriptors();
+	protected abstract void onEndLoaded();
 
 	public static void initialize(App app) {
 		HelpScreen.app = app;
@@ -39,13 +41,17 @@ public abstract class HelpScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		if(app.hasLoaded()) {
+			if(!hasInit) {
+				hasInit = true;
+				onEndLoaded();
+			}
 			draw(delta);
 		}
 		else {
 			drawLoader();
 		}
 	}
-	
+
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub

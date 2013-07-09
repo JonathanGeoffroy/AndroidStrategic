@@ -1,0 +1,49 @@
+package jonathan.geoffroy.androidstrategic.view.utils;
+
+import jonathan.geoffroy.androidstrategic.view.screens.MapScreen;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+
+public abstract class TableActor extends Actor {
+	protected Table table;
+	protected MapScreen mapScreen;
+
+	public TableActor(MapScreen mapScreen) {
+		this.mapScreen = mapScreen;
+		table = new Table();
+	}
+
+
+	@Override
+	public void draw(SpriteBatch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+		table.draw(batch, parentAlpha);
+	}
+
+
+	/**
+	 * load table for the first time on the current screen
+	 */
+	public abstract void loadTable();
+
+	/**
+	 * compute the table again when there is a change on the current screen
+	 */
+	public abstract void reloadTable();
+
+	public Table getTable() {
+		return table;
+	}
+
+	public void setTable(Table table) {
+		this.table = table;
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		table.setVisible(visible);
+	}
+}

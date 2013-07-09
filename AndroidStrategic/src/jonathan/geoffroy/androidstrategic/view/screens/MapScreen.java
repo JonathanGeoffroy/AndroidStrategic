@@ -12,6 +12,7 @@ import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
+import jonathan.geoffroy.androidstrategic.view.actors.FightMenuActor;
 import jonathan.geoffroy.androidstrategic.view.actors.FighterInfoActor;
 import jonathan.geoffroy.androidstrategic.view.actors.MapActor;
 import jonathan.geoffroy.androidstrategic.view.actors.MapInfosGroup;
@@ -23,6 +24,7 @@ public class MapScreen extends StageScreen {
 	private MapActor mapActor;
 	private MapInfosGroup mapInfos;
 	private FighterInfoActor fighterInfo;
+	private FightMenuActor fighterMenu;
 	private Coord2D coordFighter;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -43,7 +45,7 @@ public class MapScreen extends StageScreen {
 			desc.add(new AssetDescriptor(App.DIALOGS_DIR + f.getTextureName(), Texture.class));
 		}
 
-		desc.add(new AssetDescriptor(FighterInfoActor.WALLPAPER, Texture.class));
+		desc.add(new AssetDescriptor(MapInfosGroup.WALLPAPER, Texture.class));
 		desc.add(new AssetDescriptor(FighterInfoActor.FONT, BitmapFont.class));
 		return desc;
 	}
@@ -52,25 +54,13 @@ public class MapScreen extends StageScreen {
 	public void show() {
 		assert(app.getScenario() != null);
 		assert(app.getChapter() != 0);
+
 		try {
 			map = Map.load(app.getScenario(), app.getChapter());
-
-			mapActor = new MapActor(this);
-			mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
-			stage.addActor(mapActor);
-
-			fighterInfo = new FighterInfoActor();
-			mapInfos = new MapInfosGroup(fighterInfo);
-			mapInfos.setBounds(mapActor.getX() + mapActor.getWidth(), 0, Gdx.graphics.getWidth() - mapActor.getWidth(), Gdx.graphics.getHeight());
-			stage.addActor(mapInfos);
-
-			Gdx.input.setInputProcessor(stage);
-			stage.setScrollFocus(mapActor);
-			stage.setKeyboardFocus(mapActor);
+			super.show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		super.show();
 	}
 
 	@Override
@@ -84,7 +74,8 @@ public class MapScreen extends StageScreen {
 
 	public void setCoordFighter(Coord2D coordFighter) {
 		this.coordFighter = coordFighter;
-		fighterInfo.onChangeSelectedFighter(getSelectedFighter());
+		fighterInfo.reloadTable();
+		fighterMenu.reloadTable();
 	}
 
 	/**
@@ -99,5 +90,27 @@ public class MapScreen extends StageScreen {
 
 	public Map getMap() {
 		return map;
+	}
+
+	@Override
+	protected void onEndLoaded() {
+		mapActor = new MapActor(this);
+		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
+		stage.addActor(mapActor);
+
+		fighterInfo = new FighterInfoActor(this);
+		fighterMenu = new FightMenuActor(this);
+		mapInfos = new MapInfosGroup(this, fighterInfo);
+		mapInfos.addActor(fighterMenu);
+		stage.addActor(mapInfos);
+
+		fighterInfo.loadTable();
+		fighterMenu.loadTable();
+		mapInfos.setBounds(mapActor.getX() + mapActor.getWidth(), 0, Gdx.graphics.getWidth() - mapActor.getWidth(), Gdx.graphics.getHeight());
+		fighterMenu.setBounds(mapActor.getX() + mapActor.getWidth(), 0, Gdx.graphics.getWidth() - mapActor.getWidth(), Gdx.graphics.getHeight());
+		Gdx.input.setInputProcessor(stage);
+		stage.addActor(fighterMenu.getTable());
+		stage.setScrollFocus(mapActor);
+		stage.setKeyboardFocus(mapActor);
 	}
 }

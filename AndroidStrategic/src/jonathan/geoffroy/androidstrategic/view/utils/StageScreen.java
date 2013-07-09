@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 public abstract class StageScreen extends HelpScreen {
 	protected Stage stage;
 	private float width, height;
-	
+
 	public StageScreen() {
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
@@ -25,10 +25,18 @@ public abstract class StageScreen extends HelpScreen {
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 	}
-	
+
 	@Override
 	public void dispose() {
 		stage.dispose();
 		super.dispose();
+	}
+
+	public Stage getStage() {
+		return stage;
+	}
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
 }

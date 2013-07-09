@@ -36,12 +36,14 @@ public class Map {
 			ENNEMY_PRIEST = 16777215, ENNEMY_MAGE = -65281;
 	public final static int NOMAGIC = -1, TRAPMAGIC = 255, KILLMAGIC = -16776961, CUREMAGIC = 16711935;
 	private static final int NO_ITEM = -1, CURE_ITEM = 16711935;
+	public static final int ATTACK = 0, PUSH = 1, SUPER_PUSH = 2, OBJECT = 3, EXCHANGE = 4, SAVE = 5, LEAVE = 6, SUSPEND = 7, END_FIGTH = 8, END_TURN = 9;
+	public static final int NB_MENUS = 10;
 	public final static String SCENARII_DIR = "data/scenarii/";
 
 	private Terrain[][] map;
 	private LinkedHashSet<Terrain> terrains;
 	private ArrayList<CoordMagic> terrainMagics;
-	private ArrayList<CoordItem> terrainItems;
+	private ArrayList<CoordItem> terrainItems; 
 	private ArrayList<Coord2D> beginPlayers; 
 	private HashMap<Fighter, Coord2D> fighters;
 	private HashMap<Coord2D, Fighter> coordFighters;
@@ -454,6 +456,123 @@ public class Map {
 	 */
 	public Fighter getFighterAt(Coord2D coord) {
 		return coordFighters.get(coord);
+	}
+
+	/**
+	 * Compute the possibles actions that the fighter can do.
+	 * @param fighter the fighter who do something. Must be called even if fighter's null.
+	 * @return a List of possibilities.
+	 */
+	public ArrayList<Integer> possibilities(Fighter fighter) {
+		ArrayList<Integer> result = new ArrayList<Integer>();
+
+		if(fighter != null) {
+			if(canAttackAnyOne(fighter)) {
+				result.add(ATTACK);
+			}
+			// TODO: push & super_push
+
+			result.add(OBJECT);
+
+			if(touchAlly(fighter)) {
+				result.add(EXCHANGE);
+				if(canSaveAnyOne(fighter)) {
+					result.add(SAVE);
+				}
+				//				if(fighter.getSaved() != null) {
+				//					result.add(DISPOSE);
+				//				}
+			}
+			result.add(END_FIGTH);
+		}
+
+		result.add(SUSPEND);
+		result.add(END_TURN);
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param fighter fighter who attack
+	 * @return TRUE if the fighter can attack at least 1 ennemy
+	 */
+	private boolean canAttackAnyOne(Fighter fighter) {
+		return !assailableTerrains(fighter).isEmpty();
+	}
+
+	/**
+	 * @param fighter
+	 * @return a Coord's list for all assailables Terrains
+	 */
+	private ArrayList<Coord2D> assailableTerrains(Fighter fighter) {
+		ArrayList<Coord2D> result = new ArrayList<Coord2D>();
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param fighter
+	 * @return TRUE if the fighter touch at least 1 ally
+	 */
+	private boolean touchAlly(Fighter fighter) {
+		return !touchAllyTerrains(fighter).isEmpty();
+	}
+
+	/**
+	 * 
+	 * @param fighter
+	 * @return a Coord's list of ally touched
+	 */
+	private ArrayList<Coord2D> touchAllyTerrains(Fighter fighter) {
+		Coord2D fighterCoord = fighters.get(fighter);
+		Coord2D coord = new Coord2D();
+
+		int x[] = {fighterCoord.x - 1, fighterCoord.x + 1, fighterCoord.x, fighterCoord.x};
+		int y[] = {fighterCoord.y, fighterCoord.y, fighterCoord.y - 1, fighterCoord.y + 1};
+		Fighter currentFighter;
+
+		ArrayList<Coord2D> result = new ArrayList<Coord2D>();
+		for(int i = 0; i < x.length; i++) {
+			coord = new Coord2D(x[i], y[i]);
+			currentFighter = coordFighters.get(coord);
+			if(currentFighter != null && !currentFighter.isEnnemy(fighter)) {
+				result.add(coord);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param fighter
+	 * @return TRUE if fighter can save at least 1 ally
+	 */
+	private boolean canSaveAnyOne(Fighter fighter) {
+		return !saveTerrains(fighter).isEmpty();
+	}
+
+	/**
+	 * 
+	 * @param fighter
+	 * @return a Coord's list of terrains containing an ally who can saved by the fighter
+	 */
+	private ArrayList<Coord2D> saveTerrains(Fighter fighter) {
+		Coord2D fighterCoord = fighters.get(fighter);
+		Coord2D coord = new Coord2D();
+
+		int x[] = {fighterCoord.x - 1, fighterCoord.x + 1, fighterCoord.x, fighterCoord.x};
+		int y[] = {fighterCoord.y, fighterCoord.y, fighterCoord.y - 1, fighterCoord.y + 1};
+		Fighter currentFighter;
+
+		ArrayList<Coord2D> result = new ArrayList<Coord2D>();
+		for(int i = 0; i < x.length; i++) {
+			coord = new Coord2D(x[i], y[i]);
+			currentFighter = coordFighters.get(coord);
+			if(currentFighter != null && !fighter.canSave(currentFighter)) {
+				result.add(coord);
+			}
+		}
+		return result;
 	}
 }
 

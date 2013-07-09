@@ -1,36 +1,25 @@
 package jonathan.geoffroy.androidstrategic.view.actors;
 
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
+import jonathan.geoffroy.androidstrategic.view.screens.MapScreen;
 import jonathan.geoffroy.androidstrategic.view.utils.App;
 import jonathan.geoffroy.androidstrategic.view.utils.HelpScreen;
+import jonathan.geoffroy.androidstrategic.view.utils.TableActor;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
-public class FighterInfoActor extends Actor {
+public class FighterInfoActor extends TableActor {
 	public static final String FONT = App.FONTS_DIR + "fighterInfo.fnt";
-	public static final String WALLPAPER = App.TEXTURES_DIR + "fighterInfo_wallpaper.png";
 
-	private Table table;
+	private LabelStyle style;
 
-	public FighterInfoActor() {
-		table = new Table();
-		table.setFillParent(true);
-	}
-
-	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
-		super.draw(batch, parentAlpha);
-		Texture wallpaper = (Texture) (HelpScreen.getApp().getAsset(WALLPAPER));
-		batch.draw(wallpaper, getX(), getY(), getWidth(), getHeight());
-		table.draw(batch, parentAlpha);
+	public FighterInfoActor(MapScreen mapScreen) {
+		super(mapScreen);
 	}
 
 	/**
@@ -38,10 +27,21 @@ public class FighterInfoActor extends Actor {
 	 * while there is no fighter selected, method should be called (with fighter = null) 
 	 * @param fighter the new selected fighter
 	 */
-	public void onChangeSelectedFighter(Fighter fighter) {
+
+
+	@Override
+	public void loadTable() {
 		BitmapFont font = (BitmapFont) HelpScreen.getApp().getAsset(FONT);
-		LabelStyle style = new LabelStyle(font, Color.WHITE);
+		style = new LabelStyle(font, Color.WHITE);
+	}
+
+	@Override
+	public void reloadTable() {
+		assert(table != null);
+		assert(style != null);
+
 		table.clear();
+		Fighter fighter = mapScreen.getSelectedFighter();
 
 		if(fighter != null) {
 			Texture fighterText = (Texture) HelpScreen.getApp().getAsset(

@@ -545,7 +545,16 @@ public abstract class Fighter {
 				result += "_female";
 		}
 		result += ".png";
-		
+
 		return result;
+	}
+
+	/**
+	 * 
+	 * @param fighter
+	 * @return TRUE if fighter can save the param's fighter  
+	 */
+	public boolean canSave(Fighter fighter) {
+		return !isEnnemy(fighter) && weight >= fighter.weight + 3;
 	}
 }

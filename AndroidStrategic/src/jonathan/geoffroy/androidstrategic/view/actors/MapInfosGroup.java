@@ -2,24 +2,36 @@ package jonathan.geoffroy.androidstrategic.view.actors;
 
 import java.util.ArrayList;
 
+import jonathan.geoffroy.androidstrategic.view.screens.MapScreen;
+import jonathan.geoffroy.androidstrategic.view.utils.App;
+import jonathan.geoffroy.androidstrategic.view.utils.TableActor;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
-public class MapInfosGroup extends Group {
-	private ArrayList<Actor> actors;
-	private int drawedActor;
+public class MapInfosGroup extends Actor {
+	@Override
+	public void draw(SpriteBatch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+		actors.get(drawedActor).draw(batch, parentAlpha);
+	}
 
-	public MapInfosGroup(Actor actor) {
-		actors = new ArrayList<Actor>();
+	public static final String WALLPAPER = App.TEXTURES_DIR + "fighterInfo_wallpaper.png";
+	
+	private MapScreen mapScreen;
+	private int drawedActor;
+	private ArrayList<TableActor> actors;
+	
+	public MapInfosGroup(MapScreen mapScreen, TableActor actor) {
 		assert (actor != null);
+		this.mapScreen = mapScreen;
+		actors = new ArrayList<TableActor>();
 		actors.add(actor);
 		drawedActor = 0;
 
 		addListener(new ActorGestureListener() {
-
 			@Override
 			public void fling(InputEvent event, float velocityX,
 					float velocityY, int button) {
@@ -33,24 +45,23 @@ public class MapInfosGroup extends Group {
 		});
 	}
 
-	public void addActor(Actor actor) {
+	
+	public void addActor(TableActor actor) {
 		assert (actor != null);
+		actor.setVisible(false);
 		actors.add(actor);
-		actor.setBounds(getX(), getY(), getWidth(), getHeight());
+		mapScreen.getStage().addActor(actor);
 	}
 
-	public boolean removeActor(Actor actor) {
+	public boolean removeActor(TableActor actor) {
 		assert (actors.contains(actor));
-		super.removeActor(actor);
-		return actors.remove(actor);
-	}
-
-	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
-		super.draw(batch, parentAlpha);
-		if (drawedActor >= 0) {
-			actors.get(drawedActor).draw(batch, parentAlpha);
+		boolean result = actors.remove(actor);
+		drawedActor = 0;
+		actors.get(0).setVisible(true);
+		for(int i = 1, size = actors.size(); i < size; i++) {
+			actors.get(i).setVisible(false);
 		}
+		return result;
 	}
 
 	@Override
@@ -62,19 +73,22 @@ public class MapInfosGroup extends Group {
 	}
 
 	private void nextActor() {
+		actors.get(drawedActor).setVisible(false);
 		drawedActor++;
 		if (drawedActor >= actors.size()) {
 			drawedActor = 0;
 		}
 		assert (drawedActor >= 0 && drawedActor < actors.size());
+		actors.get(drawedActor).setVisible(true);
 	}
 
 	private void previousActor() {
+		actors.get(drawedActor).setVisible(false);
 		drawedActor--;
 		if (drawedActor < 0) {
 			drawedActor = actors.size() - 1;
 		}
 		assert (drawedActor >= 0 && drawedActor < actors.size());
+		actors.get(drawedActor).setVisible(true);
 	}
-
 }
