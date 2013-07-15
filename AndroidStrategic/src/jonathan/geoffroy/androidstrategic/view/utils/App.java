@@ -2,6 +2,7 @@ package jonathan.geoffroy.androidstrategic.view.utils;
 
 import java.util.ArrayList;
 
+import jonathan.geoffroy.androidstrategic.view.screens.DialogScreen;
 import jonathan.geoffroy.androidstrategic.view.screens.MapScreen;
 
 import com.badlogic.gdx.Game;
@@ -10,7 +11,7 @@ import com.badlogic.gdx.assets.AssetManager;
 
 public class App extends Game {
 	public static final String TEXTURES_DIR = "data/img/textures/", DIALOGS_DIR = "data/img/fighters/dialogs/", FIGHTERS_DIR = "data/img/fighters/", FONTS_DIR = "data/fonts/", SOUNDS_DIR = "data/sounds/sounds/", MUSICS_DIR = "data/sounds/musics/";
-	public static final int MAP = 0;
+	public static final int MAP = 0, DIALOG = 1;
 	private AssetManager manager;
 	private ArrayList<HelpScreen> screens;
 	
@@ -25,7 +26,10 @@ public class App extends Game {
 		manager = new AssetManager();
 		screens = new ArrayList<HelpScreen>();
 		screens.add(new MapScreen());
-		setScreen(screens.get(MAP));
+		screens.add(new DialogScreen());
+
+		//setScreen(screens.get(MAP));
+		setScreen(screens.get(DIALOG));
 	}
 
 	public void loadAssets(ArrayList<AssetDescriptor<Object>> assetDesc) {
