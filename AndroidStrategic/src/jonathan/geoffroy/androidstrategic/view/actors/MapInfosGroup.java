@@ -12,12 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 public class MapInfosGroup extends Actor {
-	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
-		super.draw(batch, parentAlpha);
-		actors.get(drawedActor).draw(batch, parentAlpha);
-	}
-
 	public static final String WALLPAPER = App.TEXTURES_DIR + "fighterInfo_wallpaper.png";
 	
 	private MapScreen mapScreen;
@@ -45,7 +39,6 @@ public class MapInfosGroup extends Actor {
 		});
 	}
 
-	
 	public void addActor(TableActor actor) {
 		assert (actor != null);
 		actor.setVisible(false);
@@ -90,5 +83,11 @@ public class MapInfosGroup extends Actor {
 		}
 		assert (drawedActor >= 0 && drawedActor < actors.size());
 		actors.get(drawedActor).setVisible(true);
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+		actors.get(drawedActor).draw(batch, parentAlpha);
 	}
 }
