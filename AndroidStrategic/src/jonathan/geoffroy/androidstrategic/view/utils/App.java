@@ -21,7 +21,7 @@ public class App extends Game {
 	public void create() {
 		HelpScreen.initialize(this);
 		scenario = "Test";
-		chapter = 2;
+		chapter = 3;
 		manager = new AssetManager();
 		screens = new ArrayList<HelpScreen>();
 		screens.add(new MapScreen());
