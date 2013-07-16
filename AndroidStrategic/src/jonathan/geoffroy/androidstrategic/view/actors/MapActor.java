@@ -47,7 +47,7 @@ public class MapActor extends Actor {
 				}
 				else {
 					Fighter selectedFighter = MapActor.this.mapScreen.getSelectedFighter();
-					
+
 					if(selectedFighter != null && reachable.isReachable(coord)) {
 						map.moveFighter(selectedFighter, coord.x, coord.y);
 					}
@@ -173,7 +173,6 @@ public class MapActor extends Actor {
 				}
 				x = j * terrainSize;
 				y = getHeight() - (i+1) * terrainSize;
-				batch.draw(text, getX() + x , getY() + y, terrainSize, terrainSize);
 
 				fighter = map.getFighterAt(coord);
 				if(fighter != null) {
