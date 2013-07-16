@@ -1,0 +1,38 @@
+{
+	"title" : "the test title",
+	"speaks" :
+	[
+		{
+			"speakers" :
+			[
+				{ "speaker": "Axman_male", "placeNumber": 0, "orientation": 2 },
+				{ "speaker": "Soldier_male", "placeNumber": 2, "orientation" : 1 },
+				{ "speaker": "Ranger_male", "placeNumber": 4, "orientation" : 0 }
+			],
+			"speakerNum": 1,
+			"text": "I am the soldier and i want to kill you"
+		},
+
+		{
+			"speakers" :
+			[
+				{ "speaker": "Axman_male", "placeNumber": 0, "orientation" : 2 },
+				{ "speaker": "Soldier_male", "placeNumber": 2, "orientation" : 1 },
+				{ "speaker": "Ranger_male", "placeNumber": 4, "orientation" : 0 }
+			],
+			"speakerNum": 0,
+			"text": "I am the Axman and i want to kill you"
+		},
+
+		{
+			"speakers" :
+			[
+				{ "speaker": "Axman_male", "placeNumber": 0, "orientation" : 2 },
+				{ "speaker": "Soldier_male", "placeNumber": 2, "orientation" : 1 },
+				{ "speaker": "Ranger_male", "placeNumber": 4, "orientation" : 0 }
+			],
+			"speakerNum": 1,
+			"text": "I am the Ranger and i want to kill you"
+		},
+	]
+}
