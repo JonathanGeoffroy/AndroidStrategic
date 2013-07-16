@@ -1,5 +1,7 @@
 package jonathan.geoffroy.androidstrategic.model.dialogs;
 
+import jonathan.geoffroy.androidstrategic.view.utils.App;
+
 public class Speaker {
 	public static final int LEFT = 0, CENTER = 1, RIGHT = 2;
 	private String speaker;
@@ -23,5 +25,8 @@ public class Speaker {
 	}
 	public void setOrientation(int orientation) {
 		this.orientation = orientation;
+	}
+	public String getTextureName() {
+		return App.DIALOGS_DIR + speaker + ".png";
 	}	
 }
