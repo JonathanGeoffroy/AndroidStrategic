@@ -9,7 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
 
 public class Dialog {
-	public static String DIAL_TEXT = App.DIALOGS_DIR + "dialogs.png";
+	public static String DIAL_TEXT = App.DIALOGS_DIR + "dialogs.png", NAMES_TEXT = App.DIALOGS_DIR + "names.png";
 	private String title;
 	private ArrayList<Speak> speaks;
 

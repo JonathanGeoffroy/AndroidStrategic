@@ -25,7 +25,8 @@ public class DialogScreen extends StageScreen {
 	public ArrayList<AssetDescriptor<Object>> getAssetDescriptors() {
 		ArrayList<AssetDescriptor<Object>> result = new ArrayList<AssetDescriptor<Object>>();
 		result.add(new AssetDescriptor(Dialog.DIAL_TEXT, Texture.class));
-
+		result.add(new AssetDescriptor(Dialog.NAMES_TEXT, Texture.class));
+		
 		ArrayList<Speak> speaks = dialog.getSpeaks();
 		for(Speak speak: speaks) {
 			for(Speaker s: speak.getSpeakers()) {
