@@ -21,10 +21,11 @@ public class DialogScreen extends StageScreen {
 		super.show();
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public ArrayList<AssetDescriptor<Object>> getAssetDescriptors() {
-		ArrayList<AssetDescriptor<Object>>result = new ArrayList<AssetDescriptor<Object>>();
+		ArrayList<AssetDescriptor<Object>> result = new ArrayList<AssetDescriptor<Object>>();
+		result.add(new AssetDescriptor(Dialog.DIAL_TEXT, Texture.class));
+
 		ArrayList<Speak> speaks = dialog.getSpeaks();
 		for(Speak speak: speaks) {
 			for(Speaker s: speak.getSpeakers()) {
