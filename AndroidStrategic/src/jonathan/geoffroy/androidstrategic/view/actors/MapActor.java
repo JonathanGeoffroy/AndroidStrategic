@@ -214,29 +214,32 @@ public class MapActor extends Actor {
 	}
 
 	private void zoom(int zoomFactor) {
-		if(terrainSize + zoomFactor < getWidth() / 5) {
-			terrainSize += zoomFactor;
-			setNbTerrainsX((int)(getWidth() / terrainSize));
-			setNbTerrainsY((int)(getHeight() / terrainSize));
+		float nextTerrainSize = terrainSize + zoomFactor;
+		int nbTerrainsX = (int)(getWidth() / nextTerrainSize);
+		int nbTerrainsY = (int)(getHeight() / nextTerrainSize);
+		
+		if (beginX + nbTerrainsX < map.getWidth() &&
+				beginY  + nbTerrainsY < map.getHeight()) {
+			terrainSize = nextTerrainSize;
+			setNbTerrainsX(nbTerrainsX);
+			setNbTerrainsY(nbTerrainsY);
 		}
 	}
 
 	public void setNbTerrainsX(int value) {
 		nbTerrainsX = value;
 		if(beginX > map.getWidth() - nbTerrainsX) {
-			nbTerrainsX = map.getWidth() - beginX;
+			nbTerrainsX = map.getWidth() - beginX - 1;
 			terrainSize = getWidth() / nbTerrainsX;
 		}
-		assert beginX + nbTerrainsX < map.getWidth();
-		assert beginY + nbTerrainsY < map.getHeight();
+		assert beginX + nbTerrainsX < map.getWidth() : "x: " + beginX + nbTerrainsX;
 	}
 
 	public void setNbTerrainsY(int value) {
 		nbTerrainsY = value;
 		if(beginY > map.getHeight() - nbTerrainsY) {
-			nbTerrainsY = map.getHeight() - beginY;
+			nbTerrainsY = map.getHeight() - beginY - 1;
 		}
-		assert beginX + nbTerrainsX < map.getWidth();
-		assert beginY + nbTerrainsY < map.getHeight();
+		assert beginY + nbTerrainsY < map.getHeight(): "y: " + beginY + nbTerrainsY;
 	}
 }
