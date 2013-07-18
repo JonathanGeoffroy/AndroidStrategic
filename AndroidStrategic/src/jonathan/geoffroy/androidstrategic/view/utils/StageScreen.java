@@ -1,6 +1,9 @@
 package jonathan.geoffroy.androidstrategic.view.utils;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
@@ -38,5 +41,23 @@ public abstract class StageScreen extends HelpScreen {
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+
+	@Override
+	public void show() {
+		super.show();
+		Gdx.input.setInputProcessor(stage);
+	}
+
+	@Override
+	public ArrayList<AssetDescriptor<Object>> getAssetDescriptors() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void onEndLoaded() {
+		// TODO Auto-generated method stub
+		
 	}
 }

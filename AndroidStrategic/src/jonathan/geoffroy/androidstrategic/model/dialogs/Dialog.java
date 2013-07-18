@@ -47,4 +47,24 @@ public class Dialog {
 		assert(wallpaper != null);
 		return WALLPAPER_DIR + wallpaper + ".png";
 	}
+
+	/**
+	 * Change the current dialog to the next
+	 * @return true if there is a next dialog
+	 */
+	public boolean next() {
+		boolean hasNext = hasNext();
+		if(hasNext) {
+			current++;
+		}
+		return hasNext;
+	}
+	
+	/**
+	 * 
+	 * @return true if there is a next dialog
+	 */
+	public boolean hasNext() {
+		return current < speaks.size() - 1;
+	}
 }

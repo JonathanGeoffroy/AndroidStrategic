@@ -4,14 +4,16 @@ import java.util.ArrayList;
 
 import jonathan.geoffroy.androidstrategic.model.dialogs.Dialog;
 import jonathan.geoffroy.androidstrategic.model.dialogs.Speaker;
+import jonathan.geoffroy.androidstrategic.view.utils.App;
 import jonathan.geoffroy.androidstrategic.view.utils.HelpScreen;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 public class DialogActor extends Actor {
 	private Dialog dialog;
@@ -27,6 +29,19 @@ public class DialogActor extends Actor {
 		nameText = (Texture) HelpScreen.getApp().getAsset(Dialog.NAMES_TEXT);
 		font = (BitmapFont) HelpScreen.getApp().getAsset(FighterInfoActor.FONT);
 		speakers = new ArrayList<Sprite>();
+
+		addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				super.touchDown(event, x, y, pointer, button);
+				System.out.println("fired");
+				if(!DialogActor.this.dialog.next()) {
+					HelpScreen.getApp().setScreen(App.MAP);
+				}
+				return true;
+			}
+		});
 	}
 
 	/**

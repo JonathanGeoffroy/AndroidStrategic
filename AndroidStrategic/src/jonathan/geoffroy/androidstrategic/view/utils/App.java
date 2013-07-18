@@ -14,7 +14,7 @@ public class App extends Game {
 	public static final int MAP = 0, DIALOG = 1;
 	private AssetManager manager;
 	private ArrayList<HelpScreen> screens;
-	
+
 	private String scenario;
 	private int chapter;
 
@@ -28,8 +28,13 @@ public class App extends Game {
 		screens.add(new MapScreen());
 		screens.add(new DialogScreen());
 
-		//setScreen(screens.get(MAP));
-		setScreen(screens.get(DIALOG));
+		setScreen(screens.get(MAP));
+		//setScreen(screens.get(DIALOG));
+	}
+
+	public void setScreen(int screenType) {
+		assert(screenType >= 0 && screenType < screens.size());
+		setScreen(screens.get(screenType));
 	}
 
 	public void loadAssets(ArrayList<AssetDescriptor<Object>> assetDesc) {
@@ -37,15 +42,15 @@ public class App extends Game {
 			manager.load(ad);
 		}
 	}
-	
+
 	public void clearAssets() {
 		manager.clear();
 	}
-	
+
 	public boolean hasLoaded() {
 		return manager.update();
 	}
-	
+
 	public String getScenario() {
 		return scenario;
 	}
