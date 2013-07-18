@@ -35,7 +35,6 @@ public class DialogActor extends Actor {
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				super.touchDown(event, x, y, pointer, button);
-				System.out.println("fired");
 				if(!DialogActor.this.dialog.next()) {
 					HelpScreen.getApp().setScreen(App.MAP);
 				}

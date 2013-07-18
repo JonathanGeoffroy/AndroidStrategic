@@ -217,7 +217,7 @@ public class MapActor extends Actor {
 		float nextTerrainSize = terrainSize + zoomFactor;
 		int nbTerrainsX = (int)(getWidth() / nextTerrainSize);
 		int nbTerrainsY = (int)(getHeight() / nextTerrainSize);
-		
+
 		if (beginX + nbTerrainsX < map.getWidth() &&
 				beginY  + nbTerrainsY < map.getHeight()) {
 			terrainSize = nextTerrainSize;
