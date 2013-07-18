@@ -162,6 +162,7 @@ public class MapActor extends Actor {
 			for(int j = 0 ; j < nbTerrainsX; j++) {
 				coord.x = j + beginX; coord.y = i + beginY;
 
+				//Draw terrains & reachable.
 				if(reachable != null && reachable.getReachableMap()[coord.y][coord.x] == Reachable.REACHABLE) {
 					text = (Texture) app.getAsset(App.TEXTURES_DIR + "reachable.bmp");
 				}
@@ -173,7 +174,9 @@ public class MapActor extends Actor {
 				}
 				x = j * terrainSize;
 				y = getHeight() - (i+1) * terrainSize;
+				batch.draw(text, getX() + x , getY() + y, terrainSize, terrainSize);
 
+				// Draw fighter
 				fighter = map.getFighterAt(coord);
 				if(fighter != null) {
 					if(fighter.hasMoved()) {

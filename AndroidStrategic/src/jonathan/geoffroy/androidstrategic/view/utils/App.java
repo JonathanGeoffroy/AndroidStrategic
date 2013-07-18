@@ -28,8 +28,7 @@ public class App extends Game {
 		screens.add(new MapScreen());
 		screens.add(new DialogScreen());
 
-		setScreen(screens.get(MAP));
-		//setScreen(screens.get(DIALOG));
+		setScreen(screens.get(DIALOG));
 	}
 
 	public void setScreen(int screenType) {
