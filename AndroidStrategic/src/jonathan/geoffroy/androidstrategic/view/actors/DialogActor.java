@@ -38,16 +38,11 @@ public class DialogActor extends Actor {
 					int pointer, int button) {
 				super.touchDown(event, x, y, pointer, button);
 				if(textIsCompletlyDrawed()) {
-					System.out.println("completly drawed");
-					if(!DialogActor.this.dialog.next()) {
+					if(!DialogActor.this.nextSpeak()) {
 						HelpScreen.getApp().setScreen(App.MAP);
-					}
-					else {
-						textBuffer = new StringBuffer();
 					}
 				}
 				else {
-					System.out.println("still in drawing");
 					loadAllText();
 				}
 				return true;
@@ -59,6 +54,7 @@ public class DialogActor extends Actor {
 	 * Load the speakers' Sprite using the current Speak of the Dialog
 	 */
 	public void loadSpeakers() {
+		speakers.clear();
 		float widthSpeaker = getWidth() / 5;
 		float heightSpeaker = getHeight() / 3;
 		float ySpeaker = (getHeight() / 3);
@@ -88,6 +84,21 @@ public class DialogActor extends Actor {
 			s.draw(batch);
 		}
 		addLetter();
+	}
+
+	/**
+	 * load the next speak and change speakers and text
+	 * return dialog.next() results
+	 */
+	private boolean nextSpeak() {
+		boolean hasNextSpeak = dialog.hasNext();
+
+		if(hasNextSpeak) {
+			dialog.next();
+			loadSpeakers();
+			textBuffer = new StringBuffer();
+		}
+		return hasNextSpeak;
 	}
 
 	/**

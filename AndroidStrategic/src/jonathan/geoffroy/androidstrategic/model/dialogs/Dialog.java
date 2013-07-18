@@ -30,7 +30,7 @@ public class Dialog {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	public ArrayList<Speak> getSpeaks() {
 		return speaks;
 	}
@@ -38,7 +38,7 @@ public class Dialog {
 	public String getCurrentText() {
 		return speaks.get(current).getText();
 	}
-	
+
 	public ArrayList<Speaker> getCurrentSpeakers() {
 		return speaks.get(current).getSpeakers();
 	}
@@ -59,7 +59,7 @@ public class Dialog {
 		}
 		return hasNext;
 	}
-	
+
 	/**
 	 * 
 	 * @return true if there is a next dialog
