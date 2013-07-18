@@ -20,6 +20,7 @@ public class DialogActor extends Actor {
 	private ArrayList<Sprite> speakers;
 	private Texture wallpaper, speakText, nameText;
 	private BitmapFont font;
+	private StringBuffer textBuffer;
 
 	public DialogActor(Dialog dialog) {
 		super();
@@ -29,14 +30,25 @@ public class DialogActor extends Actor {
 		nameText = (Texture) HelpScreen.getApp().getAsset(Dialog.NAMES_TEXT);
 		font = (BitmapFont) HelpScreen.getApp().getAsset(FighterInfoActor.FONT);
 		speakers = new ArrayList<Sprite>();
+		textBuffer = new StringBuffer();
 
 		addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
 					int pointer, int button) {
 				super.touchDown(event, x, y, pointer, button);
-				if(!DialogActor.this.dialog.next()) {
-					HelpScreen.getApp().setScreen(App.MAP);
+				if(textIsCompletlyDrawed()) {
+					System.out.println("completly drawed");
+					if(!DialogActor.this.dialog.next()) {
+						HelpScreen.getApp().setScreen(App.MAP);
+					}
+					else {
+						textBuffer = new StringBuffer();
+					}
+				}
+				else {
+					System.out.println("still in drawing");
+					loadAllText();
 				}
 				return true;
 			}
@@ -70,10 +82,44 @@ public class DialogActor extends Actor {
 		super.draw(batch, parentAlpha);
 		batch.draw(wallpaper, getX(), getY(), getWidth(), getHeight());
 		batch.draw(speakText, getX(), getY(), getWidth(), getHeight() / 3);
-		font.drawWrapped(batch, dialog.getCurrentText(), getX(), getY() + getHeight() / 3, getWidth());
+		font.drawWrapped(batch, getCurrentText(), getX(), getY() + getHeight() / 3, getWidth());
 
 		for(Sprite s : speakers) {
 			s.draw(batch);
 		}
+		addLetter();
+	}
+
+	/**
+	 * 
+	 * @return true if all the phrase is drawed
+	 */
+	private boolean textIsCompletlyDrawed() {
+		return textBuffer.length() == dialog.getCurrentText().length();
+	}
+
+	/**
+	 * Add a letter to the drawed string if the text isn't complete.
+	 */
+	private void addLetter() {
+		int nextLetterIndex = textBuffer.length();
+		if(nextLetterIndex < dialog.getCurrentText().length()) {
+			textBuffer.append(dialog.getCurrentText().charAt(nextLetterIndex));
+		}
+	}
+
+	/**
+	 * get the text to draw
+	 * @return the text to draw
+	 */
+	private String getCurrentText() {
+		return textBuffer.toString();
+	}
+
+	/**
+	 * Load all of the drawable text
+	 */
+	private void loadAllText() {
+		textBuffer = new StringBuffer(dialog.getCurrentText());
 	}
 }
