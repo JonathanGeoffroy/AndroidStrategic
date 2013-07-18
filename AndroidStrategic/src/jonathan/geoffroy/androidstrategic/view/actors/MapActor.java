@@ -208,7 +208,7 @@ public class MapActor extends Actor {
 		beginY += value;
 		if(beginY < 0)
 			beginY = 0;
-		else if (beginY > map.getWidth() - nbTerrainsY) {
+		else if (beginY > map.getHeight() - nbTerrainsY) {
 			beginY = map.getHeight() - nbTerrainsY;
 		}
 	}
@@ -227,12 +227,16 @@ public class MapActor extends Actor {
 			nbTerrainsX = map.getWidth() - beginX;
 			terrainSize = getWidth() / nbTerrainsX;
 		}
+		assert beginX + nbTerrainsX < map.getWidth();
+		assert beginY + nbTerrainsY < map.getHeight();
 	}
 
 	public void setNbTerrainsY(int value) {
 		nbTerrainsY = value;
-		if(beginY > map.getWidth() - nbTerrainsY) {
+		if(beginY > map.getHeight() - nbTerrainsY) {
 			nbTerrainsY = map.getHeight() - beginY;
 		}
+		assert beginX + nbTerrainsX < map.getWidth();
+		assert beginY + nbTerrainsY < map.getHeight();
 	}
 }
