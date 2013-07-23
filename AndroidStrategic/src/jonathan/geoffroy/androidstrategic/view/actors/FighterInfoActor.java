@@ -17,9 +17,11 @@ public class FighterInfoActor extends TableActor {
 	public static final String FONT = App.FONTS_DIR + "fighterInfo.fnt";
 
 	private LabelStyle style;
-
+	private MapScreen mapScreen;
+	
 	public FighterInfoActor(MapScreen mapScreen) {
-		super(mapScreen);
+		super();
+		this.mapScreen = mapScreen;
 	}
 
 	/**

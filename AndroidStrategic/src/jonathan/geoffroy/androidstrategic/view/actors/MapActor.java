@@ -17,13 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 public class MapActor extends Actor {
-	private static App app;
-	private Map map;
-	private MapScreen mapScreen;
+	protected static App app;
+	protected Map map;
+	protected MapScreen mapScreen;
 	private Reachable reachable;
-	private int nbTerrainsX, nbTerrainsY;
-	private int beginX, beginY;
-	private float terrainSize;
+	protected int nbTerrainsX, nbTerrainsY;
+	protected int beginX, beginY;
+	protected float terrainSize;
 
 	public MapActor(MapScreen mapScreen) {
 		this.mapScreen = mapScreen;

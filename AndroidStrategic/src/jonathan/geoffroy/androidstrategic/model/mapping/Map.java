@@ -576,6 +576,15 @@ public class Map {
 		}
 		return result;
 	}
+	
+	/**
+	 * 
+	 * @param coord
+	 * @return true if coord define a terrain which a player can begin
+	 */
+	public boolean isBeginPlayersTerrain(Coord2D coord) {
+		return beginPlayers.contains(coord);
+	}
 }
 
 class CoordMagic {

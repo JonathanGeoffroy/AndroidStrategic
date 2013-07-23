@@ -1,17 +1,13 @@
 package jonathan.geoffroy.androidstrategic.view.utils;
 
-import jonathan.geoffroy.androidstrategic.view.screens.MapScreen;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public abstract class TableActor extends Actor {
 	protected Table table;
-	protected MapScreen mapScreen;
 
-	public TableActor(MapScreen mapScreen) {
-		this.mapScreen = mapScreen;
+	public TableActor() {
 		table = new Table();
 	}
 
@@ -45,5 +41,12 @@ public abstract class TableActor extends Actor {
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		table.setVisible(visible);
+	}
+
+
+	@Override
+	public void setBounds(float x, float y, float width, float height) {
+		super.setBounds(x, y, width, height);
+		table.setBounds(x, y, width, height);
 	}
 }

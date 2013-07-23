@@ -18,9 +18,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 public class FightMenuActor extends TableActor {
 	private TextButton[] buttons;
 	private TextButtonStyle style;
-
+	private MapScreen mapScreen;
+	
 	public FightMenuActor(MapScreen mapScreen) {
-		super(mapScreen);
+		super();
+		this.mapScreen = mapScreen;
 	}
 
 	private TextButton createEndTurnButton(TextButtonStyle style) {
