@@ -1,0 +1,54 @@
+{
+	"name" : "johnTeam",
+	"fighters" : [
+		{
+			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Soldier",
+			"male": "true"
+		},
+
+		{
+			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Mage",
+			"male": "false"
+		},
+
+		{
+			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
+			"male": "false"
+		},
+
+		{
+			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
+			"male": "false"
+		},
+
+		{
+			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
+			"male": "false"
+		},
+
+		{
+			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
+			"male": "false"
+		},
+
+		{
+			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
+			"male": "false"
+		},
+
+		{
+			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
+			"male": "false"
+		},
+
+		{
+			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
+			"male": "false"
+		},
+
+		{
+			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
+			"male": "false"
+		},
+	]
+}
