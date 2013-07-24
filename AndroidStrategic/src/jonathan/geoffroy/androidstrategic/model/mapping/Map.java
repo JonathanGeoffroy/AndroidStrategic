@@ -591,9 +591,13 @@ public class Map {
 		return beginPlayers.contains(coord);
 	}
 
+	/**
+	 * 
+	 * @return true if there is at least 1 begin case which is empty
+	 */
 	public boolean hasFreeBeginCase() {
 		for(Coord2D c : beginPlayers) {
-			if(!fighters.containsKey(c)) {
+			if(!coordFighters.containsKey(c)) {
 				return true;
 			}
 		}
