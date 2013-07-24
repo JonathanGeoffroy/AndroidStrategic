@@ -24,4 +24,11 @@ public class FighterChooserActor extends ListActor<ChoosableFighter> {
 			cf.setSize(getWidth(), getHeight() / 8);
 		}
 	}
+
+	@Override
+	protected void onChoose(ChoosableFighter previouslySelected, ChoosableFighter nextlySelected) {
+		if(previouslySelected != null)
+			previouslySelected.setChoosed(false);
+		nextlySelected.setChoosed(true);
+	}
 }

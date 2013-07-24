@@ -46,6 +46,8 @@ public abstract class ListActor<T extends Actor> extends TableActor {
 					float actorHeight = actors.get(0).getHeight();
 					int index = (int) ((tableUp - y) / actorHeight);
 					System.out.println(index);
+
+					onChoose(getSelectedActor(), actors.get(index));
 					setSelectedIndex(index);
 					return true;
 				}
@@ -54,6 +56,12 @@ public abstract class ListActor<T extends Actor> extends TableActor {
 		});
 	}
 
+	/**
+	 * Called when an Actor is choose
+	 * @param actor the choosen actor
+	 */
+	protected void onChoose(T previouslySelected, T nextlySelected) {};
+	
 	@Override
 	public void loadTable() {
 		for(T actor: actors) {
