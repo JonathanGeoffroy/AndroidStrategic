@@ -19,36 +19,6 @@
 		{
 			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
 			"male": "false"
-		},
-
-		{
-			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
-			"male": "false"
-		},
-
-		{
-			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
-			"male": "false"
-		},
-
-		{
-			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
-			"male": "false"
-		},
-
-		{
-			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
-			"male": "false"
-		},
-
-		{
-			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
-			"male": "false"
-		},
-
-		{
-			"class": "jonathan.geoffroy.androidstrategic.model.fighters.Ranger",
-			"male": "false"
-		},
+		}
 	]
 }

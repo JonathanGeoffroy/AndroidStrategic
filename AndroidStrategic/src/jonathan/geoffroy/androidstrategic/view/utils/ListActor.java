@@ -45,6 +45,7 @@ public abstract class ListActor<T extends Actor> extends TableActor {
 				if(y < tableUp && y > tableDown) {
 					float actorHeight = actors.get(0).getHeight();
 					int index = (int) ((tableUp - y) / actorHeight);
+					System.out.println(index);
 					setSelectedIndex(index);
 					return true;
 				}
@@ -56,9 +57,12 @@ public abstract class ListActor<T extends Actor> extends TableActor {
 	@Override
 	public void loadTable() {
 		for(T actor: actors) {
+			actor.setSize(getWidth(), getHeight() / 8);
 			table.add(actor);
 			table.row();
 		}
+		table.pack();
+		table.setPosition(getX(), getY() + getHeight() - table.getHeight());
 	}
 
 	@Override
@@ -74,6 +78,12 @@ public abstract class ListActor<T extends Actor> extends TableActor {
 		reloadTable();
 	}
 
+	@Override
+	public void setBounds(float x, float y, float width, float height) {
+		super.setBounds(x, y, width, height);
+		reloadTable();
+	}
+	
 	public void removeActor(int index) {
 		assert(index < actors.size());
 		actors.remove(index);
