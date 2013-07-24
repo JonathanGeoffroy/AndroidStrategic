@@ -29,14 +29,17 @@ public class MapInitActor extends MapActor {
 
 				if(map.isBeginPlayersTerrain(coord) && map.getFighterAt(coord) == null) {
 					if(MapInitActor.this.fighterChooser.getSelectedActor() != null) {
-						MapInitActor.this.mapScreen.getMap().addFighter(
-								MapInitActor.this.fighterChooser.getSelectedActor().getFighter(),
-								coord.x, coord.y);
+						// put the fighter in the map
+						Fighter fighter = MapInitActor.this.fighterChooser.getSelectedActor().getFighter();
+						fighter.setTeam(map.getUserTeam());
+						MapInitActor.this.mapScreen.getMap().addFighter(fighter, coord.x, coord.y);
 						MapInitActor.this.fighterChooser.removeSelectedActor();
+						
+						// Load the battle
+						if(MapInitActor.this.fighterChooser.isEmpty() || !map.hasFreeBeginCase()) {
+							MapInitActor.this.mapScreen.onEndInit();
+						}
 					}
-//					if(there is selectable fighter || there is no place for another fighter) {
-//						// start the battle
-//					}
 				}
 				return true;
 			}

@@ -45,10 +45,10 @@ public abstract class ListActor<T extends Actor> extends TableActor {
 				if(y < tableUp && y > tableDown) {
 					float actorHeight = actors.get(0).getHeight();
 					int index = (int) ((tableUp - y) / actorHeight);
-					System.out.println(index);
 
 					onChoose(getSelectedActor(), actors.get(index));
 					setSelectedIndex(index);
+
 					return true;
 				}
 				return false;
@@ -61,7 +61,7 @@ public abstract class ListActor<T extends Actor> extends TableActor {
 	 * @param actor the choosen actor
 	 */
 	protected void onChoose(T previouslySelected, T nextlySelected) {};
-	
+
 	@Override
 	public void loadTable() {
 		for(T actor: actors) {
@@ -77,7 +77,7 @@ public abstract class ListActor<T extends Actor> extends TableActor {
 	public void reloadTable() {
 		table.clear();
 		loadTable();
-		
+
 	}
 	public void addActor(T actor) {
 		actors.add(actor);
@@ -91,7 +91,7 @@ public abstract class ListActor<T extends Actor> extends TableActor {
 		super.setBounds(x, y, width, height);
 		reloadTable();
 	}
-	
+
 	public void removeActor(int index) {
 		assert(index < actors.size());
 		actors.remove(index);
@@ -117,6 +117,15 @@ public abstract class ListActor<T extends Actor> extends TableActor {
 	private void moveTable() {
 		table.setY(0);
 	}
+
+	/**
+	 * 
+	 * @return true if there is no selectable actor
+	 */
+	public boolean isEmpty() {
+		return actors.isEmpty();
+	}
+
 	/**
 	 * 
 	 * @return the selected index, or -1 if there is no selected actor

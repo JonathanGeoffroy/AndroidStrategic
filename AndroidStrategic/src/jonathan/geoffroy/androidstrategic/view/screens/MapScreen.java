@@ -111,7 +111,7 @@ public class MapScreen extends StageScreen {
 	protected void onEndLoaded() {
 		FighterChooserActor chooser = new FighterChooserActor(userTeam);
 		chooser.setBounds(Gdx.graphics.getWidth() * 2.f / 3.f, 0,  Gdx.graphics.getWidth() * 1.f / 3.f, Gdx.graphics.getHeight());
-		
+
 		mapActor = new MapInitActor(this, chooser);
 		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
 		stage.addActor(mapActor);

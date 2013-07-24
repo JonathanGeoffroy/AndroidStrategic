@@ -39,7 +39,7 @@ public class Map {
 	public static final int ATTACK = 0, PUSH = 1, SUPER_PUSH = 2, OBJECT = 3, EXCHANGE = 4, SAVE = 5, LEAVE = 6, SUSPEND = 7, END_FIGTH = 8, END_TURN = 9;
 	public static final int NB_MENUS = 10;
 	public final static String SCENARII_DIR = "data/scenarii/";
-
+	public final static int USER_TEAM = 0, ENNEMY_TEAM = 1;
 	private Terrain[][] map;
 	private LinkedHashSet<Terrain> terrains;
 	private ArrayList<CoordMagic> terrainMagics;
@@ -48,6 +48,7 @@ public class Map {
 	private HashMap<Fighter, Coord2D> fighters;
 	private HashMap<Coord2D, Fighter> coordFighters;
 	private Reachable reachable;
+	private ArrayList<Team> teams;
 
 	public Map() {
 		terrains = new LinkedHashSet<Terrain>();
@@ -56,6 +57,10 @@ public class Map {
 		fighters = new HashMap<Fighter, Coord2D>();
 		coordFighters = new HashMap<Coord2D, Fighter>();
 		beginPlayers = new ArrayList<Coord2D>();
+		teams = new ArrayList<Team>(2);
+		for(int i = 0; i < 2; i++) {
+			teams.add(new Team());
+		}
 	}
 
 	public static Map load(String scenarioName, int chapterNum)
@@ -93,7 +98,7 @@ public class Map {
 
 	private void loadFighters(String scenarioName, int chapterNum) 
 			throws IOException {
-		Team ennemy = new Team();
+		Team ennemy = teams.get(ENNEMY_TEAM);
 		Fighter fighter;
 
 		try {
@@ -298,7 +303,7 @@ public class Map {
 		coord.x = x;
 		coord.y = y;
 		coordFighters.put(coord, fighter);
-		
+
 		fighter.setMoved();
 	}
 
@@ -576,7 +581,7 @@ public class Map {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 
 	 * @param coord
@@ -584,6 +589,23 @@ public class Map {
 	 */
 	public boolean isBeginPlayersTerrain(Coord2D coord) {
 		return beginPlayers.contains(coord);
+	}
+
+	public boolean hasFreeBeginCase() {
+		for(Coord2D c : beginPlayers) {
+			if(!fighters.containsKey(c)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Team getUserTeam() {
+		return teams.get(USER_TEAM);
+	}
+
+	public Team getEnnemyTeam() {
+		return teams.get(ENNEMY_TEAM);
 	}
 }
 
