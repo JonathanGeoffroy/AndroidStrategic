@@ -564,4 +564,8 @@ public abstract class Fighter {
 	public void setMoved() {
 		movement = 0;		
 	}
+
+	public void setMovable() {
+		movement = attributes[MOVEMENTMAX];
+	}
 }
