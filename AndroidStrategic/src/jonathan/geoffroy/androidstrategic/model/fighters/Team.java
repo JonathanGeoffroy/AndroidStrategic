@@ -45,8 +45,7 @@ public class Team {
 	/**
 	 * Add a fighter to the team
 	 * 
-	 * @param fighter
-	 *            the fighter to add
+	 * @param fighter the fighter to add
 	 */
 	public void addFighter(Fighter fighter) {
 		fighters.add(fighter);
@@ -61,5 +60,35 @@ public class Team {
 	 */
 	public boolean isInTeam(Fighter fighter) {
 		return fighters.contains(fighter);
+	}
+
+	/**
+	 * 
+	 * @return true if at least 1 fighter of this team can move
+	 */
+	public boolean canMove() {
+		for(Fighter f : fighters) {
+			if(!f.hasMoved()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * Make all fighters of this team movable
+	 */
+	public void setMovable() {
+		for(Fighter f : fighters) {
+			f.setMovable();
+		}
+	}
+	
+	/**
+	 * Make all fighters of this team unmovable
+	 */
+	public void setUnmovable() {
+		for(Fighter f : fighters) {
+			f.setMoved();
+		}
 	}
 }

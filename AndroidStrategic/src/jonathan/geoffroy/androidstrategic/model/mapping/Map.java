@@ -10,6 +10,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 
+import jonathan.geoffroy.androidstrategic.model.conditions.Condition;
+import jonathan.geoffroy.androidstrategic.model.conditions.ExterminateCondition;
 import jonathan.geoffroy.androidstrategic.model.fighters.Archer;
 import jonathan.geoffroy.androidstrategic.model.fighters.Axman;
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
@@ -40,7 +42,7 @@ public class Map {
 	public static final int NB_MENUS = 10;
 	public final static String SCENARII_DIR = "data/scenarii/";
 	public final static int USER_TEAM = 0, ENNEMY_TEAM = 1;
-	
+
 	private Terrain[][] map;
 	private LinkedHashSet<Terrain> terrains;
 	private ArrayList<CoordMagic> terrainMagics;
@@ -51,7 +53,8 @@ public class Map {
 	private Reachable reachable;
 	private ArrayList<Team> teams;
 	private int numTurn;
-	
+	private Condition condition;
+
 	public Map() {
 		terrains = new LinkedHashSet<Terrain>();
 		terrainMagics = new ArrayList<CoordMagic>();
@@ -63,6 +66,8 @@ public class Map {
 		for(int i = 0; i < 2; i++) {
 			teams.add(new Team());
 		}
+
+		condition = new ExterminateCondition(this); 
 	}
 
 	public static Map load(String scenarioName, int chapterNum)
@@ -228,6 +233,23 @@ public class Map {
 	}
 
 	/**
+	 * should be call when a team (user or ennemy) finish its turn
+	 * @return true if the team which has end have won the battle
+	 */
+	public boolean endTurn() {
+		Team endTeam = teams.get(numTurn % teams.size());
+		Team otherTeam = teams.get((numTurn + 1) % teams.size());
+		boolean won = condition.hasWon(endTeam);
+
+		if(!won) {
+			otherTeam.setMovable();
+			numTurn ++;
+		}
+
+		return won;
+	}
+
+	/**
 	 * test if attacker can hit defender, depending on they own Terrain, and the attacker's range
 	 * @param attacker Fighter who attack defender
 	 * @param defender Fighter assaulted
@@ -299,6 +321,7 @@ public class Map {
 		assert(y >= 0 && y < map.length);
 		assert(x >= 0 && x < map[y].length);
 		assert(!fighters.containsValue(new Coord2D(x, y))  || coordFighters.get(new Coord2D(x, y)).equals(fighter));
+		assert(teams.get(numTurn % teams.size()).getFighters().contains(fighter)) : "you are trying to move a fighter who is in a bad team";
 		Coord2D coord = fighters.get(fighter);
 		assert(coordFighters.containsKey(coord));
 		coordFighters.remove(coord);
@@ -616,6 +639,10 @@ public class Map {
 
 	public int getNumTurn() {
 		return numTurn;
+	}
+
+	public boolean isCurrentTeam(Team team) {
+		return team.equals(teams.get(numTurn % teams.size()));
 	}
 }
 

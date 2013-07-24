@@ -31,7 +31,7 @@ public class MapInitActor extends MapActor {
 					if(MapInitActor.this.fighterChooser.getSelectedActor() != null) {
 						// put the fighter in the map
 						Fighter fighter = MapInitActor.this.fighterChooser.getSelectedActor().getFighter();
-						fighter.setTeam(map.getUserTeam());
+						map.getUserTeam().addFighter(fighter);
 						MapInitActor.this.mapScreen.getMap().addFighter(fighter, coord.x, coord.y);
 						MapInitActor.this.fighterChooser.removeSelectedActor();
 						

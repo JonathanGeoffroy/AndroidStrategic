@@ -40,15 +40,15 @@ public class MapActor extends Actor {
 						(int) ((getHeight() - y) / terrainSize) + beginY 
 						);
 
-				Fighter fighter = MapActor.this.map.getFighterAt(coord);
-				if(fighter != null && !fighter.hasMoved()) {
+				Fighter clikedFighter = MapActor.this.map.getFighterAt(coord);
+				if(clikedFighter != null && !clikedFighter.hasMoved()) {
 					MapActor.this.mapScreen.setCoordFighter(coord);
-					MapActor.this.reachable = MapActor.this.map.getReachableTerrains(fighter);
+					MapActor.this.reachable = MapActor.this.map.getReachableTerrains(clikedFighter);
 				}
 				else {
 					Fighter selectedFighter = MapActor.this.mapScreen.getSelectedFighter();
 
-					if(selectedFighter != null && reachable.isReachable(coord)) {
+					if(selectedFighter != null && map.isCurrentTeam(selectedFighter.getTeam()) && reachable.isReachable(coord)) {
 						map.moveFighter(selectedFighter, coord.x, coord.y);
 					}
 					MapActor.this.mapScreen.setCoordFighter(null);
