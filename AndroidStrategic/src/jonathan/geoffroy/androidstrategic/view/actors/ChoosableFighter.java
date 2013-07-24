@@ -31,7 +31,7 @@ public class ChoosableFighter extends Actor {
 			font.setColor(Color.RED);
 		}
 		batch.draw(fighterText, getX(), getY(), getWidth() / 3, getHeight());
-		font.draw(batch, fighter.getName(), getX() + getWidth() / 3 , getY());
+		font.draw(batch, fighter.getName(), getX() + getWidth() / 3 , getY() + getHeight() / 2);
 		if(choosed) {
 			font.setColor(fontColor);
 		}
