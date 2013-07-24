@@ -40,6 +40,7 @@ public class Map {
 	public static final int NB_MENUS = 10;
 	public final static String SCENARII_DIR = "data/scenarii/";
 	public final static int USER_TEAM = 0, ENNEMY_TEAM = 1;
+	
 	private Terrain[][] map;
 	private LinkedHashSet<Terrain> terrains;
 	private ArrayList<CoordMagic> terrainMagics;
@@ -49,7 +50,8 @@ public class Map {
 	private HashMap<Coord2D, Fighter> coordFighters;
 	private Reachable reachable;
 	private ArrayList<Team> teams;
-
+	private int numTurn;
+	
 	public Map() {
 		terrains = new LinkedHashSet<Terrain>();
 		terrainMagics = new ArrayList<CoordMagic>();
@@ -610,6 +612,10 @@ public class Map {
 
 	public Team getEnnemyTeam() {
 		return teams.get(ENNEMY_TEAM);
+	}
+
+	public int getNumTurn() {
+		return numTurn;
 	}
 }
 
