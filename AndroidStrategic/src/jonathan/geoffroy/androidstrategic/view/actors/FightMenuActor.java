@@ -30,6 +30,7 @@ public class FightMenuActor extends TableActor {
 		button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				Gdx.app.log("test", "end turn!");
+				mapScreen.endTurn();
 			}
 		});
 

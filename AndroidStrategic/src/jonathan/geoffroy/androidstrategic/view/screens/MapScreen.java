@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.actions.AddAction;
 
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.fighters.Team;
@@ -138,5 +139,25 @@ public class MapScreen extends StageScreen {
 		stage.addActor(fighterMenu.getTable());
 		stage.setScrollFocus(mapActor);
 		stage.setKeyboardFocus(mapActor);
+	}
+
+	/**
+	 * Should be called when a turn is ending.
+	 */
+	public void endTurn() {
+		boolean isPLayerTurn = map.getNumTurn() % 2 == 0;
+		
+		if(isPLayerTurn) {
+			mapActor.disableListeners();
+			mapInfos.removeActor(fighterMenu);
+			fighterMenu.getTable().remove();
+		}
+		else {
+			mapActor.enableListeners();
+			mapInfos.addActor(fighterMenu);
+			stage.addActor(fighterMenu.getTable());
+		}
+		
+		map.endTurn();
 	}
 }

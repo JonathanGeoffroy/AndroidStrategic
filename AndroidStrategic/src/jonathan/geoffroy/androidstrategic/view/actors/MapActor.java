@@ -1,5 +1,7 @@
 package jonathan.geoffroy.androidstrategic.view.actors;
 
+import java.util.ArrayList;
+
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Reachable;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -21,6 +24,7 @@ public class MapActor extends Actor {
 	protected Map map;
 	protected MapScreen mapScreen;
 	private Reachable reachable;
+	private ArrayList<EventListener> listeners;
 	protected int nbTerrainsX, nbTerrainsY;
 	protected int beginX, beginY;
 	protected float terrainSize;
@@ -30,7 +34,9 @@ public class MapActor extends Actor {
 		this.map = mapScreen.getMap();
 		beginX = 0;
 		beginY = 0;
-		addListener(new InputListener() {
+		listeners = new ArrayList<EventListener>();
+
+		listeners.add(new InputListener() {
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,
@@ -50,6 +56,9 @@ public class MapActor extends Actor {
 
 					if(selectedFighter != null && map.isCurrentTeam(selectedFighter.getTeam()) && reachable.isReachable(coord)) {
 						map.moveFighter(selectedFighter, coord.x, coord.y);
+						if(!selectedFighter.getTeam().canMove()) {
+							MapActor.this.mapScreen.endTurn();
+						}
 					}
 					MapActor.this.mapScreen.setCoordFighter(null);
 					reachable = null;
@@ -95,7 +104,8 @@ public class MapActor extends Actor {
 			}
 
 		});
-		addListener(new ActorGestureListener() {
+
+		listeners.add(new ActorGestureListener() {
 			private int lastZoomFactor;
 
 			public void fling (InputEvent event, float velocityX, float velocityY, int button) {
@@ -117,8 +127,21 @@ public class MapActor extends Actor {
 				lastZoomFactor = 0;
 			}
 		});
+		
+		enableListeners();
 	}
 
+	public void enableListeners() {
+		for(EventListener l : listeners) {
+			addListener(l);
+		}
+	}
+
+	public void disableListeners() {
+		for(EventListener l : listeners) {
+			removeListener(l);
+		}
+	}
 	@Override
 	public void setBounds(float x, float y, float width, float height) {
 		super.setBounds(x, y, width, height);
