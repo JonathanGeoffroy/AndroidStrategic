@@ -5,8 +5,11 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.fighters.Team;
@@ -25,6 +28,9 @@ import jonathan.geoffroy.androidstrategic.view.utils.App;
 import jonathan.geoffroy.androidstrategic.view.utils.StageScreen;
 
 public class MapScreen extends StageScreen {
+	public static final String PLAYER_TURN = "Player Turn !!!", ENNEMY_TURN = "Ennemy Turn !!!";
+	private static final int TIME_DRAWING_LABEL = 3;
+
 	private Map map;
 	private Team userTeam;
 	private MapActor mapActor;
@@ -33,6 +39,9 @@ public class MapScreen extends StageScreen {
 	private FightMenuActor fighterMenu;
 	private Coord2D coordFighter;
 	private Intelligence intelligence;
+	private Label nextTurnLabel;
+	private float timeSinceNextTurn;
+	private boolean labelDrawed;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
@@ -134,6 +143,17 @@ public class MapScreen extends StageScreen {
 		mapInfos.addActor(fighterMenu);
 		stage.addActor(mapInfos);
 
+		float labelWidth = (mapActor.getX() + mapActor.getWidth()) / 3;
+		float labelHeight = (mapActor.getY() + mapActor.getHeight()) / 3;
+		float labelX = labelWidth;
+		float labelY = labelHeight;
+		BitmapFont font = (BitmapFont) app.getAsset(FighterInfoActor.FONT); 
+		LabelStyle style = new LabelStyle(font, Color.RED);
+		nextTurnLabel = new Label(PLAYER_TURN, style);
+		nextTurnLabel.setBounds(labelX, labelY, labelWidth, labelHeight);
+		labelDrawed = true;
+		stage.addActor(nextTurnLabel);
+		
 		fighterInfo.loadTable();
 		fighterMenu.loadTable();
 		mapInfos.setBounds(mapActor.getX() + mapActor.getWidth(), 0, Gdx.graphics.getWidth() - mapActor.getWidth(), Gdx.graphics.getHeight());
@@ -148,15 +168,36 @@ public class MapScreen extends StageScreen {
 	 * Should be called when a turn is ending.
 	 */
 	public void endTurn() {
-		System.out.println("end turn : " + map.getNumTurn());
-		boolean isPLayerTurn = map.getNumTurn() % 2 == 0;
-		map.endTurn();
+		// Draw the label which says that we launch the next turn
+		boolean wasPLayerTurn = map.getNumTurn() % 2 == 0;
+		if(wasPLayerTurn) {
+			nextTurnLabel.setText(ENNEMY_TURN);
 
-		if(isPLayerTurn) {
 			mapActor.disableListeners();
 			mapInfos.removeActor(fighterMenu);
 			fighterMenu.getTable().remove();
+		}
+		else {
+			nextTurnLabel.setText(PLAYER_TURN);
+		}
+		nextTurnLabel.setVisible(true);
+		timeSinceNextTurn = 0;
+		labelDrawed = true;
 
+		map.endTurn();
+	}
+
+	/**
+	 * Called when the next turn label has just disappears.
+	 */
+	private void onEndNextTurnLabel() {
+		boolean isPLayerTurn = map.getNumTurn() % 2 == 0;
+		if(isPLayerTurn) {
+			mapActor.enableListeners();
+			mapInfos.addActor(fighterMenu);
+			stage.addActor(fighterMenu.getTable());
+		}
+		else {
 			// Run the A.I. in a new thread
 			Runnable r = new Runnable() {	
 				@Override
@@ -166,10 +207,18 @@ public class MapScreen extends StageScreen {
 			};
 			r.run();
 		}
-		else {
-			mapActor.enableListeners();
-			mapInfos.addActor(fighterMenu);
-			stage.addActor(fighterMenu.getTable());
+	}
+
+	@Override
+	public void draw(float delta) {
+		super.draw(delta);
+		if(labelDrawed) {
+			timeSinceNextTurn += delta;
+			if(timeSinceNextTurn > TIME_DRAWING_LABEL) {
+				labelDrawed = false;
+				nextTurnLabel.setVisible(false);
+				onEndNextTurnLabel();
+			}
 		}
 	}
 }

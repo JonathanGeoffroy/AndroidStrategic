@@ -127,8 +127,6 @@ public class MapActor extends Actor {
 				lastZoomFactor = 0;
 			}
 		});
-		
-		enableListeners();
 	}
 
 	public void enableListeners() {
