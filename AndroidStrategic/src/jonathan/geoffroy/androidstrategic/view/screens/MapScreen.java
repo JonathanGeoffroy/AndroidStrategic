@@ -7,10 +7,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.scenes.scene2d.actions.AddAction;
 
 import jonathan.geoffroy.androidstrategic.model.fighters.Fighter;
 import jonathan.geoffroy.androidstrategic.model.fighters.Team;
+import jonathan.geoffroy.androidstrategic.model.intelligence.Intelligence;
+import jonathan.geoffroy.androidstrategic.model.intelligence.NoPlayingIntelligence;
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
@@ -31,6 +32,7 @@ public class MapScreen extends StageScreen {
 	private FighterInfoActor fighterInfo;
 	private FightMenuActor fighterMenu;
 	private Coord2D coordFighter;
+	private Intelligence intelligence;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
@@ -71,6 +73,7 @@ public class MapScreen extends StageScreen {
 		try {
 			map = Map.load(app.getScenario(), app.getChapter());
 			userTeam = Team.load(app.getScenario());
+			intelligence = new NoPlayingIntelligence(this, map.getEnnemyTeam());
 			super.show();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -145,19 +148,28 @@ public class MapScreen extends StageScreen {
 	 * Should be called when a turn is ending.
 	 */
 	public void endTurn() {
+		System.out.println("end turn : " + map.getNumTurn());
 		boolean isPLayerTurn = map.getNumTurn() % 2 == 0;
-		
+		map.endTurn();
+
 		if(isPLayerTurn) {
 			mapActor.disableListeners();
 			mapInfos.removeActor(fighterMenu);
 			fighterMenu.getTable().remove();
+
+			// Run the A.I. in a new thread
+			Runnable r = new Runnable() {	
+				@Override
+				public void run() {
+					intelligence.play();
+				}
+			};
+			r.run();
 		}
 		else {
 			mapActor.enableListeners();
 			mapInfos.addActor(fighterMenu);
 			stage.addActor(fighterMenu.getTable());
 		}
-		
-		map.endTurn();
 	}
 }

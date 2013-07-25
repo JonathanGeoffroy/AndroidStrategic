@@ -19,7 +19,7 @@ public class FightMenuActor extends TableActor {
 	private TextButton[] buttons;
 	private TextButtonStyle style;
 	private MapScreen mapScreen;
-	
+
 	public FightMenuActor(MapScreen mapScreen) {
 		super();
 		this.mapScreen = mapScreen;
