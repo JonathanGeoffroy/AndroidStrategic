@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -30,6 +31,7 @@ import jonathan.geoffroy.androidstrategic.view.utils.StageScreen;
 public class MapScreen extends StageScreen {
 	public static final String PLAYER_TURN = "Player Turn !!!", ENNEMY_TURN = "Ennemy Turn !!!";
 	private static final int TIME_DRAWING_LABEL = 3;
+	private static final String INIT_MUSIC_PATH = "data/sounds/music/initMap.mp3", MAP_MUSIC_PATH = "data/sounds/music/map.mp3", TURN_MUSIC_PATH = "data/sounds/music/turnMap.mp3";
 
 	private Map map;
 	private Team userTeam;
@@ -42,6 +44,7 @@ public class MapScreen extends StageScreen {
 	private Label nextTurnLabel;
 	private float timeSinceNextTurn;
 	private boolean labelDrawed;
+	private Music music;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
@@ -71,6 +74,11 @@ public class MapScreen extends StageScreen {
 
 		desc.add(new AssetDescriptor(MapInfosGroup.WALLPAPER, Texture.class));
 		desc.add(new AssetDescriptor(FighterInfoActor.FONT, BitmapFont.class));
+
+		desc.add(new AssetDescriptor(INIT_MUSIC_PATH, Music.class));
+		desc.add(new AssetDescriptor(MAP_MUSIC_PATH, Music.class));
+		desc.add(new AssetDescriptor(TURN_MUSIC_PATH, Music.class));
+
 		return desc;
 	}
 
@@ -129,6 +137,11 @@ public class MapScreen extends StageScreen {
 		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
 		stage.addActor(mapActor);
 		stage.addActor(chooser);
+
+		music = (Music) app.getAsset(INIT_MUSIC_PATH);
+		music.setLooping(true);
+		music.setVolume(1.0f);
+		music.play();
 	}
 
 	public void onEndInit() {
@@ -153,7 +166,7 @@ public class MapScreen extends StageScreen {
 		nextTurnLabel.setBounds(labelX, labelY, labelWidth, labelHeight);
 		labelDrawed = true;
 		stage.addActor(nextTurnLabel);
-		
+
 		fighterInfo.loadTable();
 		fighterMenu.loadTable();
 		mapInfos.setBounds(mapActor.getX() + mapActor.getWidth(), 0, Gdx.graphics.getWidth() - mapActor.getWidth(), Gdx.graphics.getHeight());
@@ -162,6 +175,12 @@ public class MapScreen extends StageScreen {
 		stage.addActor(fighterMenu.getTable());
 		stage.setScrollFocus(mapActor);
 		stage.setKeyboardFocus(mapActor);
+
+		music.stop();
+		music = (Music) app.getAsset(TURN_MUSIC_PATH);
+		music.setLooping(true);
+		music.setVolume(1.0f);
+		music.play();
 	}
 
 	/**
@@ -183,6 +202,12 @@ public class MapScreen extends StageScreen {
 		nextTurnLabel.setVisible(true);
 		timeSinceNextTurn = 0;
 		labelDrawed = true;
+
+		music.stop();
+		music = (Music) app.getAsset(TURN_MUSIC_PATH);
+		music.setLooping(true);
+		music.setVolume(1.0f);
+		music.play();
 
 		map.endTurn();
 	}
@@ -207,6 +232,12 @@ public class MapScreen extends StageScreen {
 			};
 			r.run();
 		}
+
+		music.stop();
+		music = (Music) app.getAsset(MAP_MUSIC_PATH);
+		music.setLooping(true);
+		music.setVolume(1.0f);
+		music.play();
 	}
 
 	@Override
