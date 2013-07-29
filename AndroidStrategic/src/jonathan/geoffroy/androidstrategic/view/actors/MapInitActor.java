@@ -12,11 +12,11 @@ import jonathan.geoffroy.androidstrategic.view.utils.App;
 
 public class MapInitActor extends MapActor {
 	private FighterChooserActor fighterChooser;
-	
+
 	public MapInitActor(MapScreen mapScreen, FighterChooserActor fighterChooser) {
 		super(mapScreen);
 		this.fighterChooser = fighterChooser;
-		
+
 		addListener(new InputListener() {
 
 			@Override
@@ -34,7 +34,7 @@ public class MapInitActor extends MapActor {
 						map.getUserTeam().addFighter(fighter);
 						MapInitActor.this.mapScreen.getMap().addFighter(fighter, coord.x, coord.y);
 						MapInitActor.this.fighterChooser.removeSelectedActor();
-						
+
 						// Load the battle
 						if(MapInitActor.this.fighterChooser.isEmpty() || !map.hasFreeBeginCase()) {
 							MapInitActor.this.mapScreen.onEndInit();
@@ -46,11 +46,10 @@ public class MapInitActor extends MapActor {
 		});
 	}
 
-	
+
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		assert(app != null);
-		super.draw(batch, parentAlpha);
 		Texture text;
 		float x, y;
 		Fighter fighter;
