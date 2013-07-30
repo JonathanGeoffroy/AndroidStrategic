@@ -209,7 +209,11 @@ public class MapScreen extends StageScreen {
 		music.setVolume(1.0f);
 		music.play();
 
-		map.endTurn();
+		boolean hasWon = map.endTurn();
+		if(hasWon) {
+			System.out.println("has won!");
+			Gdx.app.exit();
+		}
 	}
 
 	/**

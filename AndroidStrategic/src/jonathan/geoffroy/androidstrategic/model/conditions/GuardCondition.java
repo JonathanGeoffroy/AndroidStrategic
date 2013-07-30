@@ -15,7 +15,7 @@ public class GuardCondition extends Condition {
 	@Override
 	public boolean hasWon(Team team) {
 		if(team.equals(map.getUserTeam())) {
-			return !taken && map.getNumTurn() > nbTurns;
+			return !taken && map.getNumTurn() / 2 > nbTurns;
 		}
 		else {
 			return taken;
