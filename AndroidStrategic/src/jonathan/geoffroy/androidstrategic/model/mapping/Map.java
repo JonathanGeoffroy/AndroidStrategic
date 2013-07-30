@@ -356,8 +356,6 @@ public class Map {
 		coord.x = x;
 		coord.y = y;
 		coordFighters.put(coord, fighter);
-
-		fighter.setMoved();
 	}
 
 	/** 
@@ -556,7 +554,7 @@ public class Map {
 	 * @param fighter fighter who attack
 	 * @return TRUE if the fighter can attack at least 1 ennemy
 	 */
-	private boolean canAttackAnyOne(Fighter fighter) {
+	public boolean canAttackAnyOne(Fighter fighter) {
 		return !getAssailableTerrains(fighter).isEmpty();
 	}
 
@@ -598,7 +596,7 @@ public class Map {
 	 * @param fighter
 	 * @return TRUE if fighter can save at least 1 ally
 	 */
-	private boolean canSaveAnyOne(Fighter fighter) {
+	public boolean canSaveAnyOne(Fighter fighter) {
 		return !saveTerrains(fighter).isEmpty();
 	}
 

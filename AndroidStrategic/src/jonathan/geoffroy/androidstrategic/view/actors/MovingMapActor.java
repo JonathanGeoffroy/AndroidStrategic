@@ -35,22 +35,22 @@ public class MovingMapActor extends MapActor {
 				else {
 					Fighter selectedFighter = MovingMapActor.this.mapScreen.getSelectedFighter();
 
-					if(selectedFighter != null && map.isCurrentTeam(selectedFighter.getTeam()) && reachable.isReachable(coord)) {
-						map.moveFighter(selectedFighter, coord.x, coord.y);
+					if(selectedFighter != null && !MovingMapActor.this.mapScreen.isSelectedMoved() && map.isCurrentTeam(selectedFighter.getTeam()) && reachable.isReachable(coord)) {
+						MovingMapActor.this.mapScreen.moveSelectedFighter(coord.x, coord.y);
 						if(!selectedFighter.getTeam().canMove()) {
 							MovingMapActor.this.mapScreen.endTurn();
 						}
 					}
-					MovingMapActor.this.mapScreen.setCoordFighter(null);
+					else {
+						MovingMapActor.this.mapScreen.setCoordFighter(null);
+					}
 					reachable = null;
 				}
-
-				assert( (MovingMapActor.this.mapScreen.getCoordFighter() == null && reachable == null) || (MovingMapActor.this.mapScreen.getCoordFighter() != null && reachable != null) );
 				return true;
 			}
 		});
 	}
-	
+
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		assert(app != null);
@@ -60,7 +60,7 @@ public class MovingMapActor extends MapActor {
 		Fighter fighter;
 		Coord2D coord = new Coord2D();
 		boolean isCurrentTeam;
-		
+
 		for(int i = 0; i < nbTerrainsY; i++) {
 			for(int j = 0 ; j < nbTerrainsX; j++) {
 				coord.x = j + beginX; coord.y = i + beginY;

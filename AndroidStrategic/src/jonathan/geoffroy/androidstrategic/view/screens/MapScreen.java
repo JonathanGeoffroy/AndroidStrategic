@@ -49,6 +49,7 @@ public class MapScreen extends StageScreen {
 	private float timeSinceNextTurn;
 	private boolean labelDrawed;
 	private Music music;
+	private boolean selectedMoved;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
@@ -111,6 +112,11 @@ public class MapScreen extends StageScreen {
 	}
 
 	public void setCoordFighter(Coord2D coordFighter) {
+		if(selectedMoved) {
+			assert(getSelectedFighter() != null);
+			getSelectedFighter().setMoved();
+			selectedMoved = false;
+		}
 		this.coordFighter = coordFighter;
 		if(fighterInfo != null) {
 			fighterInfo.reloadTable();
@@ -195,8 +201,9 @@ public class MapScreen extends StageScreen {
 	 */
 	public void endTurn() {
 		coordFighter = null;
+		selectedMoved = false;
 		setMovingMap();
-		
+
 		// Draw the label which says that we launch the next turn
 		boolean wasPLayerTurn = map.getNumTurn() % 2 == 0;
 		if(wasPLayerTurn) {
@@ -274,14 +281,14 @@ public class MapScreen extends StageScreen {
 	public void enableAttackStats(Fighter assailant, Fighter defender) {
 		attackStats = new AttackStatsActor(this, assailant, defender);
 	}
-	
+
 	/**
 	 * call to hide the battle stats
 	 */
 	public void disableAttackStats() {
 		attackStats = null;
 	}
-	
+
 	/**
 	 * use a AttackMapActor for map drawing.
 	 * Useful to choose who attack.
@@ -293,10 +300,10 @@ public class MapScreen extends StageScreen {
 		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
 		stage.clear();
 		stage.addActor(mapActor);
-//		stage.addActor(attackStats);
+		//		stage.addActor(attackStats);
 		stage.addActor(mapInfos);
 	}
-	
+
 	/**
 	 * use a MovingMapActor to move fighters on the map.
 	 * selected fighter is automatically take at null
@@ -314,6 +321,28 @@ public class MapScreen extends StageScreen {
 	}
 
 	public void attack(Fighter fighterAt) {
-		
+
+	}
+
+	public void moveSelectedFighter(int x, int y) {
+		assert(getSelectedFighter() != null);
+		Fighter selectedFighter = getSelectedFighter();
+		map.moveFighter(selectedFighter, x, y);
+
+		if(map.canAttackAnyOne(selectedFighter) || map.canSaveAnyOne(selectedFighter)) {
+			selectedMoved = true;
+
+			// Move the selected coord fighter with the selected fighter himself
+			coordFighter.x = x;
+			coordFighter.y = y;
+		}
+		else {
+			selectedFighter.setMoved();
+			selectedMoved = false;
+		}
+	}
+
+	public boolean isSelectedMoved() {
+		return selectedMoved;
 	}
 }
