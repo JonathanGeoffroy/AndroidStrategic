@@ -29,7 +29,6 @@ public class FightMenuActor extends TableActor {
 		TextButton button = new TextButton("end turn", style);
 		button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				Gdx.app.log("test", "end turn!");
 				mapScreen.endTurn();
 			}
 		});
@@ -41,7 +40,8 @@ public class FightMenuActor extends TableActor {
 		TextButton button = new TextButton("end fight", style);
 		button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				Gdx.app.log("test", "end fight!");
+				mapScreen.getSelectedFighter().setMoved();
+				mapScreen.setCoordFighter(null);
 			}
 		});
 
@@ -129,7 +129,7 @@ public class FightMenuActor extends TableActor {
 		TextButton button = new TextButton("attack", style);
 		button.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				Gdx.app.log("test", "attack!");
+				mapScreen.setAttackMap();
 			}
 		});
 

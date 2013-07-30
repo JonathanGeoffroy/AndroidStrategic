@@ -27,7 +27,11 @@ public abstract class TableActor extends Actor {
 	/**
 	 * compute the table again when there is a change on the current screen
 	 */
-	public abstract void reloadTable();
+	public void reloadTable() {
+		table.clear();
+		loadTable();
+		
+	}
 
 	public Table getTable() {
 		return table;

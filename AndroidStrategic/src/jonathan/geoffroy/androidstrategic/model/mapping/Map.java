@@ -267,6 +267,35 @@ public class Map {
 		return manhattanDistance >= attackerMinRange && manhattanDistance <= attackerMaxRange;
 	}
 
+	/**
+	 * Find all terrains which is reachable by the param's fighter, and where there is an ennemy
+	 * @param fighter
+	 * @return a Coord's list for all assailables Terrains
+	 */
+	public ArrayList<Coord2D> getAssailableTerrains(Fighter fighter) {
+		ArrayList<Coord2D> result = new ArrayList<Coord2D>();
+		Coord2D fighterCoord = fighters.get(fighter);
+		int minRange = fighter.minRange();
+		int maxRange = fighter.maxRange();
+		Coord2D currentCoord = new Coord2D();
+		Fighter currentFighter;
+		
+		for(int i = maxRange; i > minRange; i--) {
+			for(int j = 0; j < maxRange - (i+1); j++) {
+				currentCoord.x = fighterCoord.x + j;
+				currentCoord.y = fighterCoord.y + i;
+				if(currentCoord.x >= 0 && currentCoord.x < map[0].length
+						&& currentCoord.y >= 0 && currentCoord.y < map.length) {
+					currentFighter = coordFighters.get(currentCoord);
+					if(currentFighter != null && currentFighter.isEnnemy(fighter)) {
+						result.add(new Coord2D(currentCoord.x, currentCoord.y));
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
 	public Terrain getTerrain(int x, int y) {
 		return map[y][x];
 	}
@@ -528,16 +557,7 @@ public class Map {
 	 * @return TRUE if the fighter can attack at least 1 ennemy
 	 */
 	private boolean canAttackAnyOne(Fighter fighter) {
-		return !assailableTerrains(fighter).isEmpty();
-	}
-
-	/**
-	 * @param fighter
-	 * @return a Coord's list for all assailables Terrains
-	 */
-	private ArrayList<Coord2D> assailableTerrains(Fighter fighter) {
-		ArrayList<Coord2D> result = new ArrayList<Coord2D>();
-		return result;
+		return !getAssailableTerrains(fighter).isEmpty();
 	}
 
 	/**

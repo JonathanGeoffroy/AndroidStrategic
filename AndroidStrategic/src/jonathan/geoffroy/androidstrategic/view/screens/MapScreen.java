@@ -19,12 +19,15 @@ import jonathan.geoffroy.androidstrategic.model.intelligence.NoPlayingIntelligen
 import jonathan.geoffroy.androidstrategic.model.mapping.Map;
 import jonathan.geoffroy.androidstrategic.model.mapping.Terrain;
 import jonathan.geoffroy.androidstrategic.model.utils.Coord2D;
+import jonathan.geoffroy.androidstrategic.view.actors.AttackMapActor;
+import jonathan.geoffroy.androidstrategic.view.actors.AttackStatsActor;
 import jonathan.geoffroy.androidstrategic.view.actors.FightMenuActor;
 import jonathan.geoffroy.androidstrategic.view.actors.FighterChooserActor;
 import jonathan.geoffroy.androidstrategic.view.actors.FighterInfoActor;
 import jonathan.geoffroy.androidstrategic.view.actors.MapActor;
 import jonathan.geoffroy.androidstrategic.view.actors.MapInfosGroup;
 import jonathan.geoffroy.androidstrategic.view.actors.MapInitActor;
+import jonathan.geoffroy.androidstrategic.view.actors.MovingMapActor;
 import jonathan.geoffroy.androidstrategic.view.utils.App;
 import jonathan.geoffroy.androidstrategic.view.utils.StageScreen;
 
@@ -39,6 +42,7 @@ public class MapScreen extends StageScreen {
 	private MapInfosGroup mapInfos;
 	private FighterInfoActor fighterInfo;
 	private FightMenuActor fighterMenu;
+	private AttackStatsActor attackStats;
 	private Coord2D coordFighter;
 	private Intelligence intelligence;
 	private Label nextTurnLabel;
@@ -144,9 +148,12 @@ public class MapScreen extends StageScreen {
 		music.play();
 	}
 
+	/**
+	 * Should be called when the initialization phase is ending
+	 */
 	public void onEndInit() {
 		stage.clear();
-		mapActor = new MapActor(this);
+		mapActor = new MovingMapActor(this);
 		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
 		stage.addActor(mapActor);
 
@@ -187,6 +194,9 @@ public class MapScreen extends StageScreen {
 	 * Should be called when a turn is ending.
 	 */
 	public void endTurn() {
+		coordFighter = null;
+		setMovingMap();
+		
 		// Draw the label which says that we launch the next turn
 		boolean wasPLayerTurn = map.getNumTurn() % 2 == 0;
 		if(wasPLayerTurn) {
@@ -197,6 +207,7 @@ public class MapScreen extends StageScreen {
 			fighterMenu.getTable().remove();
 		}
 		else {
+			mapActor.enableListeners();
 			nextTurnLabel.setText(PLAYER_TURN);
 		}
 		nextTurnLabel.setVisible(true);
@@ -255,5 +266,54 @@ public class MapScreen extends StageScreen {
 				onEndNextTurnLabel();
 			}
 		}
+	}
+
+	/**
+	 * call to show the battle stats between assailant and defender 
+	 */
+	public void enableAttackStats(Fighter assailant, Fighter defender) {
+		attackStats = new AttackStatsActor(this, assailant, defender);
+	}
+	
+	/**
+	 * call to hide the battle stats
+	 */
+	public void disableAttackStats() {
+		attackStats = null;
+	}
+	
+	/**
+	 * use a AttackMapActor for map drawing.
+	 * Useful to choose who attack.
+	 * Must have a selected fighter
+	 */
+	public void setAttackMap() {
+		assert(getSelectedFighter() != null);
+		mapActor = new AttackMapActor(this);
+		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
+		stage.clear();
+		stage.addActor(mapActor);
+//		stage.addActor(attackStats);
+		stage.addActor(mapInfos);
+	}
+	
+	/**
+	 * use a MovingMapActor to move fighters on the map.
+	 * selected fighter is automatically take at null
+	 */
+	public void setMovingMap() {
+		coordFighter = null;
+		mapActor = new MovingMapActor(this);
+		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
+		stage.clear();
+		stage.addActor(mapActor);
+		stage.addActor(mapInfos);
+		stage.addActor(nextTurnLabel);
+		fighterInfo.reloadTable();
+		fighterMenu.reloadTable();
+	}
+
+	public void attack(Fighter fighterAt) {
+		
 	}
 }
