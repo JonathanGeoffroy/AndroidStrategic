@@ -11,6 +11,7 @@ import jonathan.geoffroy.androidstrategic.view.utils.App;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -178,7 +179,8 @@ public class MapActor extends Actor {
 		float x, y;
 		Fighter fighter;
 		Coord2D coord = new Coord2D();
-
+		boolean isCurrentTeam;
+		
 		for(int i = 0; i < nbTerrainsY; i++) {
 			for(int j = 0 ; j < nbTerrainsX; j++) {
 				coord.x = j + beginX; coord.y = i + beginY;
@@ -204,9 +206,14 @@ public class MapActor extends Actor {
 						text = (Texture) app.getAsset(App.FIGHTERS_DIR + "moved_" + fighter.getTextureName());
 					}
 					else {
+						isCurrentTeam = map.isCurrentTeam(fighter.getTeam());
+						if(!isCurrentTeam) {
+							batch.setColor(Color.RED);
+						}
 						text = (Texture) app.getAsset(App.FIGHTERS_DIR + fighter.getTextureName());
 					}
 					batch.draw(text, getX() + x , getY() + y, terrainSize, terrainSize);
+					batch.setColor(Color.WHITE);
 				}
 			}
 		}
