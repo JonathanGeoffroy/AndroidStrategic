@@ -238,11 +238,10 @@ public class Map {
 	 */
 	public boolean endTurn() {
 		Team endTeam = teams.get(numTurn % teams.size());
-		Team otherTeam = teams.get((numTurn + 1) % teams.size());
 		boolean won = condition.hasWon(endTeam);
 
 		if(!won) {
-			otherTeam.setMovable();
+			endTeam.setMovable();
 			numTurn ++;
 		}
 
