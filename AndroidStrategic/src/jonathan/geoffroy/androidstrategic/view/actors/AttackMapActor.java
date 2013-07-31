@@ -39,7 +39,7 @@ public class AttackMapActor extends MapActor {
 						(int) (x / terrainSize) + beginX,
 						(int) ((getHeight() - y) / terrainSize) + beginY 
 						);
-
+				System.out.println("touchedDown!");
 				if(assailables.contains(coord)) {
 					AttackMapActor.this.mapScreen.attack(map.getFighterAt(coord));
 				}

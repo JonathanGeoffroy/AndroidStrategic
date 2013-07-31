@@ -302,6 +302,7 @@ public class MapScreen extends StageScreen {
 		stage.addActor(mapActor);
 		//		stage.addActor(attackStats);
 		stage.addActor(mapInfos);
+		mapActor.enableListeners();
 	}
 
 	/**
@@ -318,6 +319,7 @@ public class MapScreen extends StageScreen {
 		stage.addActor(nextTurnLabel);
 		fighterInfo.reloadTable();
 		fighterMenu.reloadTable();
+		mapActor.enableListeners();
 	}
 
 	public void attack(Fighter fighterAt) {
@@ -335,7 +337,7 @@ public class MapScreen extends StageScreen {
 			// Move the selected coord fighter with the selected fighter himself
 			coordFighter.x = x;
 			coordFighter.y = y;
-			
+
 			fighterMenu.reloadTable();
 		}
 		else {
