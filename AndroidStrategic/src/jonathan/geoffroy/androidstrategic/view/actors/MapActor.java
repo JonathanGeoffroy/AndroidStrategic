@@ -29,6 +29,23 @@ public abstract class MapActor extends Actor {
 		this.map = mapScreen.getMap();
 		beginX = 0;
 		beginY = 0;
+		
+		createListeners();
+	}
+
+	public MapActor(MapActor mapActor) {
+		mapScreen = mapActor.mapScreen;
+		map = mapScreen.getMap();
+		nbTerrainsX = mapActor.nbTerrainsX;
+		nbTerrainsY = mapActor.nbTerrainsY;
+		terrainSize = mapActor.terrainSize;
+		beginX = mapActor.beginX;
+		beginY = mapActor.beginY;
+		
+		createListeners();
+	}
+	
+	protected void createListeners() {
 		listeners = new ArrayList<EventListener>();
 
 		listeners.add(new InputListener() {
@@ -92,7 +109,7 @@ public abstract class MapActor extends Actor {
 			}
 		});
 	}
-
+	
 	public void enableListeners() {
 		for(EventListener l : listeners) {
 			addListener(l);

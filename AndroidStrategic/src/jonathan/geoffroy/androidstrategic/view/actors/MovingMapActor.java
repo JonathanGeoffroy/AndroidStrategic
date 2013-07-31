@@ -17,6 +17,15 @@ public class MovingMapActor extends MapActor {
 
 	public MovingMapActor(MapScreen mapScreen) {
 		super(mapScreen);
+	}
+
+	public MovingMapActor(MapActor mapActor) {
+		super(mapActor);
+	}
+
+	@Override
+	protected void createListeners() {
+		super.createListeners();
 		listeners.add(new InputListener() {
 
 			@Override

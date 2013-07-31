@@ -15,12 +15,21 @@ import jonathan.geoffroy.androidstrategic.view.utils.App;
 
 public class AttackMapActor extends MapActor {
 	private ArrayList<Coord2D> assailables;
-	
+
 	public AttackMapActor(MapScreen mapScreen) {
 		super(mapScreen);
 		assert(mapScreen.getSelectedFighter() != null);
 		assailables = map.getAssailableTerrains(mapScreen.getSelectedFighter());
-		
+	}
+
+	public AttackMapActor(MapActor mapActor) {
+		super(mapActor);
+		assailables = map.getAssailableTerrains(mapScreen.getSelectedFighter());
+	}
+
+	@Override
+	protected void createListeners() {
+		super.createListeners();
 		listeners.add(new InputListener() {
 
 			@Override
@@ -30,27 +39,27 @@ public class AttackMapActor extends MapActor {
 						(int) (x / terrainSize) + beginX,
 						(int) ((getHeight() - y) / terrainSize) + beginY 
 						);
-				
+
 				if(assailables.contains(coord)) {
 					AttackMapActor.this.mapScreen.attack(map.getFighterAt(coord));
 				}
 				AttackMapActor.this.mapScreen.setMovingMap();
 				return true;
 			}
-			
+
 		});
 	}
 
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		assert(app != null);
-		
+
 		Texture text;
 		float x, y;
 		Fighter fighter;
 		Coord2D coord = new Coord2D();
 		boolean isCurrentTeam;
-		
+
 		for(int i = 0; i < nbTerrainsY; i++) {
 			for(int j = 0 ; j < nbTerrainsX; j++) {
 				coord.x = j + beginX; coord.y = i + beginY;

@@ -296,7 +296,7 @@ public class MapScreen extends StageScreen {
 	 */
 	public void setAttackMap() {
 		assert(getSelectedFighter() != null);
-		mapActor = new AttackMapActor(this);
+		mapActor = new AttackMapActor(mapActor);
 		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
 		stage.clear();
 		stage.addActor(mapActor);
@@ -310,7 +310,7 @@ public class MapScreen extends StageScreen {
 	 */
 	public void setMovingMap() {
 		coordFighter = null;
-		mapActor = new MovingMapActor(this);
+		mapActor = new MovingMapActor(mapActor);
 		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
 		stage.clear();
 		stage.addActor(mapActor);
