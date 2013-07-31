@@ -335,6 +335,8 @@ public class MapScreen extends StageScreen {
 			// Move the selected coord fighter with the selected fighter himself
 			coordFighter.x = x;
 			coordFighter.y = y;
+			
+			fighterMenu.reloadTable();
 		}
 		else {
 			selectedFighter.setMoved();

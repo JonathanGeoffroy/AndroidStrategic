@@ -526,7 +526,7 @@ public class Map {
 	public ArrayList<Integer> possibilities(Fighter fighter) {
 		ArrayList<Integer> result = new ArrayList<Integer>();
 
-		if(fighter != null) {
+		if(fighter != null && fighter.getTeam().equals(getUserTeam())) {
 			if(canAttackAnyOne(fighter)) {
 				result.add(ATTACK);
 			}
