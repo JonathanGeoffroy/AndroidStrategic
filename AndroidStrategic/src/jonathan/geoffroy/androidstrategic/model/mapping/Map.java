@@ -279,13 +279,15 @@ public class Map {
 		int maxRange = fighter.maxRange();
 		Coord2D currentCoord = new Coord2D();
 		Fighter currentFighter;
-		
-		for(int i = maxRange; i > minRange; i--) {
-			for(int j = 0; j < maxRange - (i+1); j++) {
-				currentCoord.x = fighterCoord.x + j;
-				currentCoord.y = fighterCoord.y + i;
-				if(currentCoord.x >= 0 && currentCoord.x < map[0].length
-						&& currentCoord.y >= 0 && currentCoord.y < map.length) {
+		int dist;
+
+		for(int i = Math.max(0, fighterCoord.y - maxRange), yMax = Math.min(map.length - 1, fighterCoord.y + maxRange); i <= yMax; i++) {
+			for(int j = Math.max(0, fighterCoord.x - maxRange), xMax = Math.min(map[0].length - 1, fighterCoord.x + maxRange); j <= xMax; j++) {
+				dist = Math.abs(i - fighterCoord.y) + Math.abs(j - fighterCoord.x);
+
+				if(dist <= maxRange && dist >= minRange) {
+					currentCoord.x = j;
+					currentCoord.y = i;
 					currentFighter = coordFighters.get(currentCoord);
 					if(currentFighter != null && currentFighter.isEnnemy(fighter)) {
 						result.add(new Coord2D(currentCoord.x, currentCoord.y));
@@ -295,7 +297,7 @@ public class Map {
 		}
 		return result;
 	}
-	
+
 	public Terrain getTerrain(int x, int y) {
 		return map[y][x];
 	}
