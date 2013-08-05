@@ -79,11 +79,12 @@ public class MapScreen extends StageScreen {
 
 		desc.add(new AssetDescriptor(MapInfosGroup.WALLPAPER, Texture.class));
 		desc.add(new AssetDescriptor(FighterInfoActor.FONT, BitmapFont.class));
-
+		desc.add(new AssetDescriptor(AttackStatsActor.WALLPAPER, Texture.class));
+		
 		desc.add(new AssetDescriptor(INIT_MUSIC_PATH, Music.class));
 		desc.add(new AssetDescriptor(MAP_MUSIC_PATH, Music.class));
 		desc.add(new AssetDescriptor(TURN_MUSIC_PATH, Music.class));
-
+		
 		return desc;
 	}
 
@@ -189,6 +190,15 @@ public class MapScreen extends StageScreen {
 		stage.setScrollFocus(mapActor);
 		stage.setKeyboardFocus(mapActor);
 
+		attackStats = new AttackStatsActor(this);
+		float attWidth = mapActor.getWidth() * 2 / 3;
+		float attHeight = mapActor.getHeight() * 2 / 3;
+		float attX = mapActor.getX() + (mapActor.getWidth() - attWidth) / 2;
+		float attY = mapActor.getY() + (mapActor.getHeight() - attHeight) / 2;
+		attackStats.setBounds(attX, attY, attWidth, attHeight);
+		stage.addActor(attackStats);
+		attackStats.setVisible(false);
+		
 		music.stop();
 		music = (Music) app.getAsset(TURN_MUSIC_PATH);
 		music.setLooping(true);
@@ -279,14 +289,19 @@ public class MapScreen extends StageScreen {
 	 * call to show the battle stats between assailant and defender 
 	 */
 	public void enableAttackStats(Fighter assailant, Fighter defender) {
-		attackStats = new AttackStatsActor(this, assailant, defender);
+		mapActor.disableListeners();
+		attackStats.reload(assailant, defender);
+		attackStats.setVisible(true);
+		System.out.println(attackStats.getX() + " " + attackStats.getY() + " --- " + attackStats.getWidth() + " " + attackStats.getHeight());
+		mapActor.disableListeners();
 	}
 
 	/**
 	 * call to hide the battle stats
 	 */
 	public void disableAttackStats() {
-		attackStats = null;
+		mapActor.enableListeners();
+		attackStats.setVisible(false);
 	}
 
 	/**
@@ -300,7 +315,7 @@ public class MapScreen extends StageScreen {
 		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
 		stage.clear();
 		stage.addActor(mapActor);
-		//		stage.addActor(attackStats);
+		stage.addActor(attackStats);
 		stage.addActor(mapInfos);
 		mapActor.enableListeners();
 	}

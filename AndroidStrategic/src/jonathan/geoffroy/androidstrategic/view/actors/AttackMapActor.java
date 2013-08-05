@@ -41,9 +41,9 @@ public class AttackMapActor extends MapActor {
 						);
 				System.out.println("touchedDown!");
 				if(assailables.contains(coord)) {
-					AttackMapActor.this.mapScreen.attack(map.getFighterAt(coord));
+					AttackMapActor.this.mapScreen.enableAttackStats(mapScreen.getSelectedFighter(), map.getFighterAt(coord));
 				}
-				AttackMapActor.this.mapScreen.setMovingMap();
+
 				return true;
 			}
 

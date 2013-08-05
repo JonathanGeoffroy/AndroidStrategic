@@ -6,6 +6,8 @@ import jonathan.geoffroy.androidstrategic.view.utils.App;
 import jonathan.geoffroy.androidstrategic.view.utils.HelpScreen;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,26 +22,86 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 
 public class AttackStatsActor extends Actor {
+	public static final String WALLPAPER = "data/img/textures/battleStats.bmp";
+	
 	private MapScreen mapScreen;
 	private Fighter fighters[];
 	private Texture fightersHead[];
 	private Table fightersTable[];
 	private Texture wallpaper;
 	private TextButton attack, cancel;
-	
-	public AttackStatsActor(MapScreen mapScreen, Fighter assailant, Fighter defender) {
+	private Skin skin;
+	private LabelStyle style;
+
+	public AttackStatsActor(MapScreen mapScreen) {
 		super();
 		this.mapScreen = mapScreen;
-		App app = HelpScreen.getApp();
 		BitmapFont font = (BitmapFont) HelpScreen.getApp().getAsset(FighterInfoActor.FONT);
-		LabelStyle style = new LabelStyle(font, Color.WHITE);
+		style = new LabelStyle(font, Color.WHITE);
+
+		skin = new Skin();
+
+		// Generate a 1x1 white texture and store it in the skin named "white".
+		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
+		pixmap.setColor(Color.WHITE);
+		pixmap.fill();
+		skin.add("white", new Texture(pixmap));
+
+		// Store the default libgdx font under the name "default".
+		skin.add("default", new BitmapFont());
+
+		// Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.
+		TextButtonStyle textButtonStyle = new TextButtonStyle();
+		textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
+		textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
+		textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
+		textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
+		textButtonStyle.font = skin.getFont("default");
+		skin.add("default", textButtonStyle);
+
+		attack = new TextButton("attack!", textButtonStyle);
+		attack.setBounds(getX() + getWidth() / 6, getY(), getWidth() / 3, getHeight() / 5);
+		attack.addListener(new EventListener() {
+			@Override
+			public boolean handle(Event event) {
+				System.out.println("ATTACK !");
+				AttackStatsActor.this.mapScreen.disableAttackStats();
+				return false;
+			}
+		});
+
+		cancel = new TextButton("cancel...", textButtonStyle);
+		cancel.setBounds(getX() + getWidth() * 4 / 6, getY(), getWidth() / 3, getHeight() / 5);
+		cancel.addListener(new EventListener() {
+			@Override
+			public boolean handle(Event event) {
+				System.out.println("ATTACK !");
+				AttackStatsActor.this.mapScreen.disableAttackStats();
+				return false;
+			}
+		});
 
 		fighters = new Fighter[2];
+		fightersHead = new Texture[2];
+		fightersTable = new Table[2];
+		fightersTable[0] = new Table();
+		fightersTable[1] = new Table();
+		
+		wallpaper = (Texture) HelpScreen.getApp().getAsset(WALLPAPER);
+	}
+
+	/**
+	 * Reload this Actor when changing fighters 
+	 * @param assailant
+	 * @param defender
+	 */
+	public void reload(Fighter assailant, Fighter defender) {
+		assert(assailant != null && defender != null);
+		App app = HelpScreen.getApp();
+
 		fighters[0] = assailant;
 		fighters[1] = defender;
 
-		fightersHead = new Texture[2];
-		fightersTable = new Table[2];
 		fightersTable[0].setBounds(getX(), getY() + getHeight() * 3 / 5, getWidth() * 2 / 5, getHeight());
 		fightersTable[1].setBounds(getX() + getWidth() * 3 / 5, getY(), getWidth() * 2 / 5, getHeight());
 
@@ -64,35 +126,6 @@ public class AttackStatsActor extends Actor {
 			fightersTable[i].add(new Label("" + fighters[i].criticalAccuracy(other), style));
 			fightersTable[i].row();
 		}
-		
-		Skin skin = new Skin();
-		skin.add("default", new BitmapFont());
-		TextButtonStyle textButtonStyle = new TextButtonStyle();
-		textButtonStyle.up = skin.newDrawable("default", Color.WHITE);
-		textButtonStyle.down = skin.newDrawable("default", Color.BLACK);
-		textButtonStyle.font = skin.getFont("default");
-		
-		attack = new TextButton("attack!", textButtonStyle);
-		attack.setBounds(getX() + getWidth() / 6, getY(), getWidth() / 3, getHeight() / 5);
-		attack.addListener(new EventListener() {
-			@Override
-			public boolean handle(Event event) {
-				System.out.println("ATTACK !");
-				AttackStatsActor.this.mapScreen.disableAttackStats();
-				return false;
-			}
-		});
-		
-		cancel = new TextButton("cancel...", textButtonStyle);
-		cancel.setBounds(getX() + getWidth() * 4 / 6, getY(), getWidth() / 3, getHeight() / 5);
-		cancel.addListener(new EventListener() {
-			@Override
-			public boolean handle(Event event) {
-				System.out.println("ATTACK !");
-				AttackStatsActor.this.mapScreen.disableAttackStats();
-				return false;
-			}
-		});
 	}
 
 	@Override
@@ -105,5 +138,14 @@ public class AttackStatsActor extends Actor {
 			fightersTable[i].draw(batch, parentAlpha);
 		attack.draw(batch, parentAlpha);
 		cancel.draw(batch, parentAlpha);
+		
+		System.out.println("drawed");
+	}
+
+	@Override
+	public void setBounds(float x, float y, float width, float height) {
+		super.setBounds(x, y, width, height);
+		fightersTable[0].setBounds(getX(), getY() + getHeight() * 3 / 5, getWidth() * 2 / 5, getHeight());
+		fightersTable[1].setBounds(getX() + getWidth() * 3 / 5, getY(), getWidth() * 2 / 5, getHeight());
 	}	
 }
