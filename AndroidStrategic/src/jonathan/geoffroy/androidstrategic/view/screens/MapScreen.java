@@ -146,6 +146,7 @@ public class MapScreen extends StageScreen {
 
 		mapActor = new MapInitActor(this, chooser);
 		mapActor.setBounds(0, 0, Gdx.graphics.getWidth() * 2.f / 3.f, Gdx.graphics.getHeight());
+		mapActor.enableListeners();
 		stage.addActor(mapActor);
 		stage.addActor(chooser);
 

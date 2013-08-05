@@ -16,7 +16,11 @@ public class MapInitActor extends MapActor {
 	public MapInitActor(MapScreen mapScreen, FighterChooserActor fighterChooser) {
 		super(mapScreen);
 		this.fighterChooser = fighterChooser;
+	}
 
+	@Override
+	protected void createListeners() {
+		super.createListeners();
 		addListener(new InputListener() {
 
 			@Override
@@ -45,7 +49,6 @@ public class MapInitActor extends MapActor {
 			}
 		});
 	}
-
 
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
