@@ -293,7 +293,6 @@ public class MapScreen extends StageScreen {
 		mapActor.disableListeners();
 		attackStats.reload(assailant, defender);
 		attackStats.setVisible(true);
-		System.out.println(attackStats.getX() + " " + attackStats.getY() + " --- " + attackStats.getWidth() + " " + attackStats.getHeight());
 		mapActor.disableListeners();
 	}
 

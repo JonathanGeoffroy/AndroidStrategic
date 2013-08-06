@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 
 public class AttackStatsActor extends Actor {
 	public static final String WALLPAPER = "data/img/textures/battleStats.bmp";
-	
+
 	private MapScreen mapScreen;
 	private Fighter fighters[];
 	private Texture fightersHead[];
@@ -60,7 +60,7 @@ public class AttackStatsActor extends Actor {
 		skin.add("default", textButtonStyle);
 
 		attack = new TextButton("attack!", textButtonStyle);
-		attack.setBounds(getX() + getWidth() / 6, getY(), getWidth() / 3, getHeight() / 5);
+		attack.setBounds(getX() + getWidth() / 6, getY(), getWidth() / 3, getHeight() / 8);
 		attack.addListener(new EventListener() {
 			@Override
 			public boolean handle(Event event) {
@@ -71,7 +71,7 @@ public class AttackStatsActor extends Actor {
 		});
 
 		cancel = new TextButton("cancel...", textButtonStyle);
-		cancel.setBounds(getX() + getWidth() * 4 / 6, getY(), getWidth() / 3, getHeight() / 5);
+		cancel.setBounds(getX() + getWidth() * 4 / 6, getY(), getWidth() / 3, getHeight() / 8);
 		cancel.addListener(new EventListener() {
 			@Override
 			public boolean handle(Event event) {
@@ -86,7 +86,7 @@ public class AttackStatsActor extends Actor {
 		fightersTable = new Table[2];
 		fightersTable[0] = new Table();
 		fightersTable[1] = new Table();
-		
+
 		wallpaper = (Texture) HelpScreen.getApp().getAsset(WALLPAPER);
 	}
 
@@ -102,12 +102,12 @@ public class AttackStatsActor extends Actor {
 		fighters[0] = assailant;
 		fighters[1] = defender;
 
-		fightersTable[0].setBounds(getX(), getY() + getHeight() * 3 / 5, getWidth() * 2 / 5, getHeight());
-		fightersTable[1].setBounds(getX() + getWidth() * 3 / 5, getY(), getWidth() * 2 / 5, getHeight());
+		float width = getWidth() / 3;
+		float height = getHeight() / 2;
 
 		for(int i = 0; i < 2; i++) {
 			Fighter other = fighters[(i+1) % 2];
-			fightersHead[i] = (Texture) app.getAsset(App.DIALOGS_DIR + assailant.getTextureName());
+			fightersHead[i] = (Texture) app.getAsset(App.DIALOGS_DIR + fighters[i].getTextureName());
 			fightersTable[i] = new Table();
 
 			fightersTable[i].add(new Label(fighters[i].getName(), style));
@@ -126,26 +126,37 @@ public class AttackStatsActor extends Actor {
 			fightersTable[i].add(new Label("" + fighters[i].criticalAccuracy(other), style));
 			fightersTable[i].row();
 		}
+		resize();
 	}
 
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
+		float headWidth = getWidth() / 3;
+		float headHeight = getHeight() / 3;
 		batch.draw(wallpaper, getX(), getY(), getWidth(), getHeight());
-		batch.draw(fightersHead[0], getX(), getY() + getHeight() / 2, getWidth() * 2 / 5, getHeight() * 2 / 5);
-		batch.draw(fightersHead[1], getX() + getWidth() * 3 / 5, getY() + getHeight() / 2, getWidth() * 2 / 5, getHeight() * 2 / 5);
+		batch.draw(fightersHead[0], getX(), getY() + attack.getHeight(), headWidth, headHeight);
+		batch.draw(fightersHead[1], getX() + getWidth() - headWidth , getY() + getHeight() - headHeight, headWidth, headHeight);
 		for(int i = 0; i < fightersTable.length; i++)
 			fightersTable[i].draw(batch, parentAlpha);
 		attack.draw(batch, parentAlpha);
 		cancel.draw(batch, parentAlpha);
-		
-		System.out.println("drawed");
 	}
 
 	@Override
-	public void setBounds(float x, float y, float width, float height) {
-		super.setBounds(x, y, width, height);
-		fightersTable[0].setBounds(getX(), getY() + getHeight() * 3 / 5, getWidth() * 2 / 5, getHeight());
-		fightersTable[1].setBounds(getX() + getWidth() * 3 / 5, getY(), getWidth() * 2 / 5, getHeight());
-	}	
+	public void setBounds(float x, float y, float w, float h) {
+		super.setBounds(x, y, w, h);
+		resize();
+	}
+
+	private void resize() {
+		attack.setBounds(getX() + getWidth() / 6, getY(), getWidth() / 3, getHeight() / 8);
+		cancel.setBounds(getX() + getWidth() * 4 / 6, getY(), getWidth() / 3, getHeight() / 8);
+		
+		float width = getWidth() / 3;
+		float height = getHeight() / 2;
+		fightersTable[0].setBounds(getX(), getY() + getHeight() - height, width, height);
+		fightersTable[1].setBounds(getX() + getWidth() - width, getY() + attack.getHeight(), width, height);
+		fightersTable[1].pack();
+	}
 }
